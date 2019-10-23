@@ -19,8 +19,11 @@ option(GLFW_INSTALL "" OFF)
 option(BUILD_SHARED_LIBS "" OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw ${CMAKE_BINARY_DIR}/external/glfw/build)
 
+#Projet libs
+add_subdirectory(libraries/window_manager)
+
 #Main binary
 add_executable(ft_vox binary/private/ft_vox.cpp)
-#target_link_libraries(ft_vox)
-#add_dependencies(ft_vox)
+target_link_libraries(ft_vox window_manager)
+add_dependencies(ft_vox window_manager)
 target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
