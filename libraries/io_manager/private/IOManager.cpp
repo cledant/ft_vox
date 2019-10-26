@@ -1,25 +1,33 @@
-#include "WindowManager.hpp"
+#include "IOManager.hpp"
 
 #include <iostream>
 #include <stdexcept>
 
-#define THIS_WIN_PTR static_cast<WindowManager *>(glfwGetWindowUserPointer(win))
+#define THIS_WIN_PTR static_cast<IOManager *>(glfwGetWindowUserPointer(win))
 
-WindowManager::WindowManager()
+IOManager::IOManager()
+  : _win(nullptr)
+  , _fullscreen(0)
+  , _resized(0)
+  , _w(0)
+  , _h(0)
+  , _w_viewport(0)
+  , _h_viewport(0)
+  , _win_name("")
 {
     if (!glfwInit()) {
         throw std::runtime_error("Glfw : failed to init");
     }
 }
 
-WindowManager::~WindowManager()
+IOManager::~IOManager()
 {
     glfwTerminate();
 }
 
 // Window related
 void
-WindowManager::createWindow(std::string &&name)
+IOManager::createWindow(std::string &&name)
 {
     if (!_win) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -47,11 +55,12 @@ WindowManager::createWindow(std::string &&name)
             throw std::runtime_error("GLAD not loaded");
         }
         glfwSetWindowSize(_win, WIN_W, WIN_H);
+        glEnable(GL_DEPTH_TEST);
     }
 }
 
 void
-WindowManager::deleteWindow()
+IOManager::deleteWindow()
 {
     if (!_win) {
         glfwDestroyWindow(_win);
@@ -59,25 +68,31 @@ WindowManager::deleteWindow()
     }
 }
 
+uint8_t
+IOManager::wasResized()
+{
+    return (_resized);
+}
+
 void
-WindowManager::toggleFullscreen()
+IOManager::toggleFullscreen()
 {}
 
-// Event related
 uint8_t
-WindowManager::shouldClose() const
+IOManager::shouldClose() const
 {
     return (glfwWindowShouldClose(_win));
 }
 
 void
-WindowManager::triggerClose() const
+IOManager::triggerClose() const
 {
     glfwSetWindowShouldClose(_win, 1);
 }
 
-std::array<uint8_t, WindowManager::KEYS_BUFF_SIZE> const &
-WindowManager::getKeys() const
+// Keyboard related
+std::array<uint8_t, IOManager::KEYS_BUFF_SIZE> const &
+IOManager::getKeys() const
 {
     glfwPollEvents();
     return (_keys);
@@ -85,21 +100,22 @@ WindowManager::getKeys() const
 
 // Render related
 void
-WindowManager::render() const
+IOManager::render()
 {
+    _resized = 0;
     glfwSwapBuffers(_win);
 }
 
 void
-WindowManager::clear() const
+IOManager::clear() const
 {
     glClearColor(0.086f, 0.317f, 0.427f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // Callbacks
 void
-WindowManager::_initCallbacks()
+IOManager::_initCallbacks()
 {
     // Input
     auto input_callback =
@@ -126,6 +142,7 @@ WindowManager::_initCallbacks()
     auto window_size_callback = [](GLFWwindow *win, int w, int h) {
         THIS_WIN_PTR->_h = h;
         THIS_WIN_PTR->_w = w;
+        THIS_WIN_PTR->_resized = 1;
     };
     glfwSetWindowSizeCallback(_win, window_size_callback);
 

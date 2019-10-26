@@ -1,12 +1,16 @@
 #include <iostream>
 
-#include "WindowManager.hpp"
+#include "Engine.hpp"
 
 int
 main()
 {
-    WindowManager win;
-    
-    std::cout << "Hello World" << std::endl;
+    try {
+        Engine engine;
+
+        engine.run();
+    } catch (std::exception const &e) {
+        std::cout << "Catched exception: " << e.what() << std::endl;
+    }
     return (0);
 }
