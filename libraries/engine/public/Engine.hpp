@@ -2,6 +2,8 @@
 #define FT_VOX_ENGINE_HPP
 
 #include "IOManager.hpp"
+#include "Camera.hpp"
+#include "EventHandler.hpp"
 
 class Engine
 {
@@ -13,11 +15,13 @@ class Engine
     Engine(Engine &&src) = delete;
     Engine &operator=(Engine &&rhs) = delete;
 
+    void init();
     void run();
 
-
   private:
-    IOManager _iomanager;
+    IOManager _io_manager;
+    Camera _camera;
+    EventHandler _event_handler;
 };
 
 #endif // FT_VOX_ENGINE_HPP

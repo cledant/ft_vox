@@ -8,6 +8,6 @@ target_include_directories(iomanager
 		${CMAKE_CURRENT_SOURCE_DIR}/public
 		PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/private)
-add_dependencies(iomanager glad glfw)
-target_link_libraries(iomanager PUBLIC glad glfw)
+add_dependencies(iomanager glad glfw glm)
+target_link_libraries(iomanager PUBLIC glad glfw glm)
 target_compile_options(iomanager PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)

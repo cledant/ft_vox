@@ -1,12 +1,16 @@
 #include "IOManager.hpp"
 
-#include <iostream>
 #include <stdexcept>
+
+#include "glm/glm.hpp"
 
 #define THIS_WIN_PTR static_cast<IOManager *>(glfwGetWindowUserPointer(win))
 
 IOManager::IOManager()
-  : _win(nullptr)
+  : _keys()
+  , _mouse_button()
+  , _mouse_position(0.0f)
+  , _win(nullptr)
   , _fullscreen(0)
   , _resized(0)
   , _w(0)
@@ -14,6 +18,7 @@ IOManager::IOManager()
   , _w_viewport(0)
   , _h_viewport(0)
   , _win_name("")
+  , _mouse_exclusive(0)
 {
     if (!glfwInit()) {
         throw std::runtime_error("Glfw : failed to init");
@@ -55,6 +60,8 @@ IOManager::createWindow(std::string &&name)
             throw std::runtime_error("GLAD not loaded");
         }
         glfwSetWindowSize(_win, WIN_W, WIN_H);
+        _initCallbacks();
+        toggleMouseExclusive();
         glEnable(GL_DEPTH_TEST);
     }
 }
@@ -69,7 +76,7 @@ IOManager::deleteWindow()
 }
 
 uint8_t
-IOManager::wasResized()
+IOManager::wasResized() const
 {
     return (_resized);
 }
@@ -90,12 +97,36 @@ IOManager::triggerClose() const
     glfwSetWindowShouldClose(_win, 1);
 }
 
-// Keyboard related
-std::array<uint8_t, IOManager::KEYS_BUFF_SIZE> const &
-IOManager::getKeys() const
+void
+IOManager::toggleMouseExclusive()
 {
+    _mouse_exclusive = !_mouse_exclusive;
+    (_mouse_exclusive)
+      ? glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+      : glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+// Keyboard / Mouse Input related
+IOEvents
+IOManager::getEvents() const
+{
+    IOEvents io;
+
     glfwPollEvents();
-    return (_keys);
+    io.events[MOUSE_EXCLUSIVE] = _keys[GLFW_KEY_P];
+    io.events[ESCAPE] = _keys[GLFW_KEY_ESCAPE];
+    io.events[FULLSCREEN] = _keys[GLFW_KEY_F5];
+    io.events[JUMP] = _keys[GLFW_KEY_SPACE];
+    io.events[CROUCH] = _keys[GLFW_KEY_LEFT_CONTROL];
+    io.events[FRONT] = _keys[GLFW_KEY_W];
+    io.events[BACK] = _keys[GLFW_KEY_S];
+    io.events[RIGHT] = _keys[GLFW_KEY_D];
+    io.events[LEFT] = _keys[GLFW_KEY_A];
+    io.events[ADD_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_1];
+    io.events[REMOVE_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_1];
+    io.mouse_w = _mouse_position.x;
+    io.mouse_h = _mouse_position.y;
+    return (io);
 }
 
 // Render related
@@ -117,12 +148,12 @@ IOManager::clear() const
 void
 IOManager::_initCallbacks()
 {
-    // Input
-    auto input_callback =
+    // Keyboard input
+    auto keyboard_callback =
       [](GLFWwindow *win, int key, int scancode, int action, int mods) {
           static_cast<void>(scancode);
           static_cast<void>(mods);
-          if (key >= 0 && key < 1024) {
+          if (key >= 0 && key < KEYS_BUFF_SIZE) {
               if (action == GLFW_PRESS) {
                   THIS_WIN_PTR->_keys[key] = 1;
               } else if (action == GLFW_RELEASE) {
@@ -130,7 +161,28 @@ IOManager::_initCallbacks()
               }
           }
       };
-    glfwSetKeyCallback(_win, input_callback);
+    glfwSetKeyCallback(_win, keyboard_callback);
+
+    // Mouse position
+    auto cursor_position_callback =
+      [](GLFWwindow *win, double xpos, double ypos) {
+          THIS_WIN_PTR->_mouse_position = glm::vec2(xpos, ypos);
+      };
+    glfwSetCursorPosCallback(_win, cursor_position_callback);
+
+    // Mouse button input
+    auto mouse_button_callback =
+      [](GLFWwindow *win, int button, int action, int mods) {
+          static_cast<void>(win);
+          static_cast<void>(mods);
+          if (button >= 0 && button < MOUSE_KEYS_BUFF_SIZE) {
+              if (action == GLFW_PRESS)
+                  THIS_WIN_PTR->_mouse_button[button] = GLFW_PRESS;
+              else if (action == GLFW_RELEASE)
+                  THIS_WIN_PTR->_mouse_button[button] = GLFW_RELEASE;
+          }
+      };
+    glfwSetMouseButtonCallback(_win, mouse_button_callback);
 
     // Close
     auto close_callback = [](GLFWwindow *win) {
