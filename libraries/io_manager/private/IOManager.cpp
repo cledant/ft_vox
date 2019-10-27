@@ -60,6 +60,8 @@ IOManager::createWindow(std::string &&name)
             throw std::runtime_error("GLAD not loaded");
         }
         glfwSetWindowSize(_win, WIN_W, WIN_H);
+        _w = WIN_W;
+        _h = WIN_H;
         _initCallbacks();
         toggleMouseExclusive();
         glEnable(GL_DEPTH_TEST);
@@ -114,6 +116,12 @@ IOManager::isMouseExclusive() const
     return (_mouse_exclusive);
 }
 
+float
+IOManager::getWindowRatio() const
+{
+    return (static_cast<float>(_w) / static_cast<float>(_h));
+}
+
 // Keyboard / Mouse Input related
 IOEvents
 IOManager::getEvents() const
@@ -124,8 +132,8 @@ IOManager::getEvents() const
     io.events[MOUSE_EXCLUSIVE] = _keys[GLFW_KEY_P];
     io.events[ESCAPE] = _keys[GLFW_KEY_ESCAPE];
     io.events[FULLSCREEN] = _keys[GLFW_KEY_F5];
-    io.events[JUMP] = _keys[GLFW_KEY_SPACE];
-    io.events[CROUCH] = _keys[GLFW_KEY_LEFT_CONTROL];
+    io.events[JUMP] = _keys[GLFW_KEY_E];
+    io.events[CROUCH] = _keys[GLFW_KEY_Q];
     io.events[FRONT] = _keys[GLFW_KEY_W];
     io.events[BACK] = _keys[GLFW_KEY_S];
     io.events[RIGHT] = _keys[GLFW_KEY_D];

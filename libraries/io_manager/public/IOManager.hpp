@@ -35,7 +35,8 @@ class IOManager
     [[nodiscard]] uint8_t shouldClose() const;
     void triggerClose() const;
     void toggleMouseExclusive();
-    uint8_t isMouseExclusive() const;
+    [[nodiscard]] uint8_t isMouseExclusive() const;
+    [[nodiscard]] float getWindowRatio() const;
 
     // Keyboard / Mouse Input related
     [[nodiscard]] IOEvents getEvents() const;

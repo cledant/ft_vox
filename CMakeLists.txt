@@ -22,6 +22,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw ${CMAKE_BINARY_DIR}/e
 #Projet libs
 add_subdirectory(libraries/io_manager)
 add_subdirectory(libraries/engine)
+add_subdirectory(libraries/gl_objects)
 
 #Main binary
 add_executable(ft_vox binary/private/ft_vox.cpp)

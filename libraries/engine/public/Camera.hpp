@@ -11,10 +11,10 @@
 class Camera
 {
   public:
-    Camera() = default;
+    Camera();
     virtual ~Camera() = default;
-    Camera(const Camera &src);
-    Camera &operator=(Camera const &rhs);
+    Camera(const Camera &src) = default;
+    Camera &operator=(Camera const &rhs) = default;
     Camera(Camera &&src) = delete;
     Camera &operator=(Camera &&rhs) = delete;
 
@@ -24,7 +24,7 @@ class Camera
 
     // Setters
     void setWorldUp(glm::vec3 const &world_up);
-    void setNearFar(glm::vec2 const &near_far);
+    void setPerspective(glm::mat4 const &perspective);
 
     // Getters
     [[nodiscard]] glm::vec3 const &getPosition() const;
@@ -34,8 +34,9 @@ class Camera
     [[nodiscard]] glm::mat4 const &getPerspectiveViewMatrix() const;
 
   private:
-    static float constexpr INITIAL_MOVEMENT_SPEED = 0.075f;
-    static float constexpr INITIAL_MOUSE_SENSITIVITY = 0.05f;
+    static float constexpr DEFAULT_MOVEMENT_SPEED = 0.075f;
+    static float constexpr DEFAULT_MOUSE_SENSITIVITY = 0.05f;
+    static constexpr glm::vec3 DEFAULT_WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 
     uint8_t _updated;
     glm::vec3 _pos;
@@ -45,15 +46,12 @@ class Camera
     glm::vec3 _front;
 
     glm::mat4 _view;
-    glm::vec2 _near_far;
     glm::mat4 _perspective;
     glm::mat4 _perspec_mult_view;
 
     float _mouse_sensitivity;
     float _movement_speed;
 
-    glm::vec2 _mouse_pos;
-    glm::vec2 _mouse_offset;
     float _yaw;
     float _pitch;
 };

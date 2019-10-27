@@ -6,6 +6,7 @@
 EventHandler::EventHandler()
   : _camera(nullptr)
   , _io_manager(nullptr)
+  , _perspective(nullptr)
   , _timers()
   , _movements(0)
   , _mouse_pos(0.0)
@@ -25,12 +26,19 @@ EventHandler::setIOManager(IOManager *io_manager)
 }
 
 void
+EventHandler::setPerspectiveData(Perspective *perspective)
+{
+    _perspective = perspective;
+}
+
+void
 EventHandler::processEvents(IOEvents const &events)
 {
     assert(_camera);
     assert(_io_manager);
+    assert(_perspective);
 
-    //Resetting movement tracking
+    // Resetting movement tracking
     _movements = glm::ivec3(0);
 
     // Mouse position
