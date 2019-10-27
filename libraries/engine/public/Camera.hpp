@@ -18,7 +18,9 @@ class Camera
     Camera(Camera &&src) = delete;
     Camera &operator=(Camera &&rhs) = delete;
 
-    void update();
+    void update_position(glm::ivec3 const &mov);
+    void update_front(glm::vec2 const &offsets);
+    void update_matricies();
 
     // Setters
     void setWorldUp(glm::vec3 const &world_up);

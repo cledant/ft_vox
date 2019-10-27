@@ -6,8 +6,10 @@
 EventHandler::EventHandler()
   : _camera(nullptr)
   , _io_manager(nullptr)
-  , _movements(glm::ivec3(0))
-  , _mouse_pos(glm::vec2(0.0))
+  , _timers()
+  , _movements(0)
+  , _mouse_pos(0.0)
+  , _previous_mouse_pos(0.0)
 {}
 
 void
@@ -27,6 +29,17 @@ EventHandler::processEvents(IOEvents const &events)
 {
     assert(_camera);
     assert(_io_manager);
+
+    //Resetting movement tracking
+    _movements = glm::ivec3(0);
+
+    // Mouse position
+    static uint8_t first_time_mouse_pos = 1;
+    if (first_time_mouse_pos) {
+        _previous_mouse_pos = events.mouse_position;
+        first_time_mouse_pos = 0;
+    }
+    _mouse_pos = events.mouse_position;
 
     static const std::array<void (EventHandler::*)(), NBR_IO_EVENTS> func = {
         &EventHandler::_mouse_exclusive,
@@ -63,6 +76,11 @@ EventHandler::processEvents(IOEvents const &events)
         }
         _timers.updated[i] = 0;
     }
+
+    // Camera updating
+    if (_io_manager->isMouseExclusive()) {
+        _updateCamera();
+    }
 }
 
 EventHandler::EventTimers::EventTimers()
@@ -80,6 +98,7 @@ void
 EventHandler::_mouse_exclusive()
 {
     if (_timers.accept_event[SYSTEM]) {
+        _previous_mouse_pos = _mouse_pos;
         _io_manager->toggleMouseExclusive();
         _timers.accept_event[SYSTEM] = 0;
         _timers.updated[SYSTEM] = 1;
@@ -160,4 +179,18 @@ EventHandler::_remove_block()
         _timers.accept_event[ACTION] = 0;
         _timers.updated[ACTION] = 1;
     }
+}
+
+void
+EventHandler::_updateCamera()
+{
+    glm::vec2 offset = _mouse_pos - _previous_mouse_pos;
+
+    if (_movements != glm::ivec3(0)) {
+        _camera->update_position(_movements);
+    }
+    if (offset != glm::vec2(0.0)) {
+        _camera->update_front(offset);
+    }
+    _camera->update_matricies();
 }

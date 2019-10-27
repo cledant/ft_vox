@@ -62,12 +62,16 @@ class EventHandler
     void _add_block();
     void _remove_block();
 
+    // Camera Related
+    void _updateCamera();
+
     Camera *_camera;
     IOManager *_io_manager;
     EventTimers _timers;
 
     glm::ivec3 _movements;
     glm::vec2 _mouse_pos;
+    glm::vec2 _previous_mouse_pos;
 };
 
 #endif // FT_VOX_EVENTHANDLER_HPP

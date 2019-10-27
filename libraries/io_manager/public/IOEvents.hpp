@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <array>
 
+#include "glm/glm.hpp"
+
 constexpr uint16_t NBR_IO_EVENTS = 11;
 
 enum IOEventsTypes
@@ -25,13 +27,11 @@ struct IOEvents
 {
     IOEvents()
       : events()
-      , mouse_w(0.0)
-      , mouse_h(0.0){};
+      , mouse_position(0.0){};
     virtual ~IOEvents() = default;
 
     std::array<uint8_t, NBR_IO_EVENTS> events;
-    double mouse_w;
-    double mouse_h;
+    glm::vec2 mouse_position;
 };
 
 #endif // FT_VOX_IOEVENTS_HPP

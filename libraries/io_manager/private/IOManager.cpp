@@ -83,7 +83,9 @@ IOManager::wasResized() const
 
 void
 IOManager::toggleFullscreen()
-{}
+{
+    // TODO
+}
 
 uint8_t
 IOManager::shouldClose() const
@@ -106,6 +108,12 @@ IOManager::toggleMouseExclusive()
       : glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
+uint8_t
+IOManager::isMouseExclusive() const
+{
+    return (_mouse_exclusive);
+}
+
 // Keyboard / Mouse Input related
 IOEvents
 IOManager::getEvents() const
@@ -123,9 +131,8 @@ IOManager::getEvents() const
     io.events[RIGHT] = _keys[GLFW_KEY_D];
     io.events[LEFT] = _keys[GLFW_KEY_A];
     io.events[ADD_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_1];
-    io.events[REMOVE_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_1];
-    io.mouse_w = _mouse_position.x;
-    io.mouse_h = _mouse_position.y;
+    io.events[REMOVE_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_2];
+    io.mouse_position = _mouse_position;
     return (io);
 }
 

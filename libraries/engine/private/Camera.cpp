@@ -15,7 +15,21 @@ Camera::operator=(Camera const &rhs)
 }
 
 void
-Camera::update()
+Camera::update_position(glm::ivec3 const &mov)
+{
+    // TODO
+    (void)mov;
+}
+
+void
+Camera::update_front(glm::vec2 const &offsets)
+{
+    // TODO
+    (void)offsets;
+}
+
+void
+Camera::update_matricies()
 {
     // TODO
 }
