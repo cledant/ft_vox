@@ -8,6 +8,6 @@ target_include_directories(globjects
 		${CMAKE_CURRENT_SOURCE_DIR}/public
 		PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/private)
-add_dependencies(globjects glad glm)
-target_link_libraries(globjects PUBLIC glad glm)
+add_dependencies(globjects glad glm freetype)
+target_link_libraries(globjects PUBLIC glad glm freetype)
 target_compile_options(globjects PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)

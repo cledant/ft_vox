@@ -19,6 +19,9 @@ option(GLFW_INSTALL "" OFF)
 option(BUILD_SHARED_LIBS "" OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw ${CMAKE_BINARY_DIR}/external/glfw/build)
 
+#Setup freetype
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/freetype ${CMAKE_BINARY_DIR}/external/freetype2/build)
+
 #Projet libs
 add_subdirectory(libraries/io_manager)
 add_subdirectory(libraries/engine)

@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "EventHandler.hpp"
 #include "Perspective.hpp"
+#include "GLFont.hpp"
 
 class Engine
 {

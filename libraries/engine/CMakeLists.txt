@@ -10,6 +10,6 @@ target_include_directories(engine
 		${CMAKE_CURRENT_SOURCE_DIR}/public
 		PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/private)
-add_dependencies(engine iomanager)
-target_link_libraries(engine PUBLIC iomanager glm)
+add_dependencies(engine iomanager globjects)
+target_link_libraries(engine PUBLIC iomanager glm globjects)
 target_compile_options(engine PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
