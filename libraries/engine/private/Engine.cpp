@@ -28,15 +28,6 @@ Engine::run()
 {
     while (!_io_manager.shouldClose()) {
         _event_handler.processEvents(_io_manager.getEvents());
-        // Updating perspective
-        if (_io_manager.wasResized()) {
-            _perspective_data.ratio = _io_manager.getWindowRatio();
-            _camera.setPerspective(
-              glm::perspective(glm::radians(_perspective_data.fov),
-                               _perspective_data.ratio,
-                               _perspective_data.near_far.x,
-                               _perspective_data.near_far.y));
-        }
         _io_manager.clear();
         _io_manager.render();
     }

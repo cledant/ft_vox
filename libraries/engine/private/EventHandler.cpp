@@ -85,6 +85,15 @@ EventHandler::processEvents(IOEvents const &events)
         _timers.updated[i] = 0;
     }
 
+    // Updating perspective
+    if (_io_manager->wasResized()) {
+        _perspective->ratio = _io_manager->getWindowRatio();
+        _camera->setPerspective(
+          glm::perspective(glm::radians(_perspective->fov),
+                           _perspective->ratio,
+                           _perspective->near_far.x,
+                           _perspective->near_far.y));
+    }
     // Camera updating
     if (_io_manager->isMouseExclusive()) {
         _updateCamera();

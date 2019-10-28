@@ -65,6 +65,7 @@ void
 Camera::setPerspective(glm::mat4 const &perspective)
 {
     _perspective = perspective;
+    _perspec_mult_view = _perspective * _view;
 }
 
 // Getters
