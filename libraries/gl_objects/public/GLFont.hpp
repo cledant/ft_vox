@@ -25,11 +25,11 @@ class GLFont
     void init(std::string const &path_font,
               std::string const &path_vs,
               std::string const &path_fs,
-              glm::mat4 const &ortho,
+              glm::vec2 const &window_size,
               uint64_t font_size);
     void clear();
 
-    void setOrthographicProjection(glm::mat4 const &mat);
+    void setOrthographicProjection(glm::vec2 const &window_size);
 
     void drawText(std::string const &str,
                   glm::vec3 const &color,
@@ -42,7 +42,7 @@ class GLFont
         uint32_t tex;
         glm::ivec2 size;
         glm::ivec2 bearing;
-        int64_t advance;
+        size_t advance;
     };
 
     void _loadFont(std::string const &path);
@@ -55,6 +55,7 @@ class GLFont
     uint8_t _is_init;
     uint64_t _font_size;
     GLShader _shader;
+    glm::vec2 _win_size;
     glm::mat4 _ortho;
     std::map<char, FontChar> _char_list;
     uint32_t _vao;

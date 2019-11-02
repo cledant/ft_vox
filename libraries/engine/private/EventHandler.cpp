@@ -103,9 +103,7 @@ EventHandler::processEvents(IOEvents const &events)
                            _perspective->near_far.y));
     }
     // Updating ortho
-    auto win_size = _io_manager->getWindowSize();
-    _font->setOrthographicProjection(
-      glm::ortho(0.0f, win_size.x, 0.0f, win_size.y));
+    _font->setOrthographicProjection(_io_manager->getWindowSize());
     // Camera updating
     if (_io_manager->isMouseExclusive()) {
         _updateCamera();

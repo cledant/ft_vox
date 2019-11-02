@@ -1,10 +1,13 @@
 #include "GLFont.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 GLFont::GLFont()
   : _is_init(0)
   , _font_size(1)
   , _shader()
-  , _ortho(1.0)
+  , _win_size(1.0f)
+  , _ortho(1.0f)
   , _char_list()
   , _vao(0)
   , _vbo(0)
@@ -23,6 +26,7 @@ GLFont::GLFont(GLFont &&src) noexcept
   : _is_init(0)
   , _font_size(1)
   , _shader()
+  , _win_size(1.0f)
   , _ortho(1.0)
   , _char_list()
   , _vao(0)
@@ -51,16 +55,17 @@ void
 GLFont::init(std::string const &path_font,
              std::string const &path_vs,
              std::string const &path_fs,
-             glm::mat4 const &ortho,
+             glm::vec2 const &window_size,
              uint64_t font_size)
 {
     if (!_is_init) {
         _allocate_vbo();
         _allocate_vao();
+        _font_size = font_size;
         _shader.init(path_vs, path_fs, "FontShader");
         _loadFont(path_font);
-        _ortho = ortho;
-        _font_size = font_size;
+        _win_size = window_size;
+        _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
         _is_init = 1;
     }
 }
@@ -77,9 +82,10 @@ GLFont::clear()
 }
 
 void
-GLFont::setOrthographicProjection(glm::mat4 const &mat)
+GLFont::setOrthographicProjection(glm::vec2 const &window_size)
 {
-    _ortho = mat;
+    _win_size = window_size;
+    _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }
 
 void
@@ -88,7 +94,8 @@ GLFont::drawText(std::string const &str,
                  glm::vec2 const &pos,
                  float scale)
 {
-    float font_char_x = pos.x;
+    float pos_x_offseted = pos.x;
+    float pos_y = _win_size.y - pos.y;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -102,9 +109,10 @@ GLFont::drawText(std::string const &str,
         if (fchar == _char_list.end()) {
             fchar = _char_list.find('?');
         }
-        float xpos = font_char_x + fchar->second.bearing.x * scale;
+
+        float xpos = pos_x_offseted + fchar->second.bearing.x * scale;
         float ypos =
-          pos.y - (fchar->second.size.y - fchar->second.bearing.y) * scale;
+                pos_y - (fchar->second.size.y - fchar->second.bearing.y) * scale;
         float w = fchar->second.size.x * scale;
         float h = fchar->second.size.y * scale;
         float vertices[6][4] = { { xpos, ypos + h, 0.0, 0.0 },
@@ -120,7 +128,7 @@ GLFont::drawText(std::string const &str,
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 6 * 4, vertices);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        font_char_x += (fchar->second.advance >> 6) * scale;
+        pos_x_offseted += (fchar->second.advance >> 6) * scale;
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -156,7 +164,7 @@ GLFont::_loadFont(std::string const &path)
                                       face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                face->glyph->advance.x
+                static_cast<uint32_t>(face->glyph->advance.x)
             };
             auto ret =
               this->_char_list.emplace(std::pair<char, FontChar>(i, fchar));

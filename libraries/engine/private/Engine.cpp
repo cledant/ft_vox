@@ -26,11 +26,8 @@ Engine::init()
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
-               glm::ortho(0.0f,
-                          static_cast<float>(IOManager::WIN_W),
-                          0.0f,
-                          static_cast<float>(IOManager::WIN_H)),
-               24);
+               glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
+               40);
 }
 
 void
@@ -40,7 +37,7 @@ Engine::run()
         _event_handler.processEvents(_io_manager.getEvents());
         _io_manager.clear();
         _font.drawText(
-          "ft_vox", glm::vec3(1.0f), glm::vec2(20.0f, 20.0f), 1.0f);
+          "ft_vox", glm::vec3(1.0f), glm::vec2(20.0f, 40.0f), 1.0f);
         _io_manager.render();
     }
 }
