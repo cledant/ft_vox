@@ -7,6 +7,7 @@ EventHandler::EventHandler()
   : _camera(nullptr)
   , _io_manager(nullptr)
   , _perspective(nullptr)
+  , _font(nullptr)
   , _timers()
   , _movements(0)
   , _mouse_pos(0.0)
@@ -32,11 +33,18 @@ EventHandler::setPerspectiveData(Perspective *perspective)
 }
 
 void
+EventHandler::setFont(GLFont *font)
+{
+    _font = font;
+}
+
+void
 EventHandler::processEvents(IOEvents const &events)
 {
     assert(_camera);
     assert(_io_manager);
     assert(_perspective);
+    assert(_font);
 
     // Resetting movement tracking
     _movements = glm::ivec3(0);
@@ -94,6 +102,10 @@ EventHandler::processEvents(IOEvents const &events)
                            _perspective->near_far.x,
                            _perspective->near_far.y));
     }
+    // Updating ortho
+    auto win_size = _io_manager->getWindowSize();
+    _font->setOrthographicProjection(
+      glm::ortho(0.0f, win_size.x, 0.0f, win_size.y));
     // Camera updating
     if (_io_manager->isMouseExclusive()) {
         _updateCamera();

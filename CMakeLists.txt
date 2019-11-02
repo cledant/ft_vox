@@ -32,3 +32,5 @@ add_executable(ft_vox binary/private/ft_vox.cpp)
 target_link_libraries(ft_vox engine iomanager)
 add_dependencies(ft_vox engine iomanager)
 target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ressources DESTINATION ${CMAKE_BINARY_DIR})

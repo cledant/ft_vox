@@ -7,6 +7,7 @@
 #include "Camera.hpp"
 #include "IOManager.hpp"
 #include "Perspective.hpp"
+#include "GLFont.hpp"
 
 class EventHandler
 {
@@ -21,6 +22,7 @@ class EventHandler
     void setCamera(Camera *camera);
     void setIOManager(IOManager *io_manager);
     void setPerspectiveData(Perspective *perspective);
+    void setFont(GLFont *font);
 
     void processEvents(IOEvents const &events);
 
@@ -70,6 +72,8 @@ class EventHandler
     Camera *_camera;
     IOManager *_io_manager;
     Perspective *_perspective;
+    GLFont *_font;
+
     EventTimers _timers;
 
     glm::ivec3 _movements;

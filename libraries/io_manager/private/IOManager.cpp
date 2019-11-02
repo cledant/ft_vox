@@ -122,6 +122,12 @@ IOManager::getWindowRatio() const
     return (static_cast<float>(_w) / static_cast<float>(_h));
 }
 
+glm::vec2
+IOManager::getWindowSize() const
+{
+    return (glm::vec2(_w, _h));
+}
+
 // Keyboard / Mouse Input related
 IOEvents
 IOManager::getEvents() const

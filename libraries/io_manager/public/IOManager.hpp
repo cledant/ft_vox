@@ -37,6 +37,7 @@ class IOManager
     void toggleMouseExclusive();
     [[nodiscard]] uint8_t isMouseExclusive() const;
     [[nodiscard]] float getWindowRatio() const;
+    [[nodiscard]] glm::vec2 getWindowSize() const;
 
     // Keyboard / Mouse Input related
     [[nodiscard]] IOEvents getEvents() const;

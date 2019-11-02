@@ -28,6 +28,7 @@ class Engine
     Camera _camera;
     EventHandler _event_handler;
     Perspective _perspective_data;
+    GLFont _font;
 };
 
 #endif // FT_VOX_ENGINE_HPP
