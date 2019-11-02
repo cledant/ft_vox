@@ -24,6 +24,8 @@ class Engine
     static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 100.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
 
+    void _print_ui_info();
+
     IOManager _io_manager;
     Camera _camera;
     EventHandler _event_handler;

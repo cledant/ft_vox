@@ -71,7 +71,6 @@ EventHandler::processEvents(IOEvents const &events)
         &EventHandler::_remove_block,
     };
     _movements = glm::ivec3(0);
-    _mouse_pos = glm::ivec2(0);
 
     // Checking Timers
     auto now = std::chrono::high_resolution_clock::now();
@@ -218,6 +217,7 @@ EventHandler::_updateCamera()
     }
     if (offset != glm::vec2(0.0)) {
         _camera->update_front(offset);
+        _previous_mouse_pos = _mouse_pos;
     }
     _camera->update_matricies();
 }
