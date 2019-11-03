@@ -75,6 +75,13 @@ EventHandler::processEvents(IOEvents const &events)
             std::invoke(func[i], this);
         }
     }
+
+    // Camera updating
+    if (_io_manager->isMouseExclusive()) {
+        _updateCamera(events.mouse_position);
+    }
+    _timers.updated[CAMERA] = 1;
+
     // Setting timers origin
     for (uint8_t i = 0; i < NB_EVENT_TIMER_TYPES; ++i) {
         if (_timers.updated[i]) {
@@ -93,10 +100,6 @@ EventHandler::processEvents(IOEvents const &events)
                            _perspective->near_far.x,
                            _perspective->near_far.y));
     }
-    // Camera updating
-    if (_io_manager->isMouseExclusive()) {
-        _updateCamera(events.mouse_position);
-    }
 }
 
 EventHandler::EventTimers::EventTimers()
@@ -108,6 +111,7 @@ EventHandler::EventTimers::EventTimers()
     timer_values[SYSTEM] = SYSTEM_TIMER_SECONDS;
     timer_values[CONFIG] = CONFIG_TIMER_SECONDS;
     timer_values[ACTION] = ACTION_TIMER_SECONDS;
+    timer_values[CAMERA] = TARGET_PLAYER_TICK_DURATION;
 }
 
 void
@@ -209,11 +213,16 @@ EventHandler::_updateCamera(glm::vec2 const &mouse_pos)
     }
     glm::vec2 offset = _mouse_pos - _previous_mouse_pos;
 
+    auto now = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> time_diff = now - _timers.time_ref[CAMERA];
+
     if (_movements != glm::ivec3(0)) {
-        _camera->update_position(_movements);
+        _camera->update_position(
+          _movements, time_diff.count() / _timers.timer_values[CAMERA]);
     }
     if (offset != glm::vec2(0.0)) {
-        _camera->update_front(offset);
+        _camera->update_front(offset,
+                              time_diff.count() / _timers.timer_values[CAMERA]);
         _previous_mouse_pos = _mouse_pos;
     }
     _camera->update_matricies();

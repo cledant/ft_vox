@@ -18,8 +18,8 @@ class Camera
     Camera(Camera &&src) = delete;
     Camera &operator=(Camera &&rhs) = delete;
 
-    void update_position(glm::ivec3 const &mov);
-    void update_front(glm::vec2 const &offsets);
+    void update_position(glm::ivec3 const &mov, float coeff);
+    void update_front(glm::vec2 const &offsets, float coeff);
     void update_matricies();
 
     // Setters
@@ -35,8 +35,8 @@ class Camera
     [[nodiscard]] glm::mat4 const &getPerspectiveViewMatrix() const;
 
   private:
-    static float constexpr DEFAULT_MOVEMENT_SPEED = 0.075f;
-    static float constexpr DEFAULT_MOUSE_SENSITIVITY = 0.05f;
+    static float constexpr DEFAULT_MOVEMENT_SPEED = 0.075f * 2;
+    static float constexpr DEFAULT_MOUSE_SENSITIVITY = 0.05f * 2;
     static constexpr glm::vec3 DEFAULT_WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 
     uint8_t _updated;

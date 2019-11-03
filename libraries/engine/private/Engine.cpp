@@ -42,9 +42,9 @@ Engine::run()
         auto now = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> time_diff = now - _fps_cap_timeref;
 
-        if (time_diff.count() > FRAME_DURATION) {
-            _event_handler.processEvents(_io_manager.getEvents());
+        if (time_diff.count() > FPS_CAP_DURATION) {
             _io_manager.clear();
+            _event_handler.processEvents(_io_manager.getEvents());
             _bd.draw(_camera.getPerspectiveViewMatrix());
             _print_ui_info();
             _io_manager.render();

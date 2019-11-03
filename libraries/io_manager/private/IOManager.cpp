@@ -53,6 +53,7 @@ IOManager::createWindow(std::string &&name)
             throw std::runtime_error("Glfw : failed to create window");
         }
         glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetWindowPos(_win, 100, 100);
         glfwSetWindowUserPointer(_win, this);
         _initCallbacks();
         glfwMakeContextCurrent(_win);
