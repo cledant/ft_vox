@@ -35,6 +35,7 @@ void
 IOManager::createWindow(std::string &&name)
 {
     if (!_win) {
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_RED_BITS, 8);

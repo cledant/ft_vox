@@ -67,7 +67,7 @@ class EventHandler
     void _remove_block();
 
     // Camera Related
-    void _updateCamera();
+    void _updateCamera(glm::vec2 const &mouse_pos);
 
     Camera *_camera;
     IOManager *_io_manager;

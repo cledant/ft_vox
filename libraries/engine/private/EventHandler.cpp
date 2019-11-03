@@ -49,14 +49,6 @@ EventHandler::processEvents(IOEvents const &events)
     // Resetting movement tracking
     _movements = glm::ivec3(0);
 
-    // Mouse position
-    static uint8_t first_time_mouse_pos = 1;
-    if (first_time_mouse_pos) {
-        _previous_mouse_pos = events.mouse_position;
-        first_time_mouse_pos = 0;
-    }
-    _mouse_pos = events.mouse_position;
-
     static const std::array<void (EventHandler::*)(), NBR_IO_EVENTS> func = {
         &EventHandler::_mouse_exclusive,
         &EventHandler::_close_win_event,
@@ -70,7 +62,6 @@ EventHandler::processEvents(IOEvents const &events)
         &EventHandler::_add_block,
         &EventHandler::_remove_block,
     };
-    _movements = glm::ivec3(0);
 
     // Checking Timers
     auto now = std::chrono::high_resolution_clock::now();
@@ -104,7 +95,7 @@ EventHandler::processEvents(IOEvents const &events)
     }
     // Camera updating
     if (_io_manager->isMouseExclusive()) {
-        _updateCamera();
+        _updateCamera(events.mouse_position);
     }
 }
 
@@ -207,8 +198,15 @@ EventHandler::_remove_block()
 }
 
 void
-EventHandler::_updateCamera()
+EventHandler::_updateCamera(glm::vec2 const &mouse_pos)
 {
+    static uint8_t first_run = 1;
+
+    _mouse_pos = mouse_pos;
+    if (first_run) {
+        _previous_mouse_pos = _mouse_pos;
+        first_run = 0;
+    }
     glm::vec2 offset = _mouse_pos - _previous_mouse_pos;
 
     if (_movements != glm::ivec3(0)) {

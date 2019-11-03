@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 
 Camera::Camera()
-  : _updated(0)
+  : _updated(1)
   , _pos(1.0)
   , _world_up(DEFAULT_WORLD_UP)
   , _right(0.0)
@@ -14,14 +14,15 @@ Camera::Camera()
   , _movement_speed(DEFAULT_MOVEMENT_SPEED)
   , _yaw(0.0f)
   , _pitch(0.0f)
-{}
+{
+}
 
 void
 Camera::update_position(glm::ivec3 const &mov)
 {
     this->_pos += mov.x * _movement_speed * _front;
     this->_pos += mov.y * _movement_speed * _right;
-    this->_pos -= mov.z * _movement_speed * _up;
+    this->_pos += mov.z * _movement_speed * _up;
     _updated = 1;
 }
 
