@@ -56,6 +56,12 @@ Camera::update_matricies()
 
 // Setters
 void
+Camera::setPosition(glm::vec3 const &pos)
+{
+    _pos = pos;
+}
+
+void
 Camera::setWorldUp(glm::vec3 const &world_up)
 {
     _world_up = world_up;

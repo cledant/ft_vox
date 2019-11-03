@@ -4,7 +4,8 @@ project(lib_engine)
 add_library(engine STATIC
 		private/Engine.cpp
 		private/Camera.cpp
-		private/EventHandler.cpp)
+		private/EventHandler.cpp
+		private/TestBoxDrawer.cpp)
 target_include_directories(engine
 		PUBLIC
 		${CMAKE_CURRENT_SOURCE_DIR}/public

@@ -6,6 +6,8 @@ Engine::Engine()
   , _event_handler()
   , _perspective_data()
   , _font()
+  , _fps_cap_timeref()
+  , _bd()
 {}
 
 void
@@ -23,21 +25,31 @@ Engine::init()
                                             _perspective_data.ratio,
                                             _perspective_data.near_far.x,
                                             _perspective_data.near_far.y));
+    _camera.setPosition(glm::vec3(-1.0f));
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
                glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
                32);
+    _bd.init();
+    _fps_cap_timeref = std::chrono::high_resolution_clock::now();
 }
 
 void
 Engine::run()
 {
     while (!_io_manager.shouldClose()) {
-        _event_handler.processEvents(_io_manager.getEvents());
-        _io_manager.clear();
-        _print_ui_info();
-        _io_manager.render();
+        auto now = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> time_diff = now - _fps_cap_timeref;
+
+        if (time_diff.count() > FRAME_DURATION) {
+            _event_handler.processEvents(_io_manager.getEvents());
+            _io_manager.clear();
+            _bd.draw(_camera.getPerspectiveViewMatrix());
+            _print_ui_info();
+            _io_manager.render();
+            _fps_cap_timeref = now;
+        }
     }
 }
 

@@ -92,8 +92,9 @@ EventHandler::processEvents(IOEvents const &events)
         _timers.updated[i] = 0;
     }
 
-    // Updating perspective
+    // Updating perspective + ortho
     if (_io_manager->wasResized()) {
+        _font->setOrthographicProjection(_io_manager->getWindowSize());
         _perspective->ratio = _io_manager->getWindowRatio();
         _camera->setPerspective(
           glm::perspective(glm::radians(_perspective->fov),
@@ -101,8 +102,6 @@ EventHandler::processEvents(IOEvents const &events)
                            _perspective->near_far.x,
                            _perspective->near_far.y));
     }
-    // Updating ortho
-    _font->setOrthographicProjection(_io_manager->getWindowSize());
     // Camera updating
     if (_io_manager->isMouseExclusive()) {
         _updateCamera();

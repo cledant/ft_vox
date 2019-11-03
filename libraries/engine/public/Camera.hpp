@@ -23,6 +23,7 @@ class Camera
     void update_matricies();
 
     // Setters
+    void setPosition(glm::vec3 const &pos);
     void setWorldUp(glm::vec3 const &world_up);
     void setPerspective(glm::mat4 const &perspective);
 

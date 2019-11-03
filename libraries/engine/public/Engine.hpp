@@ -6,6 +6,7 @@
 #include "EventHandler.hpp"
 #include "Perspective.hpp"
 #include "GLFont.hpp"
+#include "TestBoxDrawer.hpp"
 
 class Engine
 {
@@ -23,6 +24,8 @@ class Engine
   private:
     static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 100.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
+    static constexpr float MAX_FPS = 60.0f;
+    static constexpr float FRAME_DURATION = 1 / MAX_FPS;
 
     void _print_ui_info();
 
@@ -31,6 +34,9 @@ class Engine
     EventHandler _event_handler;
     Perspective _perspective_data;
     GLFont _font;
+    
+    std::chrono::high_resolution_clock::time_point _fps_cap_timeref;
+    TestBoxDrawer _bd;
 };
 
 #endif // FT_VOX_ENGINE_HPP
