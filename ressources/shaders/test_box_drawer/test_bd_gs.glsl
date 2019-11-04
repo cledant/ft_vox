@@ -30,6 +30,7 @@ void main()
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0));
     gs_out.color = RED;
     EmitVertex();
+    EndPrimitive();
 
     //FACE XY+
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0));
@@ -44,6 +45,7 @@ void main()
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0));
     gs_out.color = GREEN;
     EmitVertex();
+    EndPrimitive();
 
     //FACE XZ-
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0));
@@ -58,6 +60,7 @@ void main()
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0));
     gs_out.color = BLUE;
     EmitVertex();
+    EndPrimitive();
 
     //FACE XZ+
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0));
@@ -72,6 +75,7 @@ void main()
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0));
     gs_out.color = YELLOW;
     EmitVertex();
+    EndPrimitive();
 
     //FACE YZ-
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0));
@@ -86,6 +90,7 @@ void main()
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0));
     gs_out.color = MAGENTA;
     EmitVertex();
+    EndPrimitive();
 
     //FACE YZ+
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0));
@@ -100,6 +105,5 @@ void main()
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0));
     gs_out.color = CYAN;
     EmitVertex();
-
     EndPrimitive();
 }

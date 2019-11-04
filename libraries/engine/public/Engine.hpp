@@ -24,9 +24,8 @@ class Engine
   private:
     static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 100.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
-    static constexpr float FPS_CAP = 120.0f;
-    static constexpr float FPS_CAP_DURATION = 1 / FPS_CAP;
 
+    void _compute_fps();
     void _print_ui_info();
 
     IOManager _io_manager;
@@ -34,8 +33,12 @@ class Engine
     EventHandler _event_handler;
     Perspective _perspective_data;
     GLFont _font;
-    std::chrono::high_resolution_clock::time_point _fps_cap_timeref;
     TestBoxDrawer _bd;
+
+    // Fps related
+    uint64_t _nb_frame;
+    std::chrono::high_resolution_clock::time_point _fps_count_timeref;
+    std::string _str_fps;
 };
 
 #endif // FT_VOX_ENGINE_HPP

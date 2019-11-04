@@ -27,14 +27,15 @@ class EventHandler
     void processEvents(IOEvents const &events);
 
   private:
+    static constexpr double TARGET_PLAYER_TICK = 20.0f;
+
     // Timer related
     static double constexpr SYSTEM_TIMER_SECONDS = 1.0;
     static double constexpr CONFIG_TIMER_SECONDS = 0.5;
     static double constexpr ACTION_TIMER_SECONDS = 0.25;
-    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 4;
-    static constexpr double TARGET_PLAYER_TICK = 30.0f;
     static constexpr double TARGET_PLAYER_TICK_DURATION =
       1 / TARGET_PLAYER_TICK;
+    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 4;
 
     enum EventTimersTypes
     {
@@ -54,6 +55,7 @@ class EventHandler
         std::array<std::chrono::high_resolution_clock::time_point,
                    NB_EVENT_TIMER_TYPES>
           time_ref;
+        std::array<double, NB_EVENT_TIMER_TYPES> timer_diff;
         std::array<double, NB_EVENT_TIMER_TYPES> timer_values;
     };
 

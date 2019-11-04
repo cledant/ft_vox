@@ -67,8 +67,10 @@ EventHandler::processEvents(IOEvents const &events)
     auto now = std::chrono::high_resolution_clock::now();
     for (uint8_t i = 0; i < NB_EVENT_TIMER_TYPES; ++i) {
         std::chrono::duration<double> time_diff = now - _timers.time_ref[i];
+        _timers.timer_diff[i] = time_diff.count();
         _timers.accept_event[i] = (time_diff.count() > _timers.timer_values[i]);
     }
+
     // Looping over events types
     for (uint8_t i = 0; i < NBR_IO_EVENTS; ++i) {
         if (events.events[i]) {
@@ -106,6 +108,7 @@ EventHandler::EventTimers::EventTimers()
   : accept_event()
   , updated()
   , time_ref()
+  , timer_diff()
   , timer_values()
 {
     timer_values[SYSTEM] = SYSTEM_TIMER_SECONDS;
@@ -213,16 +216,14 @@ EventHandler::_updateCamera(glm::vec2 const &mouse_pos)
     }
     glm::vec2 offset = _mouse_pos - _previous_mouse_pos;
 
-    auto now = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> time_diff = now - _timers.time_ref[CAMERA];
-
     if (_movements != glm::ivec3(0)) {
-        _camera->update_position(
-          _movements, time_diff.count() / _timers.timer_values[CAMERA]);
+        _camera->update_position(_movements,
+                                 _timers.timer_diff[CAMERA] /
+                                   _timers.timer_values[CAMERA]);
     }
     if (offset != glm::vec2(0.0)) {
-        _camera->update_front(offset,
-                              time_diff.count() / _timers.timer_values[CAMERA]);
+        _camera->update_front(
+          offset, _timers.timer_diff[CAMERA] / _timers.timer_values[CAMERA]);
         _previous_mouse_pos = _mouse_pos;
     }
     _camera->update_matricies();
