@@ -51,7 +51,7 @@ TestBoxDrawer::_allocate_vbo()
                  GL_STATIC_DRAW);
     if (glGetError() == GL_OUT_OF_MEMORY) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        throw std::runtime_error("GLFont: Failed to allocate buffer");
+        throw std::runtime_error("TestBoxDrawer: Failed to allocate buffer");
     }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
