@@ -7,6 +7,7 @@
 #include "Perspective.hpp"
 #include "GLFont.hpp"
 #include "TestBoxDrawer.hpp"
+#include "ChunkManager.hpp"
 
 class Engine
 {
@@ -34,6 +35,7 @@ class Engine
     Perspective _perspective_data;
     GLFont _font;
     TestBoxDrawer _bd;
+    ChunkManager _cm;
 
     // Fps related
     uint64_t _nb_frame;

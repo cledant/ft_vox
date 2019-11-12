@@ -15,28 +15,12 @@ static constexpr uint32_t TOTAL_BLOCK =
 static constexpr glm::vec3 CHUNK_SIZE =
   glm::vec3(BLOCK_PER_LINE, LINE_PER_PLANE, PLANE_PER_CHUNK);
 
-// Data structure Definition
-typedef uint16_t BlockLine;
-
-typedef struct BlockPlane
-{
-    BlockLine line[LINE_PER_PLANE];
-} BlockPlane;
-
-typedef struct BlockChunk
-{
-    BlockPlane plane[PLANE_PER_CHUNK];
-} BlockChunk;
-
-typedef struct BlockChunkType
-{
-    uint8_t types[TOTAL_BLOCK / 2];
-} BlockChunkType;
+static constexpr uint8_t DEBUG_BLOCK = 63;
 
 typedef enum BlockType
 {
     EMPTY = 0,
-    SAND,
+    FREE_1,
     FREE_2,
     FREE_3,
     FREE_4,
@@ -66,7 +50,7 @@ typedef enum BlockType
     FREE_28,
     FREE_29,
     FREE_30,
-    FREE_31,
+    DEBUG,
 } BlockType;
 
 typedef enum ChunkState
@@ -75,25 +59,5 @@ typedef enum ChunkState
     ACTIVE,
     UPDATED,
 } ChunkState;
-
-typedef struct ChunkPosition
-{
-    ChunkPosition()
-      : x(0)
-      , y(0){};
-    ChunkPosition(uint64_t init_x, uint64_t init_y)
-      : x(init_x)
-      , y(init_y){};
-    virtual ~ChunkPosition() = default;
-
-    int64_t x;
-    int64_t y;
-} ChunkPosition;
-
-// Size Check
-static_assert(sizeof(BlockLine) == 2);
-static_assert(sizeof(BlockPlane) == 32);
-static_assert(sizeof(BlockChunk) == 8192);
-static_assert(sizeof(BlockChunkType) == 32768);
 
 #endif // FT_VOX_CHUNKDATASTRUCTURES_HPP

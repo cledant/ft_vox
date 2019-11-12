@@ -33,7 +33,9 @@ Engine::init()
                "./ressources/shaders/font/font_fs.glsl",
                glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
                24);
-    _bd.init();
+    //_bd.init();
+    _cm.init();
+    _cm.debugGeneratePlane();
     _fps_count_timeref = std::chrono::high_resolution_clock::now();
 }
 
@@ -43,7 +45,8 @@ Engine::run()
     while (!_io_manager.shouldClose()) {
         _io_manager.clear();
         _event_handler.processEvents(_io_manager.getEvents());
-        _bd.draw(_camera.getPerspectiveViewMatrix());
+        //_bd.draw(_camera.getPerspectiveViewMatrix());
+        _cm.draw(_camera.getPerspectiveViewMatrix());
         _print_ui_info();
         _io_manager.render();
         _compute_fps();

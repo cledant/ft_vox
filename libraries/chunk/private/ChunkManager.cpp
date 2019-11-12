@@ -8,8 +8,8 @@ ChunkManager::ChunkManager()
   , _chunk()
   , _shader()
   , _vao(0)
-  , _vbo_pos(0)
-  , _vbo_type(0)
+  , _vbo_blocks(0)
+  , _vbo_position(0)
 {
     _chunk.reserve((2 * MAX_RENDER_DISTANCE) * (2 * MAX_RENDER_DISTANCE));
 }
@@ -19,11 +19,11 @@ ChunkManager::~ChunkManager()
     if (_vao) {
         glDeleteVertexArrays(1, &_vao);
     }
-    if (_vbo_pos) {
-        glDeleteBuffers(1, &_vbo_pos);
+    if (_vbo_blocks) {
+        glDeleteBuffers(1, &_vbo_blocks);
     }
-    if (_vbo_type) {
-        glDeleteBuffers(1, &_vbo_type);
+    if (_vbo_position) {
+        glDeleteBuffers(1, &_vbo_position);
     }
 }
 
@@ -34,11 +34,12 @@ ChunkManager::init()
                  "./ressources/shaders/chunk/chunk_gs.glsl",
                  "./ressources/shaders/chunk/chunk_fs.glsl",
                  "Chunk");
-    _allocate_vbo(_vbo_pos,
-                  sizeof(BlockChunk) * (2 * _current_render_distance) *
+    _allocate_vbo(_vbo_blocks,
+                  sizeof(uint8_t) * TOTAL_BLOCK *
+                    (2 * _current_render_distance) *
                     (2 * _current_render_distance));
-    _allocate_vbo(_vbo_type,
-                  sizeof(BlockChunkType) * (2 * _current_render_distance) *
+    _allocate_vbo(_vbo_position,
+                  sizeof(glm::vec3) * (2 * _current_render_distance) *
                     (2 * _current_render_distance));
     _allocate_vao();
 }
@@ -57,9 +58,8 @@ ChunkManager::draw(glm::mat4 const &projection)
 {
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
-    _shader.setVec3("uniform_vec_chunk_size", CHUNK_SIZE);
     glBindVertexArray(_vao);
-    glDrawArrays(GL_POINTS, 0, _chunk.size());
+    glDrawArraysInstanced(GL_POINTS, 0, 1, _chunk.size() * TOTAL_BLOCK);
     glBindVertexArray(0);
 }
 
@@ -68,9 +68,9 @@ ChunkManager::debugGeneratePlane()
 {
     Chunk plane;
 
-    plane.debugSetPlane(ChunkPosition{ 0, 0 });
-    for (uint32_t i = 0; i < 10; ++i) {
-        plane.setPosition(ChunkPosition{ i, 0 });
+    plane.debugSetPlane({ 0, 0 });
+    for (uint32_t i = 0; i < 1; ++i) {
+        plane.setPosition({ i, 0 });
         _chunk.emplace_back(plane);
     }
 }
@@ -99,22 +99,20 @@ ChunkManager::_allocate_vao()
         throw std::runtime_error("ChunkManager: Failed to create vao");
     }
     glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo_pos);
-    glVertexAttribPointer(0,
-                          1,
-                          GL_UNSIGNED_SHORT,
-                          GL_FALSE,
-                          sizeof(BlockChunk),
-                          reinterpret_cast<void *>(0));
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_blocks);
+    glVertexAttribIPointer(
+      0, 1, GL_UNSIGNED_BYTE, sizeof(uint8_t), reinterpret_cast<void *>(0));
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo_type);
-    glVertexAttribPointer(1,
-                          GL_UNSIGNED_BYTE,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(float),
-                          reinterpret_cast<void *>(sizeof(BlockChunk)));
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_position);
+    glVertexAttribIPointer(
+      1,
+      2,
+      GL_UNSIGNED_INT,
+      sizeof(glm::ivec2),
+      reinterpret_cast<void *>(sizeof(uint8_t) * TOTAL_BLOCK));
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glVertexAttribDivisor(0, 1);
+    glVertexAttribDivisor(1, TOTAL_BLOCK);
     glBindVertexArray(0);
 }

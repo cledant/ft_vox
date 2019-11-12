@@ -31,7 +31,7 @@ class ChunkManager
     void debugGeneratePlane();
 
   private:
-    static constexpr uint64_t MIN_RENDER_DISTANCE = 10;
+    static constexpr uint64_t MIN_RENDER_DISTANCE = 16;
     static constexpr uint64_t MAX_RENDER_DISTANCE = 64;
 
     void _allocate_vbo(uint32_t &vbo, uint64_t buff_size);
@@ -40,15 +40,15 @@ class ChunkManager
     uint64_t _current_render_distance;
     uint64_t _previous_render_distance;
 
-    ChunkPosition _player_pos;
+    glm::ivec2 _player_pos;
 
     // Chunk lists
-    std::map<ChunkPosition, ChunkState> _chunk_state;
+    std::map<glm::ivec2, ChunkState> _chunk_state;
     std::vector<Chunk> _chunk;
     GLShader _shader;
     uint32_t _vao;
-    uint32_t _vbo_pos;
-    uint32_t _vbo_type;
+    uint32_t _vbo_blocks;
+    uint32_t _vbo_position;
 };
 
 #endif // FT_VOX_CHUNKMANAGER_HPP
