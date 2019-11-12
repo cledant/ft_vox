@@ -1,16 +1,11 @@
 #version 410 core
-
-#define BLOCK_PER_LINE 16
-#define LINE_PER_PLANE 16
-#define PLANE_PER_CHUNK 256
-#define BLOCK_PER_CHUNK BLOCK_PER_LINE * LINE_PER_PLANE * PLANE_PER_CHUNK
-
 layout (points) in;
 layout (triangle_strip, max_vertices = 24) out;
 
 uniform mat4 uniform_mat_perspec_view;
 
 out VS_OUT {
+    vec4 block_position;
     uint chunk_block;
 } gs_in;
 
@@ -88,31 +83,31 @@ void generate_block(vec4 block_center)
     EndPrimitive();
 
     //FACE YZ-
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
     gs_out.color = MAGENTA;
     EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
     gs_out.color = MAGENTA;
     EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
     gs_out.color = MAGENTA;
     EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
     gs_out.color = MAGENTA;
     EmitVertex();
     EndPrimitive();
 
     //FACE YZ+
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
     gs_out.color = CYAN;
     EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
     gs_out.color = CYAN;
     EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
     gs_out.color = CYAN;
     EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0));
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
     gs_out.color = CYAN;
     EmitVertex();
     EndPrimitive();
@@ -120,11 +115,5 @@ void generate_block(vec4 block_center)
 
 void main()
 {
-    int id_in_chunk = gl_InstanceID % BLOCK_PER_CHUNK;
-    int id_in_plane = id_in_chunk % (BLOCK_PER_LINE * LINE_PER_PLANE);
-
-    generate_block(vec4(id_in_plane % BLOCK_PER_LINE,
-    id_in_plance / LINE_PER_PLANE,
-    gl_InstanceID / PLANE_PER_CHUNK,
-    0.0));
+    generate_block(gs_in.block_position);
 }
