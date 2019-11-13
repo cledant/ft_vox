@@ -7,8 +7,6 @@
 
 #include "glm/glm.hpp"
 
-#include "glad/glad.h"
-
 #include "Chunk.hpp"
 #include "GLShader.hpp"
 
@@ -16,7 +14,7 @@ class ChunkManager
 {
   public:
     ChunkManager();
-    virtual ~ChunkManager();
+    virtual ~ChunkManager() = default;
     ChunkManager(const ChunkManager &src) = delete;
     ChunkManager &operator=(ChunkManager const &rhs) = delete;
     ChunkManager(ChunkManager &&src) = delete;
@@ -32,23 +30,15 @@ class ChunkManager
 
   private:
     static constexpr uint64_t MIN_RENDER_DISTANCE = 16;
-    static constexpr uint64_t MAX_RENDER_DISTANCE = 64;
-
-    void _allocate_vbo(uint32_t &vbo, uint64_t buff_size);
-    void _allocate_vao();
+    static constexpr uint64_t MAX_RENDER_DISTANCE = 128;
 
     uint64_t _current_render_distance;
-    uint64_t _previous_render_distance;
 
     glm::ivec2 _player_pos;
 
     // Chunk lists
-    std::map<glm::ivec2, ChunkState> _chunk_state;
     std::vector<Chunk> _chunk;
     GLShader _shader;
-    uint32_t _vao;
-    uint32_t _vbo_blocks;
-    uint32_t _vbo_position;
 };
 
 #endif // FT_VOX_CHUNKMANAGER_HPP

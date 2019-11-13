@@ -7,27 +7,34 @@ class Chunk
 {
   public:
     Chunk();
-    virtual ~Chunk() = default;
-    Chunk(const Chunk &src) = default;
-    Chunk &operator=(Chunk const &rhs) = default;
-    Chunk(Chunk &&src) = default;
-    Chunk &operator=(Chunk &&rhs) = default;
+    virtual ~Chunk();
+    Chunk(const Chunk &src) = delete;
+    Chunk &operator=(Chunk const &rhs) = delete;
+    Chunk(Chunk &&src) noexcept;
+    Chunk &operator=(Chunk &&rhs) noexcept;
+    explicit Chunk(glm::vec3 const &chunk_position);
 
     void addBlock(uint16_t index, BlockType type);
     void removeBlock(uint16_t index);
     [[nodiscard]] uint8_t getBlock(uint16_t index) const;
 
-    void setPosition(glm::ivec2 const &pos);
-    [[nodiscard]] glm::ivec2 const &getPosition() const;
+    void setPosition(glm::vec3 const &pos);
+    [[nodiscard]] glm::vec3 const &getPosition() const;
 
-    [[nodiscard]] ChunkState getState() const;
+    void updateVbo();
+    [[nodiscard]] uint32_t getVao() const;
 
-    void debugSetPlane(glm::ivec2 const &chunk_position);
+    void debugInitAsPlane();
 
   private:
+    void _allocate_vao();
+    void _allocate_vbo();
+
     uint8_t _block_chunk[TOTAL_BLOCK];
-    glm::ivec2 _position;
-    ChunkState _state;
+    glm::vec3 _position;
+    uint8_t _updated;
+    uint32_t _vao;
+    uint32_t _vbo;
 };
 
 #endif // FT_VOX_CHUNK_HPP

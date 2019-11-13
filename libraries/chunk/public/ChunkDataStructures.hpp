@@ -2,7 +2,6 @@
 #define FT_VOX_CHUNKDATASTRUCTURES_HPP
 
 #include <cstdint>
-#include <cassert>
 
 #include "glm/glm.hpp"
 
@@ -15,7 +14,9 @@ static constexpr uint32_t TOTAL_BLOCK =
 static constexpr glm::vec3 CHUNK_SIZE =
   glm::vec3(BLOCK_PER_LINE, LINE_PER_PLANE, PLANE_PER_CHUNK);
 
-static constexpr uint8_t DEBUG_BLOCK = 63;
+static constexpr uint8_t LEFT_3_BITS = 224;
+
+static constexpr uint8_t DEBUG_BLOCK = 31;
 
 typedef enum BlockType
 {
@@ -52,12 +53,5 @@ typedef enum BlockType
     FREE_30,
     DEBUG,
 } BlockType;
-
-typedef enum ChunkState
-{
-    DELETED = 0,
-    ACTIVE,
-    UPDATED,
-} ChunkState;
 
 #endif // FT_VOX_CHUNKDATASTRUCTURES_HPP

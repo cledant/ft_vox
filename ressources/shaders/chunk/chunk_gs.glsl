@@ -1,13 +1,14 @@
 #version 410 core
+
 layout (points) in;
 layout (triangle_strip, max_vertices = 24) out;
 
 uniform mat4 uniform_mat_perspec_view;
 
-out VS_OUT {
+in VS_OUT {
     vec4 block_position;
-    uint chunk_block;
-} gs_in;
+    uint block;
+} gs_in[];
 
 out GS_OUT {
     vec3 color;
@@ -115,5 +116,9 @@ void generate_block(vec4 block_center)
 
 void main()
 {
-    generate_block(gs_in.block_position);
+    uint type = gs_in[0].block & 31;
+
+    if (type > 0) {
+        generate_block(gs_in[0].block_position);
+    }
 }
