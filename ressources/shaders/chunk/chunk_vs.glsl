@@ -17,8 +17,10 @@ out VS_OUT {
 void main()
 {
     int plane_id = gl_InstanceID / (BLOCK_PER_LINE * LINE_PER_PLANE);
+    int line_id = gl_InstanceID % PLANE_PER_CHUNK % BLOCK_PER_LINE;
+    int col_id =  gl_InstanceID % PLANE_PER_CHUNK / LINE_PER_PLANE;
 
     vs_out.block = block;
-    vs_out.block_position = vec4(plane_id % BLOCK_PER_LINE, plane_id / LINE_PER_PLANE, plane_id, 0);
+    vs_out.block_position = vec4(line_id, plane_id, col_id, 0);
     gl_Position = vec4(uniform_vec_chunk_position, 1.0);
 }

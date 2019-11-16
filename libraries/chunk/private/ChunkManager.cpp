@@ -45,7 +45,7 @@ ChunkManager::debugGeneratePlane()
 {
     for (uint32_t i = 0; i < 3; ++i) {
         for (uint32_t j = 0; j < 3; ++j) {
-            Chunk tmp(glm::vec3(i, j, 0.0));
+            Chunk tmp(glm::vec3(i * BLOCK_PER_LINE, 0, j * LINE_PER_PLANE));
 
             tmp.debugInitAsPlane();
             _chunk.emplace_back(std::move(tmp));

@@ -27,8 +27,8 @@ class Chunk
     void debugInitAsPlane();
 
   private:
-    void _allocate_vao();
-    void _allocate_vbo();
+    void _debug_allocate_vbo();
+    void _debug_allocate_vao();
 
     uint8_t _block_chunk[TOTAL_BLOCK];
     glm::vec3 _position;

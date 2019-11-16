@@ -86,6 +86,18 @@ Chunk::getPosition() const
     return (_position);
 }
 
+void
+Chunk::updateVbo()
+{
+    if (_updated) {
+        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+        glBufferSubData(
+          GL_ARRAY_BUFFER, 0, sizeof(uint8_t) * TOTAL_BLOCK, &_block_chunk[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        _updated = 0;
+    }
+}
+
 uint32_t
 Chunk::getVao() const
 {
@@ -99,18 +111,17 @@ Chunk::debugInitAsPlane()
     std::memset(&_block_chunk,
                 DEBUG_BLOCK,
                 sizeof(uint8_t) * BLOCK_PER_LINE * LINE_PER_PLANE);
-    _allocate_vbo();
-    _allocate_vao();
+    _debug_allocate_vbo();
+    _debug_allocate_vao();
     _updated = 1;
 }
 
 void
-Chunk::_allocate_vbo()
+Chunk::_debug_allocate_vbo()
 {
-    // TODO : no exception
     glGenBuffers(1, &_vbo);
     if (!_vbo) {
-        throw std::runtime_error("Chunk: Failed to create buffer");
+        throw std::runtime_error("Chunk Debug: Failed to create vbo");
     }
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(
@@ -123,12 +134,11 @@ Chunk::_allocate_vbo()
 }
 
 void
-Chunk::_allocate_vao()
+Chunk::_debug_allocate_vao()
 {
-    // TODO : no exception
     glGenVertexArrays(1, &_vao);
     if (!_vao) {
-        throw std::runtime_error("ChunkManager: Failed to create vao");
+        throw std::runtime_error("Chunk Debug: Failed to create vao");
     }
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -138,16 +148,4 @@ Chunk::_allocate_vao()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glVertexAttribDivisor(0, 1);
     glBindVertexArray(0);
-}
-
-void
-Chunk::updateVbo()
-{
-    if (_updated) {
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferSubData(
-          GL_ARRAY_BUFFER, 0, sizeof(uint8_t) * TOTAL_BLOCK, &_block_chunk[0]);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        _updated = 0;
-    }
 }
