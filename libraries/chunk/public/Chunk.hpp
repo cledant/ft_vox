@@ -12,26 +12,29 @@ class Chunk
     Chunk &operator=(Chunk const &rhs) = delete;
     Chunk(Chunk &&src) noexcept;
     Chunk &operator=(Chunk &&rhs) noexcept;
-    explicit Chunk(glm::vec3 const &chunk_position);
+    explicit Chunk(glm::ivec2 const &chunk_position);
 
     void addBlock(uint16_t index, BlockType type);
     void removeBlock(uint16_t index);
     [[nodiscard]] uint8_t getBlock(uint16_t index) const;
 
-    void setPosition(glm::vec3 const &pos);
-    [[nodiscard]] glm::vec3 const &getPosition() const;
+    void setPosition(glm::ivec2 const &pos);
+    [[nodiscard]] glm::ivec2 const &getPosition() const;
+    [[nodiscard]] glm::vec3 const &getSpaceCoordinate() const;
 
     void updateVbo();
     [[nodiscard]] uint32_t getVao() const;
+    void attachVaoVbo(glm::uvec2 const &pair);
+    glm::uvec2 detachVaoVbo();
 
-    void debugInitAsPlane();
+    void generateChunk();
 
   private:
-    void _debug_allocate_vbo();
-    void _debug_allocate_vao();
+    void _debugGeneratePlane();
 
     uint8_t _block_chunk[TOTAL_BLOCK];
-    glm::vec3 _position;
+    glm::ivec2 _chunk_position;
+    glm::vec3 _space_coord;
     uint8_t _updated;
     uint32_t _vao;
     uint32_t _vbo;

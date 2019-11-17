@@ -54,4 +54,12 @@ typedef enum BlockType
     DEBUG,
 } BlockType;
 
+typedef enum ChunkState
+{
+    DELETED = 0,
+    PENDING,
+    ERROR,
+    VISIBLE
+} ChunkState;
+
 #endif // FT_VOX_CHUNKDATASTRUCTURES_HPP

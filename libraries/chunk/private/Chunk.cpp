@@ -7,7 +7,8 @@
 
 Chunk::Chunk()
   : _block_chunk()
-  , _position(0.0f)
+  , _chunk_position(0.0f)
+  , _space_coord(0)
   , _updated(1)
   , _vao(0)
   , _vbo(0)
@@ -25,7 +26,8 @@ Chunk::~Chunk()
 
 Chunk::Chunk(Chunk &&src) noexcept
   : _block_chunk()
-  , _position(0.0f)
+  , _chunk_position(0.0f)
+  , _space_coord(0)
   , _updated(0)
   , _vao(0)
   , _vbo(0)
@@ -37,7 +39,8 @@ Chunk &
 Chunk::operator=(Chunk &&rhs) noexcept
 {
     std::memcpy(&_block_chunk, &rhs._block_chunk, TOTAL_BLOCK);
-    _position = rhs._position;
+    _chunk_position = rhs._chunk_position;
+    _space_coord = rhs._space_coord;
     _updated = rhs._updated;
     _vao = rhs._vao;
     _vbo = rhs._vbo;
@@ -46,13 +49,17 @@ Chunk::operator=(Chunk &&rhs) noexcept
     return (*this);
 }
 
-Chunk::Chunk(glm::vec3 const &chunk_position)
+Chunk::Chunk(glm::ivec2 const &chunk_position)
   : _block_chunk()
-  , _position(chunk_position)
-  , _updated(0)
+  , _chunk_position(chunk_position)
+  , _space_coord(0.0f)
+  , _updated(1)
   , _vao(0)
   , _vbo(0)
-{}
+{
+    _space_coord = glm::vec3(
+      chunk_position.x * BLOCK_PER_LINE, 0, chunk_position.y * LINE_PER_PLANE);
+}
 
 void
 Chunk::addBlock(uint16_t index, BlockType type)
@@ -75,15 +82,22 @@ Chunk::getBlock(uint16_t index) const
 }
 
 void
-Chunk::setPosition(glm::vec3 const &pos)
+Chunk::setPosition(glm::ivec2 const &pos)
 {
-    _position = pos;
+    _chunk_position = pos;
+    _space_coord = glm::vec3(pos.x * BLOCK_PER_LINE, 0, pos.y * LINE_PER_PLANE);
+}
+
+glm::ivec2 const &
+Chunk::getPosition() const
+{
+    return (_chunk_position);
 }
 
 glm::vec3 const &
-Chunk::getPosition() const
+Chunk::getSpaceCoordinate() const
 {
-    return (_position);
+    return (_space_coord);
 }
 
 void
@@ -105,47 +119,35 @@ Chunk::getVao() const
 }
 
 void
-Chunk::debugInitAsPlane()
+Chunk::attachVaoVbo(glm::uvec2 const &pair)
+{
+    _vao = pair.x;
+    _vbo = pair.y;
+}
+
+glm::uvec2
+Chunk::detachVaoVbo()
+{
+    glm::uvec2 pair(_vao, _vbo);
+
+    _vao = 0;
+    _vbo = 0;
+    return (pair);
+}
+
+void
+Chunk::generateChunk()
+{
+    // TODO : Actual generation
+    _debugGeneratePlane();
+}
+
+void
+Chunk::_debugGeneratePlane()
 {
     std::memset(&_block_chunk, 0, sizeof(uint8_t) * TOTAL_BLOCK);
     std::memset(&_block_chunk,
                 DEBUG_BLOCK,
                 sizeof(uint8_t) * BLOCK_PER_LINE * LINE_PER_PLANE);
-    _debug_allocate_vbo();
-    _debug_allocate_vao();
     _updated = 1;
-}
-
-void
-Chunk::_debug_allocate_vbo()
-{
-    glGenBuffers(1, &_vbo);
-    if (!_vbo) {
-        throw std::runtime_error("Chunk Debug: Failed to create vbo");
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(
-      GL_ARRAY_BUFFER, sizeof(uint8_t) * TOTAL_BLOCK, nullptr, GL_DYNAMIC_DRAW);
-    if (glGetError() == GL_OUT_OF_MEMORY) {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        throw std::runtime_error("Chunk: Failed to allocate buffer");
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void
-Chunk::_debug_allocate_vao()
-{
-    glGenVertexArrays(1, &_vao);
-    if (!_vao) {
-        throw std::runtime_error("Chunk Debug: Failed to create vao");
-    }
-    glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glVertexAttribIPointer(
-      0, 1, GL_UNSIGNED_BYTE, sizeof(uint8_t), reinterpret_cast<void *>(0));
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glVertexAttribDivisor(0, 1);
-    glBindVertexArray(0);
 }

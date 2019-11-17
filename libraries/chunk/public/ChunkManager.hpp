@@ -3,9 +3,11 @@
 
 #include <cstdint>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "glm/glm.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/hash.hpp"
 
 #include "Chunk.hpp"
 #include "GLShader.hpp"
@@ -30,19 +32,22 @@ class ChunkManager
     void decreaseRenderDistance();
     [[nodiscard]] uint64_t getRenderDistance() const;
 
-    void debugGeneratePlane();
-
   private:
-    static constexpr uint64_t MIN_RENDER_DISTANCE = 16;
-    static constexpr uint64_t MAX_RENDER_DISTANCE = 128;
+    static constexpr uint32_t MIN_RENDER_DISTANCE = 16;
+    static constexpr uint32_t MAX_RENDER_DISTANCE = 128;
+    static constexpr uint32_t NB_ASYNC_THREAD = 32;
 
-    uint64_t _current_render_distance;
+    uint32_t _current_render_distance;
 
     glm::ivec2 _player_pos;
 
     // Chunk lists
     std::vector<Chunk> _chunk;
+    std::unordered_map<glm::ivec2, ChunkState> _chunk_map;
     GLShader _shader;
+
+    static uint32_t _allocate_vbo();
+    static uint32_t _allocate_vao(uint32_t vbo);
 };
 
 #endif // FT_VOX_CHUNKMANAGER_HPP

@@ -34,7 +34,6 @@ Engine::init()
                glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
                24);
     _cm.init();
-    _cm.debugGeneratePlane();
     _fps_count_timeref = std::chrono::high_resolution_clock::now();
 }
 
@@ -50,6 +49,9 @@ Engine::run()
             _print_ui_keys();
         }
         _io_manager.render();
+        while (glGetError()) {
+            std::cout << "Cleaning gl error" << std::endl;
+        }
         _compute_fps();
     }
 }
