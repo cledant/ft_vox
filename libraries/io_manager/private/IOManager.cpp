@@ -148,6 +148,9 @@ IOManager::getEvents() const
     io.events[LEFT] = _keys[GLFW_KEY_A];
     io.events[ADD_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_1];
     io.events[REMOVE_BLOCK] = _mouse_button[GLFW_MOUSE_BUTTON_2];
+    io.events[INCREASE_RENDER_DISTANCE] = _keys[GLFW_KEY_EQUAL];
+    io.events[DECREASE_RENDER_DISTANCE] = _keys[GLFW_KEY_MINUS];
+    io.events[SHOW_UI] = _keys[GLFW_KEY_H];
     io.mouse_position = _mouse_position;
     return (io);
 }

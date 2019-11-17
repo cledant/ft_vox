@@ -6,7 +6,6 @@ Engine::Engine()
   , _event_handler()
   , _perspective_data()
   , _font()
-  , _bd()
   , _nb_frame(0)
   , _fps_count_timeref()
   , _str_fps("0")
@@ -19,6 +18,7 @@ Engine::init()
     _event_handler.setIOManager(&_io_manager);
     _event_handler.setPerspectiveData(&_perspective_data);
     _event_handler.setFont(&_font);
+    _event_handler.setChunkManager(&_cm);
     _io_manager.createWindow("ft_vox");
     _perspective_data.near_far = DEFAULT_NEAR_FAR;
     _perspective_data.fov = DEFAULT_FOV;
@@ -33,7 +33,6 @@ Engine::init()
                "./ressources/shaders/font/font_fs.glsl",
                glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
                24);
-    //_bd.init();
     _cm.init();
     _cm.debugGeneratePlane();
     _fps_count_timeref = std::chrono::high_resolution_clock::now();
@@ -45,9 +44,11 @@ Engine::run()
     while (!_io_manager.shouldClose()) {
         _io_manager.clear();
         _event_handler.processEvents(_io_manager.getEvents());
-        //_bd.draw(_camera.getPerspectiveViewMatrix());
         _cm.draw(_camera.getPerspectiveViewMatrix());
-        _print_ui_info();
+        if (_event_handler.printUi()) {
+            _print_ui_info();
+            _print_ui_keys();
+        }
         _io_manager.render();
         _compute_fps();
     }
@@ -94,4 +95,34 @@ Engine::_print_ui_info()
            << " | Z = " << camera_direction.z;
     _font.drawText(
       ss_dir.str(), glm::vec3(1.0f), glm::vec2(15.0f, 90.0f), 1.0f);
+
+    // Render distance
+    std::stringstream ss_render_dist;
+    ss_render_dist.precision(2);
+    ss_render_dist << "Render Distance: " << std::fixed
+                   << _cm.getRenderDistance();
+    _font.drawText(
+      ss_render_dist.str(), glm::vec3(1.0f), glm::vec2(15.0f, 120.0f), 1.0f);
+}
+
+void
+Engine::_print_ui_keys()
+{
+    static const std::array<std::string, NB_KEY_DESCRIPTION> key_description = {
+        "ESC = Close",
+        "WASD = Movements",
+        "QE = Down / Up",
+        "- = Decrease Render Dist",
+        "= = Increase Render Dist",
+        "P = Toggle Mouse",
+        "H = Toggle UI"
+    };
+    auto win_size = _io_manager.getWindowSize();
+
+    for (uint16_t i = 0; i < NB_KEY_DESCRIPTION; ++i) {
+        _font.drawText(key_description[i],
+                       glm::vec3(1.0f),
+                       glm::vec2(win_size.x - 300.0f, 30.0f * (i + 1.0f)),
+                       1.0f);
+    }
 }

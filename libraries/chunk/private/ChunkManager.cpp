@@ -41,6 +41,45 @@ ChunkManager::draw(glm::mat4 const &projection)
 }
 
 void
+ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
+{
+    // TODO
+    (void)player_pos;
+    (void)direction;
+}
+
+void
+ChunkManager::removeBlock(glm::vec3 const &player_pos,
+                          glm::vec3 const &direction)
+{
+    // TODO
+    (void)player_pos;
+    (void)direction;
+}
+
+void
+ChunkManager::increaseRenderDistance()
+{
+    if (_current_render_distance < MAX_RENDER_DISTANCE) {
+        _current_render_distance += 2;
+    }
+}
+
+void
+ChunkManager::decreaseRenderDistance()
+{
+    if (_current_render_distance > MIN_RENDER_DISTANCE) {
+        _current_render_distance -= 2;
+    }
+}
+
+uint64_t
+ChunkManager::getRenderDistance() const
+{
+    return (_current_render_distance);
+}
+
+void
 ChunkManager::debugGeneratePlane()
 {
     for (uint32_t i = 0; i < 3; ++i) {

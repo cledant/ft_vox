@@ -6,7 +6,7 @@
 
 #include "glm/glm.hpp"
 
-constexpr uint16_t NBR_IO_EVENTS = 11;
+constexpr uint16_t NBR_IO_EVENTS = 14;
 
 enum IOEventsTypes
 {
@@ -21,6 +21,9 @@ enum IOEventsTypes
     LEFT,
     ADD_BLOCK,
     REMOVE_BLOCK,
+    INCREASE_RENDER_DISTANCE,
+    DECREASE_RENDER_DISTANCE,
+    SHOW_UI,
 };
 
 struct IOEvents

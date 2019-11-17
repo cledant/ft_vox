@@ -25,16 +25,17 @@ class Engine
   private:
     static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 100.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
+    static constexpr uint16_t NB_KEY_DESCRIPTION = 7;
 
     void _compute_fps();
     void _print_ui_info();
+    void _print_ui_keys();
 
     IOManager _io_manager;
     Camera _camera;
     EventHandler _event_handler;
     Perspective _perspective_data;
     GLFont _font;
-    TestBoxDrawer _bd;
     ChunkManager _cm;
 
     // Fps related

@@ -7,11 +7,13 @@ EventHandler::EventHandler()
   : _camera(nullptr)
   , _io_manager(nullptr)
   , _perspective(nullptr)
+  , _cm(nullptr)
   , _font(nullptr)
   , _timers()
   , _movements(0)
   , _mouse_pos(0.0)
   , _previous_mouse_pos(0.0)
+  , _print_ui(1)
 {}
 
 void
@@ -39,12 +41,25 @@ EventHandler::setFont(GLFont *font)
 }
 
 void
+EventHandler::setChunkManager(ChunkManager *cm)
+{
+    _cm = cm;
+}
+
+uint8_t
+EventHandler::printUi() const
+{
+    return (_print_ui);
+}
+
+void
 EventHandler::processEvents(IOEvents const &events)
 {
     assert(_camera);
     assert(_io_manager);
     assert(_perspective);
     assert(_font);
+    assert(_cm);
 
     // Resetting movement tracking
     _movements = glm::ivec3(0);
@@ -61,6 +76,9 @@ EventHandler::processEvents(IOEvents const &events)
         &EventHandler::_left,
         &EventHandler::_add_block,
         &EventHandler::_remove_block,
+        &EventHandler::_increase_render_distance,
+        &EventHandler::_decrease_render_distance,
+        &EventHandler::_toggle_ui,
     };
 
     // Checking Timers
@@ -201,6 +219,36 @@ EventHandler::_remove_block()
         std::cout << "RIGHT CLICK" << std::endl;
         _timers.accept_event[ACTION] = 0;
         _timers.updated[ACTION] = 1;
+    }
+}
+
+void
+EventHandler::_increase_render_distance()
+{
+    if (_timers.accept_event[SYSTEM]) {
+        _cm->increaseRenderDistance();
+        _timers.accept_event[SYSTEM] = 0;
+        _timers.updated[SYSTEM] = 1;
+    }
+}
+
+void
+EventHandler::_decrease_render_distance()
+{
+    if (_timers.accept_event[SYSTEM]) {
+        _cm->decreaseRenderDistance();
+        _timers.accept_event[SYSTEM] = 0;
+        _timers.updated[SYSTEM] = 1;
+    }
+}
+
+void
+EventHandler::_toggle_ui()
+{
+    if (_timers.accept_event[SYSTEM]) {
+        _print_ui = !_print_ui;
+        _timers.accept_event[SYSTEM] = 0;
+        _timers.updated[SYSTEM] = 1;
     }
 }
 

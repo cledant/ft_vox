@@ -8,6 +8,7 @@
 #include "IOManager.hpp"
 #include "Perspective.hpp"
 #include "GLFont.hpp"
+#include "ChunkManager.hpp"
 
 class EventHandler
 {
@@ -23,6 +24,9 @@ class EventHandler
     void setIOManager(IOManager *io_manager);
     void setPerspectiveData(Perspective *perspective);
     void setFont(GLFont *font);
+    void setChunkManager(ChunkManager *cm);
+
+    [[nodiscard]] uint8_t printUi() const;
 
     void processEvents(IOEvents const &events);
 
@@ -71,6 +75,9 @@ class EventHandler
     void _left();
     void _add_block();
     void _remove_block();
+    void _increase_render_distance();
+    void _decrease_render_distance();
+    void _toggle_ui();
 
     // Camera Related
     void _updateCamera(glm::vec2 const &mouse_pos);
@@ -78,6 +85,7 @@ class EventHandler
     Camera *_camera;
     IOManager *_io_manager;
     Perspective *_perspective;
+    ChunkManager *_cm;
     GLFont *_font;
 
     EventTimers _timers;
@@ -85,6 +93,8 @@ class EventHandler
     glm::ivec3 _movements;
     glm::vec2 _mouse_pos;
     glm::vec2 _previous_mouse_pos;
+
+    uint8_t _print_ui;
 };
 
 #endif // FT_VOX_EVENTHANDLER_HPP

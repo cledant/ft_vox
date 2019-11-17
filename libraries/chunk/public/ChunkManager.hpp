@@ -26,6 +26,10 @@ class ChunkManager
     void addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
     void removeBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
 
+    void increaseRenderDistance();
+    void decreaseRenderDistance();
+    [[nodiscard]] uint64_t getRenderDistance() const;
+
     void debugGeneratePlane();
 
   private:
