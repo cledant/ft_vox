@@ -43,6 +43,7 @@ Engine::run()
     while (!_io_manager.shouldClose()) {
         _io_manager.clear();
         _event_handler.processEvents(_io_manager.getEvents());
+        _cm.update(_camera.getPosition());
         _cm.draw(_camera.getPerspectiveViewMatrix());
         if (_event_handler.printUi()) {
             _print_ui_info();

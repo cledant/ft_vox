@@ -4,6 +4,8 @@ ChunkManager::ChunkManager()
   : _current_render_distance(MIN_RENDER_DISTANCE)
   , _player_pos(0)
   , _chunk()
+  , _gl_memory()
+  , _compute_chunk()
   , _chunk_map()
   , _shader()
 {}
@@ -16,15 +18,20 @@ ChunkManager::init()
                  "./ressources/shaders/chunk/chunk_fs.glsl",
                  "Chunk");
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
+    _gl_memory.reserve(128);
 }
 
 void
 ChunkManager::update(glm::vec3 const &player_pos)
 {
+    // Update Player position
     _player_pos.x =
       static_cast<uint64_t>(std::fmod(player_pos.x, CHUNK_SIZE.x));
     _player_pos.y =
       static_cast<uint64_t>(std::fmod(player_pos.z, CHUNK_SIZE.y));
+    _remove_out_of_range_chunk();
+    _add_available_chunk_to_viewable();
+    _add_new_chunk_computation();
 }
 
 void
@@ -80,6 +87,80 @@ ChunkManager::getRenderDistance() const
     return (_current_render_distance);
 }
 
+uint8_t
+ChunkManager::_is_chunk_out_of_range(glm::ivec2 const &pos) const
+{
+    if (abs(_player_pos.x - pos.x) > _current_render_distance) {
+        return (1);
+    }
+    if (abs(_player_pos.y - pos.y) > _current_render_distance) {
+        return (1);
+    }
+    return (0);
+}
+
+void
+ChunkManager::_remove_out_of_range_chunk()
+{
+    for (auto it = _chunk.begin(); it != _chunk.end();) {
+        auto pos = it->getPosition();
+
+        if (!_is_chunk_out_of_range(pos)) {
+            _gl_memory.emplace_back(it->detachVaoVbo());
+            _chunk_map[pos] = DELETED;
+            std::swap(*it, _chunk.back());
+            _chunk.pop_back();
+        } else {
+            ++it;
+        }
+    }
+}
+
+void
+ChunkManager::_add_available_chunk_to_viewable()
+{
+    for (auto it = _compute_chunk.begin(); it != _compute_chunk.end();) {
+        if (it->wait_for(std::chrono::nanoseconds(10)) ==
+            std::future_status::ready) {
+
+            // Adding new chunk to vector if it's in range and got opengl memory
+            // available
+            Chunk new_chunk = it->get();
+            if (!_is_chunk_out_of_range(new_chunk.getPosition())) {
+
+                // Using already allocated memory or allocating new one
+                glm::uvec2 gl_mem(0);
+                if (!_gl_memory.empty()) {
+                    new_chunk.attachVaoVbo(_gl_memory.back());
+                    _gl_memory.pop_back();
+                    _chunk_map[new_chunk.getPosition()] = VISIBLE;
+                    _chunk.emplace_back(std::move(new_chunk));
+                } else if (!_allocate_gl_memory(gl_mem)) {
+                    new_chunk.attachVaoVbo(gl_mem);
+                    _chunk_map[new_chunk.getPosition()] = VISIBLE;
+                    _chunk.emplace_back(std::move(new_chunk));
+                } else {
+                    _chunk_map[new_chunk.getPosition()] = DELETED;
+                }
+            } else {
+                _chunk_map[new_chunk.getPosition()] = DELETED;
+            }
+            std::swap(*it, _compute_chunk.back());
+            _compute_chunk.pop_back();
+        } else {
+            ++it;
+        }
+    }
+}
+
+void
+ChunkManager::_add_new_chunk_computation()
+{
+    if (_compute_chunk.size() >= NB_ASYNC_THREAD) {
+        return;
+    }
+}
+
 uint32_t
 ChunkManager::_allocate_vbo()
 {
@@ -119,4 +200,17 @@ ChunkManager::_allocate_vao(uint32_t vbo)
     glVertexAttribDivisor(0, 1);
     glBindVertexArray(0);
     return (vao);
+}
+
+uint8_t
+ChunkManager::_allocate_gl_memory(glm::uvec2 &memory)
+{
+    if (!(memory.y = _allocate_vbo())) {
+        return (1);
+    }
+    if (!(memory.x = _allocate_vao(memory.y))) {
+        glDeleteBuffers(1, &memory.y);
+        return (1);
+    }
+    return (0);
 }
