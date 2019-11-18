@@ -26,9 +26,15 @@ ChunkManager::update(glm::vec3 const &player_pos)
 {
     // Update Player position
     _player_pos.x =
-      static_cast<uint64_t>(std::fmod(player_pos.x, CHUNK_SIZE.x));
+      static_cast<int32_t>(player_pos.x) / static_cast<int32_t>(BLOCK_PER_LINE);
     _player_pos.y =
-      static_cast<uint64_t>(std::fmod(player_pos.z, CHUNK_SIZE.y));
+      static_cast<int32_t>(player_pos.z) / static_cast<int32_t>(LINE_PER_PLANE);
+    if (player_pos.x < 0.0f) {
+        _player_pos.x -= 1;
+    }
+    if (player_pos.z < 0.0f) {
+        _player_pos.y -= 1;
+    }
     _remove_out_of_range_chunk();
     _add_available_chunk_to_viewable();
     _add_new_chunk_computation();
@@ -85,6 +91,12 @@ uint64_t
 ChunkManager::getRenderDistance() const
 {
     return (_current_render_distance);
+}
+
+glm::ivec2 const &
+ChunkManager::getPlayerPosition() const
+{
+    return (_player_pos);
 }
 
 uint8_t

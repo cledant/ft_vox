@@ -27,7 +27,8 @@ Engine::init()
                                             _perspective_data.ratio,
                                             _perspective_data.near_far.x,
                                             _perspective_data.near_far.y));
-    _camera.setPosition(glm::vec3(-1.0f));
+    _camera.setPosition(
+      glm::vec3(CHUNK_SIZE.x / 2, CHUNK_SIZE.z / 2, CHUNK_SIZE.y / 2));
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
@@ -73,39 +74,72 @@ Engine::_compute_fps()
 void
 Engine::_print_ui_info()
 {
-    // Draw Avg Fps
+    auto constexpr start_pos = glm::vec2(15.0f, 30.0f);
+    static const std::array<void (Engine::*)(glm::vec2 const &screen_pos),
+                            NB_DEBUG_UI>
+      func = {
+          &Engine::_print_ui_avg_fps,          &Engine::_print_ui_camera_pos,
+          &Engine::_print_ui_direction_vector, &Engine::_print_ui_player_chunk,
+          &Engine::_print_ui_render_dist,
+      };
+
+    for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {
+        std::invoke(
+          func[i], this, glm::vec2(start_pos.x, start_pos.y + 30.0f * i));
+    }
+}
+
+void
+Engine::_print_ui_avg_fps(glm::vec2 const &screen_pos)
+{
     std::stringstream ss_fps;
     ss_fps.precision(2);
     ss_fps << "Avg FPS: " << _str_fps;
-    _font.drawText(
-      ss_fps.str(), glm::vec3(1.0f), glm::vec2(15.0f, 30.0f), 1.0f);
+    _font.drawText(ss_fps.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+}
 
-    // Draw Camera Pos
+void
+Engine::_print_ui_camera_pos(glm::vec2 const &screen_pos)
+{
     std::stringstream ss_pos;
     ss_pos.precision(2);
     auto camera_pos = _camera.getPosition();
     ss_pos << "Cam Pos: " << std::fixed << "X = " << camera_pos.x
            << " | Y = " << camera_pos.y << " | Z = " << camera_pos.z;
-    _font.drawText(
-      ss_pos.str(), glm::vec3(1.0f), glm::vec2(15.0f, 60.0f), 1.0f);
+    _font.drawText(ss_pos.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+}
 
-    // Draw Direction vector
+void
+Engine::_print_ui_direction_vector(glm::vec2 const &screen_pos)
+{
     std::stringstream ss_dir;
     ss_dir.precision(2);
     auto camera_direction = _camera.getFront();
     ss_dir << "Cam Direction: " << std::fixed << "X = " << camera_direction.x
            << " | Y = " << camera_direction.y
            << " | Z = " << camera_direction.z;
-    _font.drawText(
-      ss_dir.str(), glm::vec3(1.0f), glm::vec2(15.0f, 90.0f), 1.0f);
+    _font.drawText(ss_dir.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+}
 
-    // Render distance
+void
+Engine::_print_ui_render_dist(glm::vec2 const &screen_pos)
+{
     std::stringstream ss_render_dist;
     ss_render_dist.precision(2);
     ss_render_dist << "Render Distance: " << std::fixed
                    << _cm.getRenderDistance();
-    _font.drawText(
-      ss_render_dist.str(), glm::vec3(1.0f), glm::vec2(15.0f, 120.0f), 1.0f);
+    _font.drawText(ss_render_dist.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+}
+
+void
+Engine::_print_ui_player_chunk(glm::vec2 const &screen_pos)
+{
+    std::stringstream ss_render_dist;
+    auto player_pos = _cm.getPlayerPosition();
+    ss_render_dist.precision(2);
+    ss_render_dist << "Player Chunk: X = " << std::fixed << player_pos.x
+                   << " | Y = " << player_pos.y;
+    _font.drawText(ss_render_dist.str(), glm::vec3(1.0f), screen_pos, 1.0f);
 }
 
 void

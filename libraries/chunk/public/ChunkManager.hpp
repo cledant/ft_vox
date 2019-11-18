@@ -33,6 +33,8 @@ class ChunkManager
     void decreaseRenderDistance();
     [[nodiscard]] uint64_t getRenderDistance() const;
 
+    glm::ivec2 const &getPlayerPosition() const;
+
   private:
     static constexpr int32_t MIN_RENDER_DISTANCE = 16;
     static constexpr int32_t MAX_RENDER_DISTANCE = 128;
