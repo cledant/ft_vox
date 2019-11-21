@@ -34,6 +34,7 @@ class ChunkManager
     [[nodiscard]] uint64_t getRenderDistance() const;
 
     glm::ivec2 const &getPlayerPosition() const;
+    uint64_t getNbInRangeChunks() const;
 
   private:
     static constexpr int32_t MIN_RENDER_DISTANCE = 16;
@@ -54,6 +55,7 @@ class ChunkManager
     inline void _remove_out_of_range_chunk();
     inline void _add_available_chunk_to_viewable();
     inline void _add_new_chunk_computation();
+    static inline Chunk _generate_chunk(glm::ivec2 pos);
 
     static uint32_t _allocate_vbo();
     static uint32_t _allocate_vao(uint32_t vbo);

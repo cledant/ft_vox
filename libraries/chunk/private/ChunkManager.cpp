@@ -1,5 +1,7 @@
 #include "ChunkManager.hpp"
 
+#include <iostream>
+
 ChunkManager::ChunkManager()
   : _current_render_distance(MIN_RENDER_DISTANCE)
   , _player_pos(0)
@@ -99,6 +101,12 @@ ChunkManager::getPlayerPosition() const
     return (_player_pos);
 }
 
+uint64_t
+ChunkManager::getNbInRangeChunks() const
+{
+    return (_chunk.size());
+}
+
 uint8_t
 ChunkManager::_is_chunk_out_of_range(glm::ivec2 const &pos) const
 {
@@ -117,7 +125,7 @@ ChunkManager::_remove_out_of_range_chunk()
     for (auto it = _chunk.begin(); it != _chunk.end();) {
         auto pos = it->getPosition();
 
-        if (!_is_chunk_out_of_range(pos)) {
+        if (_is_chunk_out_of_range(pos)) {
             _gl_memory.emplace_back(it->detachVaoVbo());
             _chunk_map[pos] = DELETED;
             std::swap(*it, _chunk.back());
@@ -171,6 +179,21 @@ ChunkManager::_add_new_chunk_computation()
     if (_compute_chunk.size() >= NB_ASYNC_THREAD) {
         return;
     }
+    if (_chunk_map[_player_pos] == DELETED) {
+        std::cout << "meh" << std::endl;
+        _compute_chunk.emplace_back(std::async(
+          std::launch::async, &ChunkManager::_generate_chunk, _player_pos));
+        _chunk_map[_player_pos] = PENDING;
+    }
+}
+
+Chunk
+ChunkManager::_generate_chunk(glm::ivec2 pos)
+{
+    auto new_chunk = Chunk(pos);
+
+    new_chunk.generateChunk();
+    return (new_chunk);
 }
 
 uint32_t

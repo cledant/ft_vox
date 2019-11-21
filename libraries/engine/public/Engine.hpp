@@ -26,7 +26,7 @@ class Engine
     static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 100.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
     static constexpr uint32_t NB_KEY_DESCRIPTION = 7;
-    static constexpr uint32_t NB_DEBUG_UI = 5;
+    static constexpr uint32_t NB_DEBUG_UI = 6;
 
     void _compute_fps();
     void _print_ui_info();
@@ -35,6 +35,7 @@ class Engine
     void _print_ui_direction_vector(glm::vec2 const &screen_pos);
     void _print_ui_render_dist(glm::vec2 const &screen_pos);
     void _print_ui_player_chunk(glm::vec2 const &screen_pos);
+    void _print_ui_in_range_chunks(glm::vec2 const &screen_pos);
     void _print_ui_keys();
 
     IOManager _io_manager;

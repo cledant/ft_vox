@@ -28,7 +28,7 @@ Engine::init()
                                             _perspective_data.near_far.x,
                                             _perspective_data.near_far.y));
     _camera.setPosition(
-      glm::vec3(CHUNK_SIZE.x / 2, CHUNK_SIZE.z / 2, CHUNK_SIZE.y / 2));
+      glm::vec3(CHUNK_SIZE.x / 2, 2.0f, CHUNK_SIZE.y / 2));
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
@@ -80,7 +80,7 @@ Engine::_print_ui_info()
       func = {
           &Engine::_print_ui_avg_fps,          &Engine::_print_ui_camera_pos,
           &Engine::_print_ui_direction_vector, &Engine::_print_ui_player_chunk,
-          &Engine::_print_ui_render_dist,
+          &Engine::_print_ui_in_range_chunks,  &Engine::_print_ui_render_dist,
       };
 
     for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {
@@ -134,12 +134,21 @@ Engine::_print_ui_render_dist(glm::vec2 const &screen_pos)
 void
 Engine::_print_ui_player_chunk(glm::vec2 const &screen_pos)
 {
-    std::stringstream ss_render_dist;
+    std::stringstream ss_ui;
     auto player_pos = _cm.getPlayerPosition();
-    ss_render_dist.precision(2);
-    ss_render_dist << "Player Chunk: X = " << std::fixed << player_pos.x
-                   << " | Y = " << player_pos.y;
-    _font.drawText(ss_render_dist.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+    ss_ui.precision(2);
+    ss_ui << "Player Chunk: X = " << std::fixed << player_pos.x
+          << " | Y = " << player_pos.y;
+    _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+}
+
+void
+Engine::_print_ui_in_range_chunks(glm::vec2 const &screen_pos)
+{
+    std::stringstream ss_ui;
+    ss_ui.precision(2);
+    ss_ui << "In Range Chunk: " << std::fixed << _cm.getNbInRangeChunks();
+    _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
 }
 
 void
