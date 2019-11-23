@@ -37,7 +37,7 @@ class ChunkManager
     uint64_t getNbInRangeChunks() const;
 
   private:
-    static constexpr int32_t MIN_RENDER_DISTANCE = 16;
+    static constexpr int32_t MIN_RENDER_DISTANCE = 1;
     static constexpr int32_t MAX_RENDER_DISTANCE = 128;
     static constexpr uint32_t NB_ASYNC_THREAD = 32;
 
@@ -54,7 +54,8 @@ class ChunkManager
     inline uint8_t _is_chunk_out_of_range(glm::ivec2 const &pos) const;
     inline void _remove_out_of_range_chunk();
     inline void _add_available_chunk_to_viewable();
-    inline void _add_new_chunk_computation();
+    inline void _chunk_computation();
+    inline uint8_t _add_new_chunk(glm::ivec2 const &pos);
     static inline Chunk _generate_chunk(glm::ivec2 pos);
 
     static uint32_t _allocate_vbo();

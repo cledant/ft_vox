@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <stdexcept>
+#include <iostream>
 
 #include "glad/glad.h"
 
@@ -57,8 +58,10 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
   , _vao(0)
   , _vbo(0)
 {
-    _space_coord = glm::vec3(
-      chunk_position.x * BLOCK_PER_LINE, 0, chunk_position.y * LINE_PER_PLANE);
+    _space_coord =
+      glm::vec3(static_cast<float>(chunk_position.x) * BLOCK_PER_LINE,
+                0,
+                static_cast<float>(chunk_position.y) * LINE_PER_PLANE);
 }
 
 void
@@ -85,7 +88,10 @@ void
 Chunk::setPosition(glm::ivec2 const &pos)
 {
     _chunk_position = pos;
-    _space_coord = glm::vec3(pos.x * BLOCK_PER_LINE, 0, pos.y * LINE_PER_PLANE);
+    _space_coord =
+      glm::vec3(static_cast<float>(_chunk_position.x) * BLOCK_PER_LINE,
+                0,
+                static_cast<float>(_chunk_position.y) * LINE_PER_PLANE);
 }
 
 glm::ivec2 const &

@@ -1,7 +1,5 @@
 #include "ChunkManager.hpp"
 
-#include <iostream>
-
 ChunkManager::ChunkManager()
   : _current_render_distance(MIN_RENDER_DISTANCE)
   , _player_pos(0)
@@ -39,7 +37,7 @@ ChunkManager::update(glm::vec3 const &player_pos)
     }
     _remove_out_of_range_chunk();
     _add_available_chunk_to_viewable();
-    _add_new_chunk_computation();
+    _chunk_computation();
 }
 
 void
@@ -174,16 +172,49 @@ ChunkManager::_add_available_chunk_to_viewable()
 }
 
 void
-ChunkManager::_add_new_chunk_computation()
+ChunkManager::_chunk_computation()
 {
     if (_compute_chunk.size() >= NB_ASYNC_THREAD) {
         return;
     }
-    if (_chunk_map[_player_pos] == DELETED) {
-        _compute_chunk.emplace_back(std::async(
-          std::launch::async, &ChunkManager::_generate_chunk, _player_pos));
-        _chunk_map[_player_pos] = PENDING;
+    if (_add_new_chunk(_player_pos)) {
+        return;
     }
+    for (int32_t i = 1; i <= _current_render_distance; ++i) {
+        // Upper Line + Lower Line
+        for (int32_t j = _player_pos.x - i; j <= _player_pos.x + i; ++j) {
+            if (_add_new_chunk(glm::ivec2(j, _player_pos.y + i))) {
+                return;
+            }
+            if (_add_new_chunk(glm::ivec2(j, _player_pos.y - i))) {
+                return;
+            }
+        }
+        // Right Side + Left Side
+        for (int32_t j = _player_pos.y - (i - 1); j <= _player_pos.y + (i - 1);
+             ++j) {
+            if (_add_new_chunk(glm::ivec2(_player_pos.y + i, j))) {
+                return;
+            }
+            if (_add_new_chunk(glm::ivec2(_player_pos.y - i, j))) {
+                return;
+            }
+        }
+    }
+}
+
+uint8_t
+ChunkManager::_add_new_chunk(glm::ivec2 const &pos)
+{
+    if (_chunk_map[pos] == DELETED) {
+        _compute_chunk.emplace_back(
+          std::async(std::launch::async, &ChunkManager::_generate_chunk, pos));
+        _chunk_map[pos] = PENDING;
+    }
+    if (_compute_chunk.size() >= NB_ASYNC_THREAD) {
+        return (1);
+    }
+    return (0);
 }
 
 Chunk
