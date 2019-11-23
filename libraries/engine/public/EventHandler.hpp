@@ -39,14 +39,15 @@ class EventHandler
     static double constexpr ACTION_TIMER_SECONDS = 0.25;
     static constexpr double TARGET_PLAYER_TICK_DURATION =
       1 / TARGET_PLAYER_TICK;
-    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 4;
+    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 5;
 
     enum EventTimersTypes
     {
         SYSTEM = 0,
         CONFIG,
         ACTION,
-        CAMERA
+        CAMERA,
+        RENDER_DISTANCE
     };
 
     struct EventTimers

@@ -102,23 +102,32 @@ EventHandler::processEvents(IOEvents const &events)
     }
     _timers.updated[CAMERA] = 1;
 
+    // Updating perspective + ortho
+    if (_timers.updated[RENDER_DISTANCE]) {
+        auto new_render_dist =
+          static_cast<float>(_cm->getRenderDistance() + 1) * 10.0f;
+        if (new_render_dist > 400.0f) {
+            _perspective->near_far.y = new_render_dist;
+        }
+    }
+    if (_io_manager->wasResized()) {
+        _font->setOrthographicProjection(_io_manager->getWindowSize());
+        _perspective->ratio = _io_manager->getWindowRatio();
+    }
+    if (_io_manager->wasResized() || _timers.updated[RENDER_DISTANCE]) {
+        _camera->setPerspective(
+          glm::perspective(glm::radians(_perspective->fov),
+                           _perspective->ratio,
+                           _perspective->near_far.x,
+                           _perspective->near_far.y));
+    }
+
     // Setting timers origin
     for (uint8_t i = 0; i < NB_EVENT_TIMER_TYPES; ++i) {
         if (_timers.updated[i]) {
             _timers.time_ref[i] = now;
         }
         _timers.updated[i] = 0;
-    }
-
-    // Updating perspective + ortho
-    if (_io_manager->wasResized()) {
-        _font->setOrthographicProjection(_io_manager->getWindowSize());
-        _perspective->ratio = _io_manager->getWindowRatio();
-        _camera->setPerspective(
-          glm::perspective(glm::radians(_perspective->fov),
-                           _perspective->ratio,
-                           _perspective->near_far.x,
-                           _perspective->near_far.y));
     }
 }
 
@@ -133,6 +142,7 @@ EventHandler::EventTimers::EventTimers()
     timer_values[CONFIG] = CONFIG_TIMER_SECONDS;
     timer_values[ACTION] = ACTION_TIMER_SECONDS;
     timer_values[CAMERA] = TARGET_PLAYER_TICK_DURATION;
+    timer_values[RENDER_DISTANCE] = CONFIG_TIMER_SECONDS;
 }
 
 void
@@ -225,20 +235,20 @@ EventHandler::_remove_block()
 void
 EventHandler::_increase_render_distance()
 {
-    if (_timers.accept_event[SYSTEM]) {
+    if (_timers.accept_event[RENDER_DISTANCE]) {
         _cm->increaseRenderDistance();
-        _timers.accept_event[SYSTEM] = 0;
-        _timers.updated[SYSTEM] = 1;
+        _timers.accept_event[RENDER_DISTANCE] = 0;
+        _timers.updated[RENDER_DISTANCE] = 1;
     }
 }
 
 void
 EventHandler::_decrease_render_distance()
 {
-    if (_timers.accept_event[SYSTEM]) {
+    if (_timers.accept_event[RENDER_DISTANCE]) {
         _cm->decreaseRenderDistance();
-        _timers.accept_event[SYSTEM] = 0;
-        _timers.updated[SYSTEM] = 1;
+        _timers.accept_event[RENDER_DISTANCE] = 0;
+        _timers.updated[RENDER_DISTANCE] = 1;
     }
 }
 

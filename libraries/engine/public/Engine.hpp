@@ -23,7 +23,7 @@ class Engine
     void run();
 
   private:
-    static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 100.0f);
+    static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 400.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
     static constexpr uint32_t NB_KEY_DESCRIPTION = 7;
     static constexpr uint32_t NB_DEBUG_UI = 6;

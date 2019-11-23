@@ -14,15 +14,14 @@ Camera::Camera()
   , _movement_speed(DEFAULT_MOVEMENT_SPEED)
   , _yaw(0.0f)
   , _pitch(0.0f)
-{
-}
+{}
 
 void
 Camera::update_position(glm::ivec3 const &mov, float coeff)
 {
     this->_pos += mov.x * _movement_speed * coeff * _front;
     this->_pos += mov.y * _movement_speed * coeff * _right;
-    this->_pos += mov.z * _movement_speed * coeff * _up;
+    this->_pos += mov.z * _movement_speed * coeff * glm::vec3(0.0f, 1.0f, 0.0f);
     _updated = 1;
 }
 

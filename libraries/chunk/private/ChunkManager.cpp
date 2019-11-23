@@ -180,7 +180,6 @@ ChunkManager::_add_new_chunk_computation()
         return;
     }
     if (_chunk_map[_player_pos] == DELETED) {
-        std::cout << "meh" << std::endl;
         _compute_chunk.emplace_back(std::async(
           std::launch::async, &ChunkManager::_generate_chunk, _player_pos));
         _chunk_map[_player_pos] = PENDING;
