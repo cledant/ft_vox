@@ -43,6 +43,7 @@ ChunkManager::update(glm::vec3 const &player_pos)
 void
 ChunkManager::draw(glm::mat4 const &projection)
 {
+    glCullFace(GL_FRONT);
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
     for (auto &it : _chunk) {
@@ -52,6 +53,7 @@ ChunkManager::draw(glm::mat4 const &projection)
         glDrawArraysInstanced(GL_POINTS, 0, 1, TOTAL_BLOCK);
     }
     glBindVertexArray(0);
+    glCullFace(GL_BACK);
 }
 
 void

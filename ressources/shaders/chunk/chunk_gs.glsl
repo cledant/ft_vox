@@ -39,31 +39,31 @@ void generate_block(vec4 block_center)
     EndPrimitive();
 
     //FACE XY+
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
-    gs_out.color = GREEN;
-    EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
-    gs_out.color = GREEN;
-    EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
     gs_out.color = GREEN;
     EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
     gs_out.color = GREEN;
     EmitVertex();
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
+    gs_out.color = GREEN;
+    EmitVertex();
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
+    gs_out.color = GREEN;
+    EmitVertex();
     EndPrimitive();
 
     //FACE XZ-
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
-    gs_out.color = BLUE;
-    EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
-    gs_out.color = BLUE;
-    EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
     gs_out.color = BLUE;
     EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
+    gs_out.color = BLUE;
+    EmitVertex();
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
+    gs_out.color = BLUE;
+    EmitVertex();
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
     gs_out.color = BLUE;
     EmitVertex();
     EndPrimitive();
@@ -99,16 +99,16 @@ void generate_block(vec4 block_center)
     EndPrimitive();
 
     //FACE YZ+
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
-    gs_out.color = CYAN;
-    EmitVertex();
-    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
-    gs_out.color = CYAN;
-    EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
     gs_out.color = CYAN;
     EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
+    gs_out.color = CYAN;
+    EmitVertex();
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
+    gs_out.color = CYAN;
+    EmitVertex();
+    gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
     gs_out.color = CYAN;
     EmitVertex();
     EndPrimitive();
