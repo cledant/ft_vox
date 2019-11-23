@@ -193,10 +193,10 @@ ChunkManager::_chunk_computation()
         // Right Side + Left Side
         for (int32_t j = _player_pos.y - (i - 1); j <= _player_pos.y + (i - 1);
              ++j) {
-            if (_add_new_chunk(glm::ivec2(_player_pos.y + i, j))) {
+            if (_add_new_chunk(glm::ivec2(_player_pos.x + i, j))) {
                 return;
             }
-            if (_add_new_chunk(glm::ivec2(_player_pos.y - i, j))) {
+            if (_add_new_chunk(glm::ivec2(_player_pos.x - i, j))) {
                 return;
             }
         }

@@ -79,6 +79,7 @@ class EventHandler
     void _increase_render_distance();
     void _decrease_render_distance();
     void _toggle_ui();
+    void _speed_up();
 
     // Camera Related
     void _updateCamera(glm::vec2 const &mouse_pos);

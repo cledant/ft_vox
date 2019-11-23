@@ -79,6 +79,7 @@ EventHandler::processEvents(IOEvents const &events)
         &EventHandler::_increase_render_distance,
         &EventHandler::_decrease_render_distance,
         &EventHandler::_toggle_ui,
+        &EventHandler::_speed_up,
     };
 
     // Checking Timers
@@ -260,6 +261,12 @@ EventHandler::_toggle_ui()
         _timers.accept_event[SYSTEM] = 0;
         _timers.updated[SYSTEM] = 1;
     }
+}
+
+void
+EventHandler::_speed_up()
+{
+    _movements *= 10.0f;
 }
 
 void

@@ -151,6 +151,7 @@ IOManager::getEvents() const
     io.events[INCREASE_RENDER_DISTANCE] = _keys[GLFW_KEY_EQUAL];
     io.events[DECREASE_RENDER_DISTANCE] = _keys[GLFW_KEY_MINUS];
     io.events[SHOW_UI] = _keys[GLFW_KEY_H];
+    io.events[SPEED_UP] = _keys[GLFW_KEY_LEFT_SHIFT];
     io.mouse_position = _mouse_position;
     return (io);
 }
