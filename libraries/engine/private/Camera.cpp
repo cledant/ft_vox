@@ -19,21 +19,21 @@ Camera::Camera()
 void
 Camera::update_position(glm::ivec3 const &mov, float coeff)
 {
-    this->_pos += mov.x * _movement_speed * coeff * _front;
-    this->_pos += mov.y * _movement_speed * coeff * _right;
-    this->_pos += mov.z * _movement_speed * coeff * glm::vec3(0.0f, 1.0f, 0.0f);
+    _pos += mov.x * _movement_speed * coeff * _front;
+    _pos += mov.y * _movement_speed * coeff * _right;
+    _pos += mov.z * _movement_speed * coeff * glm::vec3(0.0f, 1.0f, 0.0f);
     _updated = 1;
 }
 
 void
 Camera::update_front(glm::vec2 const &offsets, float coeff)
 {
-    this->_yaw += offsets.x * _mouse_sensitivity * coeff;
-    this->_pitch += offsets.y * _mouse_sensitivity * coeff;
-    if (this->_pitch > 89.0f)
-        this->_pitch = 89.0f;
-    if (this->_pitch < -89.0f)
-        this->_pitch = -89.0f;
+    _yaw += offsets.x * _mouse_sensitivity * coeff;
+    _pitch += offsets.y * _mouse_sensitivity * coeff;
+    if (_pitch > 89.0f)
+        _pitch = 89.0f;
+    if (_pitch < -89.0f)
+        _pitch = -89.0f;
     _updated = 1;
 }
 

@@ -8,6 +8,7 @@ ChunkManager::ChunkManager()
   , _compute_chunk()
   , _chunk_map()
   , _shader()
+  , _nb_displayed_chunk(0)
 {}
 
 void
@@ -44,6 +45,7 @@ void
 ChunkManager::draw(glm::mat4 const &projection)
 {
     glCullFace(GL_FRONT);
+    _nb_displayed_chunk = 0;
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
     for (auto &it : _chunk) {
@@ -51,6 +53,7 @@ ChunkManager::draw(glm::mat4 const &projection)
         it.updateVbo();
         glBindVertexArray(it.getVao());
         glDrawArraysInstanced(GL_POINTS, 0, 1, TOTAL_BLOCK);
+        ++_nb_displayed_chunk;
     }
     glBindVertexArray(0);
     glCullFace(GL_BACK);
@@ -105,6 +108,12 @@ uint64_t
 ChunkManager::getNbInRangeChunks() const
 {
     return (_chunk.size());
+}
+
+uint64_t
+ChunkManager::getNbDisplayedChunk() const
+{
+    return (_nb_displayed_chunk);
 }
 
 uint8_t

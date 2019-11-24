@@ -78,9 +78,14 @@ Engine::_print_ui_info()
     static const std::array<void (Engine::*)(glm::vec2 const &screen_pos),
                             NB_DEBUG_UI>
       func = {
-          &Engine::_print_ui_avg_fps,          &Engine::_print_ui_camera_pos,
-          &Engine::_print_ui_direction_vector, &Engine::_print_ui_player_chunk,
-          &Engine::_print_ui_in_range_chunks,  &Engine::_print_ui_render_dist,
+          &Engine::_print_ui_avg_fps,
+          &Engine::_print_ui_camera_pos,
+          &Engine::_print_ui_direction_vector,
+          &Engine::_print_ui_player_chunk,
+          &Engine::_print_ui_in_range_chunks,
+          &Engine::_print_ui_nb_displayed_chunks,
+          &Engine::_print_ui_render_dist,
+
       };
 
     for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {
@@ -148,6 +153,15 @@ Engine::_print_ui_in_range_chunks(glm::vec2 const &screen_pos)
     std::stringstream ss_ui;
     ss_ui.precision(2);
     ss_ui << "In Range Chunk: " << std::fixed << _cm.getNbInRangeChunks();
+    _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
+}
+
+void
+Engine::_print_ui_nb_displayed_chunks(glm::vec2 const &screen_pos)
+{
+    std::stringstream ss_ui;
+    ss_ui.precision(2);
+    ss_ui << "Displayed Chunk: " << std::fixed << _cm.getNbDisplayedChunk();
     _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
 }
 

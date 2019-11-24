@@ -36,6 +36,8 @@ class ChunkManager
     glm::ivec2 const &getPlayerPosition() const;
     uint64_t getNbInRangeChunks() const;
 
+    uint64_t getNbDisplayedChunk() const;
+
   private:
     static constexpr int32_t MIN_RENDER_DISTANCE = 1;
     static constexpr int32_t MAX_RENDER_DISTANCE = 128;
@@ -50,6 +52,8 @@ class ChunkManager
     std::vector<std::future<Chunk>> _compute_chunk;
     std::unordered_map<glm::ivec2, ChunkState> _chunk_map;
     GLShader _shader;
+
+    uint64_t _nb_displayed_chunk;
 
     inline uint8_t _is_chunk_out_of_range(glm::ivec2 const &pos) const;
     inline void _remove_out_of_range_chunk();
