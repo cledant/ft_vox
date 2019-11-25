@@ -28,6 +28,10 @@ class GLShader
     void use() const;
     void setVec2(std::string const &name, glm::vec2 const &data);
     void setVec3(std::string const &name, glm::vec3 const &data);
+    void setVec4(std::string const &name, glm::vec4 const &data);
+    void setVec4Array(std::string const &name,
+                      glm::vec4 const &data,
+                      uint64_t array_size);
     void setMat4(std::string const &name, glm::mat4 const &data);
     void setInt(std::string const &name, int data);
 

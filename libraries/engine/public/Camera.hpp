@@ -33,6 +33,7 @@ class Camera
     [[nodiscard]] glm::mat4 const &getPerspectiveMatrix() const;
     [[nodiscard]] glm::mat4 const &getViewMatrix() const;
     [[nodiscard]] glm::mat4 const &getPerspectiveViewMatrix() const;
+    [[nodiscard]] std::array<glm::vec4, 6> const &getFrustumPlanes() const;
 
   private:
     static float constexpr DEFAULT_MOVEMENT_SPEED = 0.075f * 2;
@@ -49,6 +50,18 @@ class Camera
     glm::mat4 _view;
     glm::mat4 _perspective;
     glm::mat4 _perspec_mult_view;
+
+    typedef enum frustumPlane
+    {
+        F_LEFT,
+        F_RIGHT,
+        F_BOTTOM,
+        F_TOP,
+        F_NEAR,
+        F_FAR,
+    } frustumPlane;
+    std::array<glm::vec4, 6> _frustum_planes;
+    void _extractFrustumPlanes();
 
     float _mouse_sensitivity;
     float _movement_speed;

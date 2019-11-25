@@ -1,6 +1,8 @@
 #ifndef FT_VOX_CHUNK_HPP
 #define FT_VOX_CHUNK_HPP
 
+#include <array>
+
 #include "ChunkDataStructures.hpp"
 
 class Chunk
@@ -28,6 +30,8 @@ class Chunk
     glm::uvec2 detachVaoVbo();
 
     void generateChunk();
+    [[nodiscard]] uint8_t isChunkInFrustum(
+      std::array<glm::vec4, 6> const &frustum_planes) const;
 
   private:
     void _debugGeneratePlane();
@@ -35,6 +39,7 @@ class Chunk
     uint8_t _block_chunk[TOTAL_BLOCK];
     glm::ivec2 _chunk_position;
     glm::vec3 _space_coord;
+    glm::vec3 _center;
     uint8_t _updated;
     uint32_t _vao;
     uint32_t _vbo;

@@ -2,7 +2,6 @@
 
 #include <cstring>
 #include <stdexcept>
-#include <iostream>
 
 #include "glad/glad.h"
 
@@ -10,6 +9,7 @@ Chunk::Chunk()
   : _block_chunk()
   , _chunk_position(0.0f)
   , _space_coord(0)
+  , _center(0)
   , _updated(1)
   , _vao(0)
   , _vbo(0)
@@ -29,6 +29,7 @@ Chunk::Chunk(Chunk &&src) noexcept
   : _block_chunk()
   , _chunk_position(0.0f)
   , _space_coord(0)
+  , _center(0)
   , _updated(0)
   , _vao(0)
   , _vbo(0)
@@ -43,6 +44,7 @@ Chunk::operator=(Chunk &&rhs) noexcept
     _chunk_position = rhs._chunk_position;
     _space_coord = rhs._space_coord;
     _updated = rhs._updated;
+    _center = rhs._center;
     _vao = rhs._vao;
     _vbo = rhs._vbo;
     rhs._vao = 0;
@@ -54,6 +56,7 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
   : _block_chunk()
   , _chunk_position(chunk_position)
   , _space_coord(0.0f)
+  , _center(0)
   , _updated(1)
   , _vao(0)
   , _vbo(0)
@@ -62,6 +65,7 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
       glm::vec3(static_cast<float>(chunk_position.x) * BLOCK_PER_LINE,
                 0,
                 static_cast<float>(chunk_position.y) * LINE_PER_PLANE);
+    _center = _space_coord + EXTENT;
 }
 
 void
@@ -146,6 +150,22 @@ Chunk::generateChunk()
 {
     // TODO : Actual generation
     _debugGeneratePlane();
+}
+
+uint8_t Chunk::isChunkInFrustum(
+  std::array<glm::vec4, 6> const &frustum_planes) const
+{
+    for (auto const &plane : frustum_planes) {
+        glm::vec3 abs_plane = glm::abs(plane.xyz());
+        float d = glm::dot(_center, plane.xyz());
+        float r = glm::dot(EXTENT, abs_plane);
+        if (d + r > 0.0f || d - r >= 0.0f) {
+            continue;
+        } else {
+            return (0);
+        }
+    }
+    return (1);
 }
 
 void

@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#define GLM_FORCE_SWIZZLE
 #include "glm/glm.hpp"
 
 // Constants
@@ -13,6 +14,7 @@ static constexpr uint32_t TOTAL_BLOCK =
   BLOCK_PER_LINE * LINE_PER_PLANE * PLANE_PER_CHUNK;
 static constexpr glm::vec3 CHUNK_SIZE =
   glm::vec3(BLOCK_PER_LINE, LINE_PER_PLANE, PLANE_PER_CHUNK);
+static constexpr glm::vec3 EXTENT = 0.5f * CHUNK_SIZE;
 
 static constexpr uint8_t LEFT_3_BITS = 224;
 

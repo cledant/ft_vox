@@ -45,7 +45,8 @@ Engine::run()
         _io_manager.clear();
         _event_handler.processEvents(_io_manager.getEvents());
         _cm.update(_camera.getPosition());
-        _cm.draw(_camera.getPerspectiveViewMatrix());
+        _cm.draw(_camera.getPerspectiveViewMatrix(),
+                 _camera.getFrustumPlanes());
         if (_event_handler.printUi()) {
             _print_ui_info();
             _print_ui_keys();

@@ -127,6 +127,24 @@ GLShader::setVec3(std::string const &name, glm::vec3 const &data)
 }
 
 void
+GLShader::setVec4(std::string const &name, glm::vec4 const &data)
+{
+    _setUniform(name);
+    glUniform4fv(
+      _uniform_id[name], 1, reinterpret_cast<GLfloat const *>(&data));
+}
+
+void
+GLShader::setVec4Array(std::string const &name,
+                       glm::vec4 const &data,
+                       uint64_t array_size)
+{
+    _setUniform(name);
+    glUniform4fv(
+      _uniform_id[name], array_size, reinterpret_cast<GLfloat const *>(&data));
+}
+
+void
 GLShader::setMat4(std::string const &name, glm::mat4 const &data)
 {
     _setUniform(name);
