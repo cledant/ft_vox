@@ -27,8 +27,7 @@ Engine::init()
                                             _perspective_data.ratio,
                                             _perspective_data.near_far.x,
                                             _perspective_data.near_far.y));
-    _camera.setPosition(
-      glm::vec3(CHUNK_SIZE.x / 2, CHUNK_SIZE.z / 2, CHUNK_SIZE.y / 2));
+    _camera.setPosition(CHUNK_SIZE * 0.5f);
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",

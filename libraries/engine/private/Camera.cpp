@@ -1,5 +1,7 @@
 #include "Camera.hpp"
 
+#include "glm/gtc/matrix_access.hpp"
+
 Camera::Camera()
   : _updated(1)
   , _pos(1.0)
@@ -52,6 +54,7 @@ Camera::update_matricies()
     _up = glm::normalize(glm::cross(_right, _front));
     _view = glm::lookAt(_pos, _pos + _front, _up);
     _perspec_mult_view = _perspective * _view;
+    _extractFrustumPlanes();
     _updated = 0;
 }
 
@@ -117,34 +120,18 @@ void
 Camera::_extractFrustumPlanes()
 {
     _frustum_planes[F_LEFT] =
-      glm::vec4(_perspective[3][0] + _perspective[0][0],
-                _perspective[3][1] + _perspective[0][1],
-                _perspective[3][2] + _perspective[0][2],
-                _perspective[3][3] + _perspective[0][3]);
+      glm::column(_perspec_mult_view, 3) + glm::column(_perspec_mult_view, 0);
     _frustum_planes[F_RIGHT] =
-      glm::vec4(_perspective[3][0] - _perspective[0][0],
-                _perspective[3][1] - _perspective[0][1],
-                _perspective[3][2] - _perspective[0][2],
-                _perspective[3][3] - _perspective[0][3]);
+      glm::column(_perspec_mult_view, 3) - glm::column(_perspec_mult_view, 0);
     _frustum_planes[F_BOTTOM] =
-      glm::vec4(_perspective[3][0] + _perspective[1][0],
-                _perspective[3][1] + _perspective[1][1],
-                _perspective[3][2] + _perspective[1][2],
-                _perspective[3][3] + _perspective[1][3]);
-    _frustum_planes[F_TOP] = glm::vec4(_perspective[3][0] - _perspective[1][0],
-                                       _perspective[3][1] - _perspective[1][1],
-                                       _perspective[3][2] - _perspective[1][2],
-                                       _perspective[3][3] - _perspective[1][3]);
+      glm::column(_perspec_mult_view, 3) + glm::column(_perspec_mult_view, 1);
+    _frustum_planes[F_TOP] =
+      glm::column(_perspec_mult_view, 3) - glm::column(_perspec_mult_view, 1);
     _frustum_planes[F_NEAR] =
-      glm::vec4(_perspective[3][0] + _perspective[2][0],
-                _perspective[3][1] + _perspective[2][1],
-                _perspective[3][2] + _perspective[2][2],
-                _perspective[3][3] + _perspective[2][3]);
-    _frustum_planes[F_FAR] = glm::vec4(_perspective[3][0] - _perspective[2][0],
-                                       _perspective[3][1] - _perspective[2][1],
-                                       _perspective[3][2] - _perspective[2][2],
-                                       _perspective[3][3] - _perspective[2][3]);
-    for (auto &it : _frustum_planes) {
+      glm::column(_perspec_mult_view, 3) + glm::column(_perspec_mult_view, 2);
+    _frustum_planes[F_FAR] =
+      glm::column(_perspec_mult_view, 3) - glm::column(_perspec_mult_view, 2);
+    for (auto it : _frustum_planes) {
         it = glm::normalize(it);
     }
 }

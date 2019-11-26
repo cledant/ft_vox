@@ -10,7 +10,7 @@ Chunk::Chunk()
   , _chunk_position(0.0f)
   , _space_coord(0)
   , _center(0)
-  , _updated(1)
+  , _updated(0)
   , _vao(0)
   , _vbo(0)
 {}
@@ -94,8 +94,9 @@ Chunk::setPosition(glm::ivec2 const &pos)
     _chunk_position = pos;
     _space_coord =
       glm::vec3(static_cast<float>(_chunk_position.x) * BLOCK_PER_LINE,
-                0,
+                0.0f,
                 static_cast<float>(_chunk_position.y) * LINE_PER_PLANE);
+    _center = _space_coord + EXTENT;
 }
 
 glm::ivec2 const &
@@ -159,9 +160,7 @@ uint8_t Chunk::isChunkInFrustum(
         glm::vec3 abs_plane = glm::abs(plane.xyz());
         float d = glm::dot(_center, plane.xyz());
         float r = glm::dot(EXTENT, abs_plane);
-        if (d + r > 0.0f || d - r >= 0.0f) {
-            continue;
-        } else {
+        if (d + r <= -plane.w) {
             return (0);
         }
     }

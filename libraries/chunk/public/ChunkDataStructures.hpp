@@ -13,8 +13,9 @@ static constexpr uint32_t PLANE_PER_CHUNK = 256;
 static constexpr uint32_t TOTAL_BLOCK =
   BLOCK_PER_LINE * LINE_PER_PLANE * PLANE_PER_CHUNK;
 static constexpr glm::vec3 CHUNK_SIZE =
-  glm::vec3(BLOCK_PER_LINE, LINE_PER_PLANE, PLANE_PER_CHUNK);
-static constexpr glm::vec3 EXTENT = 0.5f * CHUNK_SIZE;
+  glm::vec3(BLOCK_PER_LINE, PLANE_PER_CHUNK, LINE_PER_PLANE);
+static constexpr glm::vec3 EXTENT =
+  glm::vec3(BLOCK_PER_LINE, PLANE_PER_CHUNK, LINE_PER_PLANE) * 0.5f;
 
 static constexpr uint8_t LEFT_3_BITS = 224;
 
