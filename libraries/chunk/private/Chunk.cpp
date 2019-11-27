@@ -153,15 +153,26 @@ Chunk::generateChunk()
     _debugGeneratePlane();
 }
 
-uint8_t Chunk::isChunkInFrustum(
-  std::array<glm::vec4, 6> const &frustum_planes) const
+uint8_t
+Chunk::isChunkInFrustum(glm::mat4 const &proj_view,
+                        std::array<glm::vec4, 6> const &frustum_planes) const
 {
+    (void)proj_view;
+    auto proj_view_tr = glm::transpose(proj_view);
     for (auto const &plane : frustum_planes) {
         glm::vec3 abs_plane = glm::abs(plane.xyz());
-        float d = glm::dot(_center, plane.xyz());
-        float r = glm::dot(EXTENT, abs_plane);
-        if (d + r <= -plane.w) {
+
+        glm::vec4 proj_view_center = proj_view_tr * glm::vec4(_center, 1.0f);
+        glm::vec4 proj_view_extent = proj_view_tr * glm::vec4(EXTENT, 1.0f);
+
+        (void)proj_view_extent;
+        (void)proj_view_center;
+        (void)proj_view_tr;
+        float d = glm::dot(_center.xyz(), plane.xyz());
+        float r = glm::dot(EXTENT.xyz(), abs_plane);
+        if (d + r < -plane.w) {
             return (0);
+
         }
     }
     return (1);

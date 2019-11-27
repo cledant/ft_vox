@@ -31,6 +31,7 @@ class Chunk
 
     void generateChunk();
     [[nodiscard]] uint8_t isChunkInFrustum(
+      glm::mat4 const &proj_view,
       std::array<glm::vec4, 6> const &frustum_planes) const;
 
   private:

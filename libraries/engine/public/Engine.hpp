@@ -27,6 +27,7 @@ class Engine
     static constexpr float DEFAULT_FOV = 45.0f;
     static constexpr uint32_t NB_KEY_DESCRIPTION = 7;
     static constexpr uint32_t NB_DEBUG_UI = 7;
+    static constexpr glm::vec3 START_POS = glm::vec3(-1000.0f, 10.0f, -1000.0f);
 
     void _compute_fps();
     void _print_ui_info();
