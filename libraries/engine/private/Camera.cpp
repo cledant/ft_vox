@@ -116,24 +116,31 @@ Camera::getFrustumPlanes() const
     return (_frustum_planes);
 }
 
+std::array<glm::vec4, 6> const &
+Camera::getAbsFrustumPlanes() const
+{
+    return (_abs_frustum_planes);
+}
+
 void
 Camera::_extractFrustumPlanes()
 {
-    auto _proj_view_tr = glm::transpose(_perspec_mult_view);
-    
     _frustum_planes[F_LEFT] =
-      glm::column(_proj_view_tr, 3) + glm::column(_proj_view_tr, 0);
+      glm::row(_perspec_mult_view, 3) + glm::row(_perspec_mult_view, 0);
     _frustum_planes[F_RIGHT] =
-      glm::column(_proj_view_tr, 3) - glm::column(_proj_view_tr, 0);
+      glm::row(_perspec_mult_view, 3) - glm::row(_perspec_mult_view, 0);
     _frustum_planes[F_BOTTOM] =
-      glm::column(_proj_view_tr, 3) + glm::column(_proj_view_tr, 1);
+      glm::row(_perspec_mult_view, 3) + glm::row(_perspec_mult_view, 1);
     _frustum_planes[F_TOP] =
-      glm::column(_proj_view_tr, 3) - glm::column(_proj_view_tr, 1);
+      glm::row(_perspec_mult_view, 3) - glm::row(_perspec_mult_view, 1);
     _frustum_planes[F_NEAR] =
-      glm::column(_proj_view_tr, 3) + glm::column(_proj_view_tr, 2);
+      glm::row(_perspec_mult_view, 3) + glm::row(_perspec_mult_view, 2);
     _frustum_planes[F_FAR] =
-      glm::column(_proj_view_tr, 3) - glm::column(_proj_view_tr, 2);
+      glm::row(_perspec_mult_view, 3) - glm::row(_perspec_mult_view, 2);
+    uint32_t i = 0;
     for (auto it : _frustum_planes) {
         it = glm::normalize(it);
+        _abs_frustum_planes[i] = glm::abs(_frustum_planes[i]);
+        ++i;
     }
 }

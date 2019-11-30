@@ -43,14 +43,15 @@ ChunkManager::update(glm::vec3 const &player_pos)
 
 void
 ChunkManager::draw(glm::mat4 const &projection,
-                   std::array<glm::vec4, 6> const &frustum_planes)
+                   std::array<glm::vec4, 6> const &frustum_planes,
+                   std::array<glm::vec4, 6> const &abs_frustum_planes)
 {
     glCullFace(GL_FRONT);
     _nb_displayed_chunk = 0;
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
     for (auto &it : _chunk) {
-        if (!it.isChunkInFrustum(projection, frustum_planes)) {
+        if (!it.isChunkInFrustum(frustum_planes, abs_frustum_planes)) {
             continue;
         }
         _shader.setVec3("uniform_vec_chunk_position", it.getSpaceCoordinate());
