@@ -50,6 +50,9 @@ ChunkManager::draw(glm::mat4 const &projection,
     _nb_displayed_chunk = 0;
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
+    _shader.setVec4Array("uniform_mat_frustum_plane", frustum_planes[0], 6);
+    _shader.setVec4Array(
+      "uniform_mat_abs_frustum_plane", abs_frustum_planes[0], 6);
     for (auto &it : _chunk) {
         if (!it.isChunkInFrustum(frustum_planes, abs_frustum_planes)) {
             continue;

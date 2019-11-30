@@ -8,6 +8,7 @@ uniform mat4 uniform_mat_perspec_view;
 in VS_OUT {
     vec4 block_position;
     uint block;
+    uint visible;
 } gs_in[];
 
 out GS_OUT {
@@ -118,7 +119,7 @@ void main()
 {
     uint type = gs_in[0].block & 31;
 
-    if (type > 0) {
+    if (type > 0 && gs_in[0].visible > 0) {
         generate_block(gs_in[0].block_position);
     }
 }
