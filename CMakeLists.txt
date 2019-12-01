@@ -27,6 +27,7 @@ add_subdirectory(libraries/io_manager)
 add_subdirectory(libraries/engine)
 add_subdirectory(libraries/gl_objects)
 add_subdirectory(libraries/chunk)
+add_subdirectory(libraries/binome)
 
 #Main binary
 add_executable(ft_vox binary/private/ft_vox.cpp)

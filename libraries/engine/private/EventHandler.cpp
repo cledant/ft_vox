@@ -105,9 +105,11 @@ EventHandler::processEvents(IOEvents const &events)
 
     // Updating perspective + ortho
     if (_timers.updated[RENDER_DISTANCE]) {
-        auto new_render_dist =
-          static_cast<float>(_cm->getRenderDistance() + 1) * 10.0f;
-        if (new_render_dist > 400.0f) {
+        auto rd_in_uint =
+          static_cast<float>(_cm->getRenderDistance() + 1) * 16.0f;
+        //A bit more than sqrt(2) * rd_in_uint
+        auto new_render_dist = 1.5f * rd_in_uint;
+        if (new_render_dist > 512.0f) {
             _perspective->near_far.y = new_render_dist;
         }
     }
@@ -266,7 +268,7 @@ EventHandler::_toggle_ui()
 void
 EventHandler::_speed_up()
 {
-    _movements *= 10.0f;
+    _movements *= 20.0f;
 }
 
 void
