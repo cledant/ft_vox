@@ -89,7 +89,25 @@ IOManager::wasResized() const
 void
 IOManager::toggleFullscreen()
 {
-    // TODO
+    _fullscreen = !_fullscreen;
+
+    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    if (!monitor) {
+        throw std::runtime_error("Glfw : No primary monitor");
+    }
+
+    GLFWvidmode const *mode = glfwGetVideoMode(monitor);
+    if (!mode) {
+        throw std::runtime_error("Glfw : failed to fetch monitor mode");
+    }
+
+    if (_fullscreen) {
+        glfwSetWindowMonitor(
+          _win, monitor, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+    } else {
+        glfwSetWindowMonitor(
+          _win, nullptr, 100, 100, WIN_W, WIN_H, GLFW_DONT_CARE);
+    }
 }
 
 uint8_t
