@@ -120,7 +120,7 @@ Chunk::getVao() const
 }
 
 uint32_t
-Chunk::nbVisibleBlocks() const
+Chunk::getNbVisibleBlocks() const
 {
     return (_nb_visible_blocks);
 }
@@ -129,11 +129,8 @@ void
 Chunk::generateChunk()
 {
     // TODO : Actual generation
-    _deallocate_gpu();
     _debug_generate_plane();
-
     _generate_visible_blocks_buffer();
-    std::cout << "Nb visible chunks = " << _nb_visible_blocks << std::endl;
 }
 
 uint8_t
@@ -152,10 +149,11 @@ Chunk::allocateGPUResources()
 void
 Chunk::updateGPUResources() const
 {
-    // TODO: update to new stuff
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferSubData(
-      GL_ARRAY_BUFFER, 0, sizeof(uint8_t) * TOTAL_BLOCK, &_block_chunk[0]);
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    0,
+                    sizeof(uint32_t) * _nb_visible_blocks,
+                    &_visible_blocks[0]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -180,16 +178,17 @@ void
 Chunk::_debug_generate_plane()
 {
     std::memset(&_block_chunk, 0, sizeof(uint8_t) * TOTAL_BLOCK);
-    std::memset(&_block_chunk,
-                DEBUG,
-                sizeof(uint8_t) * BLOCK_PER_LINE * LINE_PER_PLANE * 1);
+    uint32_t offset = 8;
+    for (uint32_t i = offset; i < (BLOCK_PER_PLANE * 1 + offset); ++i) {
+        _block_chunk[i] = DEBUG;
+    }
 }
 
 void
 Chunk::_generate_visible_blocks_buffer()
 {
     for (uint32_t i = 0; i < TOTAL_BLOCK; ++i) {
-        uint16_t visible_faces = 0;
+        uint16_t visible_faces;
         if (_block_chunk[i] == EMPTY ||
             !(visible_faces = _compute_block_visible_faces(i))) {
             continue;
@@ -197,6 +196,7 @@ Chunk::_generate_visible_blocks_buffer()
         _visible_blocks[i] = _block_chunk[i] | (visible_faces << 8) | (i << 16);
         ++_nb_visible_blocks;
     }
+    std::cout << "NB VISIBLE BLOCKS = " << _nb_visible_blocks << std::endl;
 }
 
 uint8_t
@@ -204,39 +204,41 @@ Chunk::_compute_block_visible_faces(int32_t index)
 {
     uint8_t visible_faces = 0;
 
-    // XY+
+    // XZ+
     if ((((index + BLOCK_PER_PLANE) < 0) ||
          ((index + BLOCK_PER_PLANE) >= TOTAL_BLOCK)) ||
         !_block_chunk[index + BLOCK_PER_PLANE]) {
-        visible_faces += (1 << XY_PLUS);
+        visible_faces |= (1 << XZ_PLUS);
     }
-    // XY-
+    // XZ-
     if ((((index - BLOCK_PER_PLANE) < 0) ||
          ((index - BLOCK_PER_PLANE) >= TOTAL_BLOCK)) ||
         !_block_chunk[index - BLOCK_PER_PLANE]) {
-        visible_faces += (1 << XY_PLUS);
-    }
-    // XZ+
-    if ((((index + 1) < 0) || ((index + 1) >= TOTAL_BLOCK)) ||
-        !_block_chunk[index + 1]) {
-        visible_faces += (1 << XZ_PLUS);
-    }
-    // XZ-
-    if ((((index - 1) < 0) || ((index - 1) >= TOTAL_BLOCK)) ||
-        !_block_chunk[index - 1]) {
-        visible_faces += (1 << XZ_MINUS);
+        visible_faces |= (1 << XZ_MINUS);
     }
     // YZ+
+    if (((((index % BLOCK_PER_LINE) + 1) < 0) ||
+         (((index % BLOCK_PER_LINE) + 1) >= BLOCK_PER_LINE)) ||
+        !_block_chunk[index + 1]) {
+        visible_faces |= (1 << YZ_PLUS);
+    }
+    // YZ-
+    if (((((index % BLOCK_PER_LINE) - 1) < 0) ||
+         (((index % BLOCK_PER_LINE) - 1) >= BLOCK_PER_LINE)) ||
+        !_block_chunk[index - 1]) {
+        visible_faces |= (1 << YZ_MINUS);
+    }
+    // XY+
     if ((((index + BLOCK_PER_LINE) < 0) ||
          ((index + BLOCK_PER_LINE) >= TOTAL_BLOCK)) ||
         !_block_chunk[index + BLOCK_PER_LINE]) {
-        visible_faces += (1 << YZ_PLUS);
+        visible_faces |= (1 << XY_PLUS);
     }
-    // YZ-
+    // XY-
     if ((((index - BLOCK_PER_LINE) < 0) ||
          ((index - BLOCK_PER_LINE) >= TOTAL_BLOCK)) ||
         !_block_chunk[index - BLOCK_PER_LINE]) {
-        visible_faces += (1 << YZ_MINUS);
+        visible_faces |= (1 << XY_MINUS);
     }
     return (visible_faces);
 }
@@ -244,14 +246,15 @@ Chunk::_compute_block_visible_faces(int32_t index)
 uint8_t
 Chunk::_allocate_vbo()
 {
-    // TODO: update to new stuff
     glGenBuffers(1, &_vbo);
     if (!_vbo) {
         return (1);
     }
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(
-      GL_ARRAY_BUFFER, sizeof(uint8_t) * TOTAL_BLOCK, nullptr, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 sizeof(uint32_t) * _nb_visible_blocks,
+                 nullptr,
+                 GL_STATIC_DRAW);
     if (glGetError() == GL_OUT_OF_MEMORY) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(1, &_vbo);
@@ -264,7 +267,6 @@ Chunk::_allocate_vbo()
 uint8_t
 Chunk::_allocate_vao()
 {
-    // TODO: update to new stuff
     glGenVertexArrays(1, &_vao);
     if (!_vao) {
         return (1);
@@ -272,7 +274,7 @@ Chunk::_allocate_vao()
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glVertexAttribIPointer(
-      0, 1, GL_UNSIGNED_INT, sizeof(uint8_t), reinterpret_cast<void *>(0));
+      0, 1, GL_UNSIGNED_INT, sizeof(uint32_t), reinterpret_cast<void *>(0));
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glVertexAttribDivisor(0, 1);

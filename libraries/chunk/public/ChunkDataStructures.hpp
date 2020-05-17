@@ -58,12 +58,12 @@ typedef enum BlockType
 
 typedef enum BlockFaces
 {
-    XY_PLUS = 0,
-    XY_MINUS,
-    XZ_PLUS,
+    XZ_PLUS = 0,
     XZ_MINUS,
     YZ_PLUS,
     YZ_MINUS,
+    XY_PLUS,
+    XY_MINUS,
 } BlockFaces;
 
 typedef enum ChunkState

@@ -25,7 +25,7 @@ class Chunk final
     [[nodiscard]] glm::vec3 const &getSpaceCoordinate() const;
 
     [[nodiscard]] uint32_t getVao() const;
-    [[nodiscard]] uint32_t nbVisibleBlocks() const;
+    [[nodiscard]] uint32_t getNbVisibleBlocks() const;
 
     void generateChunk();
     uint8_t allocateGPUResources();

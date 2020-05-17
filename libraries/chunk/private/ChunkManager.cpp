@@ -52,13 +52,12 @@ ChunkManager::draw(glm::mat4 const &projection,
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
     for (auto &it : _chunk) {
-        //        if (!it.isChunkInFrustum(frustum_planes, abs_frustum_planes))
-        //        {
-        //            continue;
-        //        }
+        if (!it.isChunkInFrustum(frustum_planes, abs_frustum_planes)) {
+            continue;
+        }
         _shader.setVec3("uniform_vec_chunk_position", it.getSpaceCoordinate());
         glBindVertexArray(it.getVao());
-        glDrawArraysInstanced(GL_POINTS, 0, 1, TOTAL_BLOCK);
+        glDrawArraysInstanced(GL_POINTS, 0, 1, it.getNbVisibleBlocks());
         ++_nb_displayed_chunk;
     }
     glBindVertexArray(0);
