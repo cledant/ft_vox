@@ -5,11 +5,11 @@
 
 #include "ChunkDataStructures.hpp"
 
-class Chunk
+class Chunk final
 {
   public:
     Chunk();
-    virtual ~Chunk();
+    ~Chunk();
     Chunk(const Chunk &src) = delete;
     Chunk &operator=(Chunk const &rhs) = delete;
     Chunk(Chunk &&src) noexcept;
@@ -24,24 +24,50 @@ class Chunk
     [[nodiscard]] glm::ivec2 const &getPosition() const;
     [[nodiscard]] glm::vec3 const &getSpaceCoordinate() const;
 
-    void updateVbo();
     [[nodiscard]] uint32_t getVao() const;
-    void attachVaoVbo(glm::uvec2 const &pair);
-    glm::uvec2 detachVaoVbo();
+    [[nodiscard]] uint32_t nbVisibleBlocks() const;
 
     void generateChunk();
+    uint8_t allocateGPUResources();
+    void updateGPUResources() const;
+
     [[nodiscard]] uint8_t isChunkInFrustum(
       std::array<glm::vec4, 6> const &frustum_planes,
       std::array<glm::vec4, 6> const &abs_frustum_planes) const;
 
   private:
-    void _debugGeneratePlane();
+    // CPU generation related
+    inline void _debug_generate_plane();
+    inline void _generate_visible_blocks_buffer();
+    inline uint8_t _compute_block_visible_faces(int32_t index);
 
+    // GPU allocation related
+    inline uint8_t _allocate_vbo();
+    inline uint8_t _allocate_vao();
+    inline void _deallocate_gpu();
+
+    /*
+     * Buffers that will be used for block type generation
+     */
     uint8_t _block_chunk[TOTAL_BLOCK];
+
+    /*
+     * Buffers that will be used for vbo (GPU)
+     * Uint32 is map this way :
+     * | 16 bits: A | 2 bits = B | 6 bits = C | 3 bits = D | 5 bits = E |
+     * A = Block ID
+     * B = Unused
+     * C = Visible face
+     * D = Unused
+     * E = Block Type
+     */
+    uint32_t _visible_blocks[TOTAL_BLOCK];
+    uint32_t _nb_visible_blocks;
+
     glm::ivec2 _chunk_position;
     glm::vec3 _space_coord;
     glm::vec3 _center;
-    uint8_t _updated;
+
     uint32_t _vao;
     uint32_t _vbo;
 };

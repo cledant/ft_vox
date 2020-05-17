@@ -7,18 +7,18 @@
 #include "glm/glm.hpp"
 
 // Constants
-static constexpr uint32_t BLOCK_PER_LINE = 16;
-static constexpr uint32_t LINE_PER_PLANE = 16;
-static constexpr uint32_t PLANE_PER_CHUNK = 256;
-static constexpr uint32_t TOTAL_BLOCK =
+static constexpr int32_t BLOCK_PER_LINE = 16;
+static constexpr int32_t LINE_PER_PLANE = 16;
+static constexpr int32_t PLANE_PER_CHUNK = 256;
+static constexpr int32_t TOTAL_BLOCK =
   BLOCK_PER_LINE * LINE_PER_PLANE * PLANE_PER_CHUNK;
+static constexpr int32_t BLOCK_PER_PLANE = BLOCK_PER_LINE * LINE_PER_PLANE;
+
 static constexpr glm::vec3 CHUNK_SIZE =
   glm::vec3(BLOCK_PER_LINE, PLANE_PER_CHUNK, LINE_PER_PLANE);
 static constexpr glm::vec3 EXTENT = CHUNK_SIZE * 0.5f;
 
 static constexpr uint8_t LEFT_3_BITS = 224;
-
-static constexpr uint8_t DEBUG_BLOCK = 31;
 
 typedef enum BlockType
 {
@@ -55,6 +55,16 @@ typedef enum BlockType
     FREE_30,
     DEBUG,
 } BlockType;
+
+typedef enum BlockFaces
+{
+    XY_PLUS = 0,
+    XY_MINUS,
+    XZ_PLUS,
+    XZ_MINUS,
+    YZ_PLUS,
+    YZ_MINUS,
+} BlockFaces;
 
 typedef enum ChunkState
 {

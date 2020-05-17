@@ -13,11 +13,11 @@
 #include "Chunk.hpp"
 #include "GLShader.hpp"
 
-class ChunkManager
+class ChunkManager final
 {
   public:
     ChunkManager();
-    virtual ~ChunkManager() = default;
+    ~ChunkManager() = default;
     ChunkManager(const ChunkManager &src) = delete;
     ChunkManager &operator=(ChunkManager const &rhs) = delete;
     ChunkManager(ChunkManager &&src) = delete;
@@ -50,7 +50,6 @@ class ChunkManager
     glm::ivec2 _player_pos;
 
     std::vector<Chunk> _chunk;
-    std::vector<glm::uvec2> _gl_memory;
     std::vector<std::future<Chunk>> _compute_chunk;
     std::unordered_map<glm::ivec2, ChunkState> _chunk_map;
     GLShader _shader;
@@ -63,10 +62,6 @@ class ChunkManager
     inline void _chunk_computation();
     inline uint8_t _add_new_chunk(glm::ivec2 const &pos);
     static inline Chunk _generate_chunk(glm::ivec2 pos);
-
-    static uint32_t _allocate_vbo();
-    static uint32_t _allocate_vao(uint32_t vbo);
-    static uint8_t _allocate_gl_memory(glm::uvec2 &memory);
 };
 
 #endif // FT_VOX_CHUNKMANAGER_HPP
