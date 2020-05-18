@@ -178,8 +178,8 @@ void
 Chunk::_debug_generate_plane()
 {
     std::memset(&_block_chunk, 0, sizeof(uint8_t) * TOTAL_BLOCK);
-    uint32_t offset = 8;
-    for (uint32_t i = offset; i < (BLOCK_PER_PLANE * 1 + offset); ++i) {
+    uint32_t offset = 65;
+    for (uint32_t i = offset; i < (BLOCK_PER_PLANE * 3 + offset); ++i) {
         _block_chunk[i] = DEBUG;
     }
 }
@@ -187,16 +187,15 @@ Chunk::_debug_generate_plane()
 void
 Chunk::_generate_visible_blocks_buffer()
 {
-    for (uint32_t i = 0; i < TOTAL_BLOCK; ++i) {
-        uint16_t visible_faces;
-        if (_block_chunk[i] == EMPTY ||
-            !(visible_faces = _compute_block_visible_faces(i))) {
-            continue;
+    for (int32_t i = 0; i < TOTAL_BLOCK; ++i) {
+        uint16_t visible_faces = 0;
+        if (_block_chunk[i] &&
+            (visible_faces = _compute_block_visible_faces(i))) {
+            _visible_blocks[_nb_visible_blocks] =
+              _block_chunk[i] | (visible_faces << 8) | (i << 16);
+            ++_nb_visible_blocks;
         }
-        _visible_blocks[i] = _block_chunk[i] | (visible_faces << 8) | (i << 16);
-        ++_nb_visible_blocks;
     }
-    std::cout << "NB VISIBLE BLOCKS = " << _nb_visible_blocks << std::endl;
 }
 
 uint8_t
@@ -205,38 +204,31 @@ Chunk::_compute_block_visible_faces(int32_t index)
     uint8_t visible_faces = 0;
 
     // XZ+
-    if ((((index + BLOCK_PER_PLANE) < 0) ||
-         ((index + BLOCK_PER_PLANE) >= TOTAL_BLOCK)) ||
+    if (((index + BLOCK_PER_PLANE) >= TOTAL_BLOCK) ||
         !_block_chunk[index + BLOCK_PER_PLANE]) {
         visible_faces |= (1 << XZ_PLUS);
     }
     // XZ-
-    if ((((index - BLOCK_PER_PLANE) < 0) ||
-         ((index - BLOCK_PER_PLANE) >= TOTAL_BLOCK)) ||
+    if (((index - BLOCK_PER_PLANE) < 0) ||
         !_block_chunk[index - BLOCK_PER_PLANE]) {
         visible_faces |= (1 << XZ_MINUS);
     }
     // YZ+
-    if (((((index % BLOCK_PER_LINE) + 1) < 0) ||
-         (((index % BLOCK_PER_LINE) + 1) >= BLOCK_PER_LINE)) ||
+    if (((index % BLOCK_PER_LINE) == YZ_PLUS_UPPER_LIMIT) ||
         !_block_chunk[index + 1]) {
         visible_faces |= (1 << YZ_PLUS);
     }
     // YZ-
-    if (((((index % BLOCK_PER_LINE) - 1) < 0) ||
-         (((index % BLOCK_PER_LINE) - 1) >= BLOCK_PER_LINE)) ||
-        !_block_chunk[index - 1]) {
+    if (!(index % BLOCK_PER_LINE) || !_block_chunk[index - 1]) {
         visible_faces |= (1 << YZ_MINUS);
     }
     // XY+
-    if ((((index + BLOCK_PER_LINE) < 0) ||
-         ((index + BLOCK_PER_LINE) >= TOTAL_BLOCK)) ||
+    if (((index % BLOCK_PER_PLANE) > XY_PLUS_UPPER_LIMIT) ||
         !_block_chunk[index + BLOCK_PER_LINE]) {
         visible_faces |= (1 << XY_PLUS);
     }
     // XY-
-    if ((((index - BLOCK_PER_LINE) < 0) ||
-         ((index - BLOCK_PER_LINE) >= TOTAL_BLOCK)) ||
+    if (((index % BLOCK_PER_PLANE) < BLOCK_PER_LINE) ||
         !_block_chunk[index - BLOCK_PER_LINE]) {
         visible_faces |= (1 << XY_MINUS);
     }

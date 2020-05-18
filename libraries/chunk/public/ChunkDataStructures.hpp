@@ -20,6 +20,10 @@ static constexpr glm::vec3 EXTENT = CHUNK_SIZE * 0.5f;
 
 static constexpr uint8_t LEFT_3_BITS = 224;
 
+static constexpr int32_t XY_PLUS_UPPER_LIMIT =
+  PLANE_PER_CHUNK - BLOCK_PER_LINE - 1;
+static constexpr int32_t YZ_PLUS_UPPER_LIMIT = BLOCK_PER_LINE - 1;
+
 typedef enum BlockType
 {
     EMPTY = 0,
