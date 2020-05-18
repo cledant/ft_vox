@@ -57,7 +57,7 @@ class EventHandler
 
         std::array<uint8_t, NB_EVENT_TIMER_TYPES> accept_event;
         std::array<uint8_t, NB_EVENT_TIMER_TYPES> updated;
-        std::array<std::chrono::high_resolution_clock::time_point,
+        std::array<std::chrono::steady_clock::time_point,
                    NB_EVENT_TIMER_TYPES>
           time_ref;
         std::array<double, NB_EVENT_TIMER_TYPES> timer_diff;

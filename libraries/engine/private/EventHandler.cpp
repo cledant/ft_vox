@@ -83,7 +83,7 @@ EventHandler::processEvents(IOEvents const &events)
     };
 
     // Checking Timers
-    auto now = std::chrono::high_resolution_clock::now();
+    auto now = std::chrono::steady_clock::now();
     for (uint8_t i = 0; i < NB_EVENT_TIMER_TYPES; ++i) {
         std::chrono::duration<double> time_diff = now - _timers.time_ref[i];
         _timers.timer_diff[i] = time_diff.count();

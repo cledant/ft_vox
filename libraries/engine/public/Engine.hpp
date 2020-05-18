@@ -49,7 +49,7 @@ class Engine
 
     // Fps related
     uint64_t _nb_frame;
-    std::chrono::high_resolution_clock::time_point _fps_count_timeref;
+    std::chrono::steady_clock::time_point _fps_count_timeref;
     std::string _str_fps;
 };
 

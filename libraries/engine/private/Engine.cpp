@@ -34,7 +34,7 @@ Engine::init()
                glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
                24);
     _cm.init();
-    _fps_count_timeref = std::chrono::high_resolution_clock::now();
+    _fps_count_timeref = std::chrono::steady_clock::now();
 }
 
 void
@@ -63,7 +63,7 @@ void
 Engine::_compute_fps()
 {
     ++_nb_frame;
-    auto now = std::chrono::high_resolution_clock::now();
+    auto now = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = now - _fps_count_timeref;
     if (diff.count() > 1.0f) {
         _str_fps = std::to_string(_nb_frame);
