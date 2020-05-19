@@ -1,3 +1,5 @@
+#include "glad/glad.h"
+
 #include "ChunkManager.hpp"
 
 ChunkManager::ChunkManager()

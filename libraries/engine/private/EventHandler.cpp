@@ -266,7 +266,7 @@ EventHandler::_toggle_ui()
 void
 EventHandler::_speed_up()
 {
-    _movements *= 10.0f;
+    _movements *= 20.0f;
 }
 
 void

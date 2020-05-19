@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 
-#include "glad/glad.h"
 #include "ft2build.h"
 #include "glm/glm.hpp"
 
