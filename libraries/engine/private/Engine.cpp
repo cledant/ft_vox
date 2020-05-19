@@ -86,7 +86,6 @@ Engine::_print_ui_info()
           &Engine::_print_ui_in_range_chunks,
           &Engine::_print_ui_nb_displayed_chunks,
           &Engine::_print_ui_render_dist,
-
       };
 
     for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {

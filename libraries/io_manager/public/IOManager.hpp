@@ -11,11 +11,11 @@
 
 #include "IOEvents.hpp"
 
-class IOManager
+class IOManager final
 {
   public:
     IOManager();
-    virtual ~IOManager();
+    ~IOManager();
     IOManager(IOManager const &src) = delete;
     IOManager &operator=(IOManager const &rhs) = delete;
     IOManager(IOManager &&src) = delete;

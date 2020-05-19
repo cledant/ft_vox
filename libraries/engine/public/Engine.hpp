@@ -9,11 +9,11 @@
 #include "TestBoxDrawer.hpp"
 #include "ChunkManager.hpp"
 
-class Engine
+class Engine final
 {
   public:
     Engine();
-    virtual ~Engine() = default;
+    ~Engine() = default;
     Engine(Engine const &src) = delete;
     Engine &operator=(Engine const &rhs) = delete;
     Engine(Engine &&src) = delete;

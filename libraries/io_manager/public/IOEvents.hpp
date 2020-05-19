@@ -27,12 +27,12 @@ enum IOEventsTypes
     SPEED_UP,
 };
 
-struct IOEvents
+struct IOEvents final
 {
     IOEvents()
       : events()
       , mouse_position(0.0){};
-    virtual ~IOEvents() = default;
+    ~IOEvents() = default;
 
     std::array<uint8_t, NBR_IO_EVENTS> events;
     glm::vec2 mouse_position;

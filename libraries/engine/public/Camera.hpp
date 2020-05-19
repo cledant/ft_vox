@@ -8,11 +8,11 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-class Camera
+class Camera final
 {
   public:
     Camera();
-    virtual ~Camera() = default;
+    ~Camera() = default;
     Camera(const Camera &src) = default;
     Camera &operator=(Camera const &rhs) = default;
     Camera(Camera &&src) = delete;

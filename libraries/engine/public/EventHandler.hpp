@@ -50,10 +50,10 @@ class EventHandler
         RENDER_DISTANCE
     };
 
-    struct EventTimers
+    struct EventTimers final
     {
         EventTimers();
-        virtual ~EventTimers() = default;
+        ~EventTimers() = default;
 
         std::array<uint8_t, NB_EVENT_TIMER_TYPES> accept_event;
         std::array<uint8_t, NB_EVENT_TIMER_TYPES> updated;

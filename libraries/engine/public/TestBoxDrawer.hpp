@@ -9,11 +9,11 @@
 
 #include "GLShader.hpp"
 
-class TestBoxDrawer
+class TestBoxDrawer final
 {
   public:
     TestBoxDrawer();
-    virtual ~TestBoxDrawer();
+    ~TestBoxDrawer();
     TestBoxDrawer(TestBoxDrawer const &src) = delete;
     TestBoxDrawer &operator=(TestBoxDrawer const &rhs) = delete;
     TestBoxDrawer(TestBoxDrawer &&src) = delete;

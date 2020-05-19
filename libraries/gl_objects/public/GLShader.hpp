@@ -7,11 +7,11 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
-class GLShader
+class GLShader final
 {
   public:
     GLShader();
-    virtual ~GLShader() = default;
+    ~GLShader() = default;
     GLShader(GLShader &&src) noexcept;
     GLShader &operator=(GLShader &&rhs) noexcept;
     GLShader(GLShader const &src) = delete;

@@ -12,11 +12,11 @@
 
 #include FT_FREETYPE_H
 
-class GLFont
+class GLFont final
 {
   public:
     GLFont();
-    virtual ~GLFont();
+    ~GLFont();
     GLFont(GLFont const &src) = delete;
     GLFont &operator=(GLFont const &rhs) = delete;
     GLFont(GLFont &&src) noexcept;
