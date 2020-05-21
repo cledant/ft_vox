@@ -48,6 +48,7 @@ Skybox::draw(const glm::mat4 &projection, float skybox_size)
     _shader.setMat4("uniform_mat_perspec_view", projection);
     _shader.setFloat("uniform_skybox_size", skybox_size * 0.5f);
     glBindVertexArray(_vao);
+    glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
     glDrawArrays(GL_POINTS, 0, 1);
     glBindVertexArray(0);
 }
