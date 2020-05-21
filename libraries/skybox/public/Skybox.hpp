@@ -9,12 +9,12 @@
 class Skybox final
 {
   public:
-    Skybox() = default;
+    Skybox();
     ~Skybox() = default;
     Skybox(const Skybox &src) = delete;
     Skybox &operator=(Skybox const &rhs) = delete;
-    Skybox(Skybox &&src);
-    Skybox &operator=(Skybox &&rhs);
+    Skybox(Skybox &&src) noexcept;
+    Skybox &operator=(Skybox &&rhs) noexcept;
 
     void init(std::string const &skybox_filepath);
     void update(glm::vec3 const &player_pos);

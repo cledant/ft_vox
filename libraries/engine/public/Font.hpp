@@ -1,5 +1,5 @@
-#ifndef FT_VOX_GLFONT_HPP
-#define FT_VOX_GLFONT_HPP
+#ifndef FT_VOX_FONT_HPP
+#define FT_VOX_FONT_HPP
 
 #include <map>
 #include <string>
@@ -11,15 +11,15 @@
 
 #include FT_FREETYPE_H
 
-class GLFont final
+class Font final
 {
   public:
-    GLFont();
-    ~GLFont();
-    GLFont(GLFont const &src) = delete;
-    GLFont &operator=(GLFont const &rhs) = delete;
-    GLFont(GLFont &&src) noexcept;
-    GLFont &operator=(GLFont &&rhs) noexcept;
+    Font();
+    ~Font();
+    Font(Font const &src) = delete;
+    Font &operator=(Font const &rhs) = delete;
+    Font(Font &&src) noexcept;
+    Font &operator=(Font &&rhs) noexcept;
 
     void init(std::string const &path_font,
               std::string const &path_vs,
@@ -61,4 +61,4 @@ class GLFont final
     uint32_t _vbo;
 };
 
-#endif // FT_VOX_GLFONT_HPP
+#endif // FT_VOX_FONT_HPP

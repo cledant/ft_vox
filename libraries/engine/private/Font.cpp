@@ -3,9 +3,9 @@
 #include "glad/glad.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "GLFont.hpp"
+#include "Font.hpp"
 
-GLFont::GLFont()
+Font::Font()
   : _is_init(0)
   , _font_size(1)
   , _shader()
@@ -16,7 +16,7 @@ GLFont::GLFont()
   , _vbo(0)
 {}
 
-GLFont::~GLFont()
+Font::~Font()
 {
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
@@ -25,7 +25,7 @@ GLFont::~GLFont()
     }
 }
 
-GLFont::GLFont(GLFont &&src) noexcept
+Font::Font(Font &&src) noexcept
   : _is_init(0)
   , _font_size(1)
   , _shader()
@@ -38,8 +38,8 @@ GLFont::GLFont(GLFont &&src) noexcept
     *this = std::move(src);
 }
 
-GLFont &
-GLFont::operator=(GLFont &&rhs) noexcept
+Font &
+Font::operator=(Font &&rhs) noexcept
 {
     _is_init = rhs._is_init;
     _shader = std::move(rhs._shader);
@@ -55,7 +55,7 @@ GLFont::operator=(GLFont &&rhs) noexcept
 }
 
 void
-GLFont::init(std::string const &path_font,
+Font::init(std::string const &path_font,
              std::string const &path_vs,
              std::string const &path_fs,
              glm::vec2 const &window_size,
@@ -74,7 +74,7 @@ GLFont::init(std::string const &path_font,
 }
 
 void
-GLFont::clear()
+Font::clear()
 {
     _is_init = 0;
     for (auto &it : _char_list) {
@@ -85,14 +85,14 @@ GLFont::clear()
 }
 
 void
-GLFont::setOrthographicProjection(glm::vec2 const &window_size)
+Font::setOrthographicProjection(glm::vec2 const &window_size)
 {
     _win_size = window_size;
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }
 
 void
-GLFont::drawText(std::string const &str,
+Font::drawText(std::string const &str,
                  glm::vec3 const &color,
                  glm::vec2 const &pos,
                  float scale)
@@ -140,7 +140,7 @@ GLFont::drawText(std::string const &str,
 }
 
 void
-GLFont::_loadFont(std::string const &path)
+Font::_loadFont(std::string const &path)
 {
     FT_Library lib;
     FT_Face face;
@@ -185,7 +185,7 @@ GLFont::_loadFont(std::string const &path)
 }
 
 void
-GLFont::_allocate_vbo()
+Font::_allocate_vbo()
 {
     glGenBuffers(1, &_vbo);
     if (!_vbo) {
@@ -202,7 +202,7 @@ GLFont::_allocate_vbo()
 }
 
 void
-GLFont::_allocate_vao()
+Font::_allocate_vao()
 {
     glGenVertexArrays(1, &_vao);
     if (!_vao) {
@@ -218,7 +218,7 @@ GLFont::_allocate_vao()
 }
 
 uint32_t
-GLFont::_create_glyph_texture(const void *buffer,
+Font::_create_glyph_texture(const void *buffer,
                               uint32_t tex_w,
                               uint32_t tex_h)
 {

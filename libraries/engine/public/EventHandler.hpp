@@ -7,7 +7,7 @@
 #include "Camera.hpp"
 #include "IOManager.hpp"
 #include "Perspective.hpp"
-#include "GLFont.hpp"
+#include "Font.hpp"
 #include "ChunkManager.hpp"
 
 class EventHandler
@@ -23,7 +23,7 @@ class EventHandler
     void setCamera(Camera *camera);
     void setIOManager(IOManager *io_manager);
     void setPerspectiveData(Perspective *perspective);
-    void setFont(GLFont *font);
+    void setFont(Font *font);
     void setChunkManager(ChunkManager *cm);
 
     [[nodiscard]] uint8_t printUi() const;
@@ -88,7 +88,7 @@ class EventHandler
     IOManager *_io_manager;
     Perspective *_perspective;
     ChunkManager *_cm;
-    GLFont *_font;
+    Font *_font;
 
     EventTimers _timers;
 

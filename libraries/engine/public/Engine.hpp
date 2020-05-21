@@ -5,7 +5,7 @@
 #include "Camera.hpp"
 #include "EventHandler.hpp"
 #include "Perspective.hpp"
-#include "GLFont.hpp"
+#include "Font.hpp"
 #include "TestBoxDrawer.hpp"
 #include "ChunkManager.hpp"
 #include "Skybox.hpp"
@@ -45,7 +45,7 @@ class Engine final
     Camera _camera;
     EventHandler _event_handler;
     Perspective _perspective_data;
-    GLFont _font;
+    Font _font;
     ChunkManager _cm;
     Skybox _skybox;
 

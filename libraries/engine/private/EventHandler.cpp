@@ -35,7 +35,7 @@ EventHandler::setPerspectiveData(Perspective *perspective)
 }
 
 void
-EventHandler::setFont(GLFont *font)
+EventHandler::setFont(Font *font)
 {
     _font = font;
 }

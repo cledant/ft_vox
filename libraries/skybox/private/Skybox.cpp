@@ -4,13 +4,24 @@
 
 #include "Skybox.hpp"
 
-Skybox::Skybox(Skybox &&src)
+Skybox::Skybox()
+  : _shader()
+  , _texture()
+  , _vao(0)
+  , _vbo(0)
+{}
+
+Skybox::Skybox(Skybox &&src) noexcept
+  : _shader()
+  , _texture()
+  , _vao(0)
+  , _vbo(0)
 {
     *this = std::move(src);
 }
 
 Skybox &
-Skybox::operator=(Skybox &&rhs)
+Skybox::operator=(Skybox &&rhs) noexcept
 {
     _vao = rhs._vao;
     _vbo = rhs._vbo;
