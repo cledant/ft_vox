@@ -4,7 +4,7 @@ project(lib_gl_object)
 add_library(globjects STATIC
         private/GLShader.cpp
         private/GLFont.cpp
-        private/GLTexture.cpp)
+        private/GLTexture2D.cpp)
 target_include_directories(globjects
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/public

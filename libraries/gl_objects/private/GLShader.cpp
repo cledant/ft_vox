@@ -162,6 +162,14 @@ GLShader::setInt(std::string const &name, int data)
 }
 
 void
+GLShader::setFloat(std::string const &name, float data)
+{
+    _setUniform(name);
+    glUniform1fv(
+      _uniform_id[name], 1, reinterpret_cast<GLfloat const *>(&data));
+}
+
+void
 GLShader::_readFile(std::string const &path, std::string &content) const
 {
     try {

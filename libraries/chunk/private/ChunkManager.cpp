@@ -46,9 +46,7 @@ ChunkManager::draw(glm::mat4 const &projection,
                    std::array<glm::vec4, 6> const &frustum_planes,
                    std::array<glm::vec4, 6> const &abs_frustum_planes)
 {
-    (void)frustum_planes;
-    (void)abs_frustum_planes;
-
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     _nb_displayed_chunk = 0;
     _shader.use();
@@ -64,6 +62,7 @@ ChunkManager::draw(glm::mat4 const &projection,
     }
     glBindVertexArray(0);
     glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);
 }
 
 void

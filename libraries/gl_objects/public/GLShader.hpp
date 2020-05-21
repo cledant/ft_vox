@@ -33,6 +33,7 @@ class GLShader final
                       uint64_t array_size);
     void setMat4(std::string const &name, glm::mat4 const &data);
     void setInt(std::string const &name, int data);
+    void setFloat(std::string const &name, float data);
 
   private:
     void _readFile(std::string const &path, std::string &content) const;

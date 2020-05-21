@@ -8,6 +8,7 @@
 #include "GLFont.hpp"
 #include "TestBoxDrawer.hpp"
 #include "ChunkManager.hpp"
+#include "Skybox.hpp"
 
 class Engine final
 {
@@ -23,7 +24,7 @@ class Engine final
     void run();
 
   private:
-    static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 400.0f);
+    static constexpr glm::vec2 DEFAULT_NEAR_FAR = glm::vec2(0.1f, 5000.0f);
     static constexpr float DEFAULT_FOV = 45.0f;
     static constexpr uint32_t NB_KEY_DESCRIPTION = 7;
     static constexpr uint32_t NB_DEBUG_UI = 7;
@@ -46,6 +47,7 @@ class Engine final
     Perspective _perspective_data;
     GLFont _font;
     ChunkManager _cm;
+    Skybox _skybox;
 
     // Fps related
     uint64_t _nb_frame;

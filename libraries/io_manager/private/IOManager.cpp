@@ -67,7 +67,6 @@ IOManager::createWindow(std::string &&name)
         _initCallbacks();
         toggleMouseExclusive();
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
     }
 }
 

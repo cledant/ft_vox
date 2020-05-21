@@ -6,6 +6,8 @@ Engine::Engine()
   , _event_handler()
   , _perspective_data()
   , _font()
+  , _cm()
+  , _skybox()
   , _nb_frame(0)
   , _fps_count_timeref()
   , _str_fps("0")
@@ -34,6 +36,7 @@ Engine::init()
                glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
                24);
     _cm.init();
+    _skybox.init("./ressources/textures/skybox.png");
     _fps_count_timeref = std::chrono::steady_clock::now();
 }
 
@@ -47,6 +50,9 @@ Engine::run()
         _cm.draw(_camera.getPerspectiveViewMatrix(),
                  _camera.getFrustumPlanes(),
                  _camera.getAbsFrustumPlanes());
+        _skybox.update(_camera.getPosition());
+        _skybox.draw(_camera.getPerspectiveViewMatrix(),
+                     _perspective_data.near_far.y);
         if (_event_handler.printUi()) {
             _print_ui_info();
             _print_ui_keys();

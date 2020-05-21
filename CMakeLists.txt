@@ -4,7 +4,7 @@ project(ft_vox)
 #Setup glm
 add_library(glm INTERFACE IMPORTED)
 set_target_properties(glm PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
+        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
 
 #Setup Glad
 set(GLAD_API "gl=4.1")
@@ -27,6 +27,7 @@ add_subdirectory(libraries/io_manager)
 add_subdirectory(libraries/engine)
 add_subdirectory(libraries/gl_objects)
 add_subdirectory(libraries/chunk)
+add_subdirectory(libraries/skybox)
 
 #Main binary
 add_executable(ft_vox binary/private/ft_vox.cpp)

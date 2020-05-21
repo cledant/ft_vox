@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "TestBoxDrawer.hpp"
 
 TestBoxDrawer::TestBoxDrawer()

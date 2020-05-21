@@ -106,9 +106,9 @@ EventHandler::processEvents(IOEvents const &events)
     // Updating perspective + ortho
     if (_timers.updated[RENDER_DISTANCE]) {
         auto new_render_dist =
-          static_cast<float>(_cm->getRenderDistance() + 1) * 10.0f;
-        if (new_render_dist > 400.0f) {
-            _perspective->near_far.y = new_render_dist;
+          static_cast<float>(_cm->getRenderDistance() + 1) * 20.0f;
+        if (new_render_dist > (_perspective->near_far.y * 0.5f)) {
+            _perspective->near_far.y *= 2.0f;
         }
     }
     if (_io_manager->wasResized()) {
