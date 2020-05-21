@@ -80,13 +80,12 @@ GLTexture2D::loadTexture(const char *filepath)
                  _tex_nb_chan == 3 ? GL_RGB : GL_RGBA,
                  GL_UNSIGNED_BYTE,
                  data);
-    stbi_image_free(data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
-
+    stbi_image_free(data);
     if (glGetError() != GL_NO_ERROR) {
         glDeleteTextures(1, &_tex_id);
         throw std::runtime_error("OpenGL Error for texture 2d: " +
