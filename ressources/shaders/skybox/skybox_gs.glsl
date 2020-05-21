@@ -47,7 +47,7 @@ void main()
 
     //FACE XZ-
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-uniform_skybox_size, -uniform_skybox_size, uniform_skybox_size, 0.0));
-    gs_out.texture_coord = vec2(1.0, TWO_THIRD);
+    gs_out.texture_coord = vec2(0.75, 1.0);
     EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(uniform_skybox_size, -uniform_skybox_size, uniform_skybox_size, 0.0));
     gs_out.texture_coord = vec2(0.75, TWO_THIRD);
@@ -56,7 +56,7 @@ void main()
     gs_out.texture_coord = vec2(1.0, 1.0);
     EmitVertex();
     gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(uniform_skybox_size, -uniform_skybox_size, -uniform_skybox_size, 0.0));
-    gs_out.texture_coord = vec2(0.75, 1.0);
+    gs_out.texture_coord = vec2(1.0, TWO_THIRD);
     EmitVertex();
     EndPrimitive();
 
