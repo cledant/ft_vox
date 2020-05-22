@@ -29,7 +29,7 @@ class Chunk final
 
     void generateChunk();
     uint8_t allocateGPUResources();
-    void updateGPUResources() const;
+    void updateGPUResources();
 
     [[nodiscard]] uint8_t isChunkInFrustum(
       std::array<glm::vec4, 6> const &frustum_planes,
@@ -61,7 +61,7 @@ class Chunk final
      * D = Unused
      * E = Block Type
      */
-    uint32_t _visible_blocks[TOTAL_BLOCK];
+    uint32_t *_visible_blocks;
     uint32_t _nb_visible_blocks;
 
     glm::ivec2 _chunk_position;

@@ -8,7 +8,7 @@
 
 Chunk::Chunk()
   : _block_chunk()
-  , _visible_blocks()
+  , _visible_blocks(nullptr)
   , _nb_visible_blocks(0)
   , _chunk_position(0.0f)
   , _space_coord(0)
@@ -20,11 +20,12 @@ Chunk::Chunk()
 Chunk::~Chunk()
 {
     _deallocate_gpu();
+    delete[] _visible_blocks;
 }
 
 Chunk::Chunk(Chunk &&src) noexcept
   : _block_chunk()
-  , _visible_blocks()
+  , _visible_blocks(nullptr)
   , _nb_visible_blocks(0)
   , _chunk_position(0.0f)
   , _space_coord(0)
@@ -41,8 +42,8 @@ Chunk::operator=(Chunk &&rhs) noexcept
     _nb_visible_blocks = rhs._nb_visible_blocks;
     std::memcpy(
       &_block_chunk, &rhs._block_chunk, sizeof(uint8_t) * TOTAL_BLOCK);
-    std::memcpy(
-      &_visible_blocks, &rhs._visible_blocks, sizeof(uint32_t) * TOTAL_BLOCK);
+    _visible_blocks = rhs._visible_blocks;
+    rhs._visible_blocks = nullptr;
     _chunk_position = rhs._chunk_position;
     _space_coord = rhs._space_coord;
     _center = rhs._center;
@@ -130,6 +131,7 @@ Chunk::generateChunk()
 {
     // TODO : Actual generation
     _debug_generate_plane();
+    _visible_blocks = new uint32_t[TOTAL_BLOCK];
     _generate_visible_blocks_buffer();
 }
 
@@ -147,7 +149,7 @@ Chunk::allocateGPUResources()
 }
 
 void
-Chunk::updateGPUResources() const
+Chunk::updateGPUResources()
 {
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferSubData(GL_ARRAY_BUFFER,
@@ -155,6 +157,8 @@ Chunk::updateGPUResources() const
                     sizeof(uint32_t) * _nb_visible_blocks,
                     &_visible_blocks[0]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    delete[] _visible_blocks;
+    _visible_blocks = nullptr;
 }
 
 uint8_t

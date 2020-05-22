@@ -43,7 +43,7 @@ class ChunkManager final
   private:
     static constexpr int32_t MIN_RENDER_DISTANCE = 0;
     static constexpr int32_t MAX_RENDER_DISTANCE = 128;
-    static constexpr uint32_t NB_ASYNC_THREAD = 32;
+    static constexpr uint32_t NB_ASYNC_THREAD = 64;
 
     int32_t _current_render_distance;
 
