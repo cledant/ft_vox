@@ -2,6 +2,7 @@
 #define FT_VOX_CHUNK_HPP
 
 #include <array>
+#include <memory>
 
 #include "ChunkDataStructures.hpp"
 
@@ -61,7 +62,7 @@ class Chunk final
      * D = Unused
      * E = Block Type
      */
-    uint32_t *_visible_blocks;
+    std::unique_ptr<uint32_t[]> _visible_blocks;
     uint32_t _nb_visible_blocks;
 
     glm::ivec2 _chunk_position;
