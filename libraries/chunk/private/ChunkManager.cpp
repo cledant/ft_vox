@@ -9,17 +9,19 @@ ChunkManager::ChunkManager()
   , _compute_chunk()
   , _chunk_map()
   , _shader()
+  , _texture()
   , _nb_displayed_chunk(0)
 {}
 
 void
 ChunkManager::init()
 {
-    _shader.init("./ressources/shaders/chunk/chunk_vs.glsl",
-                 "./ressources/shaders/chunk/chunk_gs.glsl",
-                 "./ressources/shaders/chunk/chunk_fs.glsl",
-                 "Chunk");
+    _shader.init("./ressources/shaders/textured_chunk/textured_chunk_vs.glsl",
+                 "./ressources/shaders/textured_chunk/textured_chunk_gs.glsl",
+                 "./ressources/shaders/textured_chunk/textured_chunk_fs.glsl",
+                 "Textured Chunk");
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
+    _texture.loadTexture("./ressources/textures/terrain.png");
 }
 
 void
@@ -57,9 +59,11 @@ ChunkManager::draw(glm::mat4 const &projection,
         }
         _shader.setVec3("uniform_vec_chunk_position", it.getSpaceCoordinate());
         glBindVertexArray(it.getVao());
+        glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
         glDrawArraysInstanced(GL_POINTS, 0, 1, it.getNbVisibleBlocks());
         ++_nb_displayed_chunk;
     }
+    glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
     glCullFace(GL_BACK);
     glDisable(GL_CULL_FACE);

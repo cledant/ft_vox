@@ -12,6 +12,7 @@
 
 #include "Chunk.hpp"
 #include "GLShader.hpp"
+#include "GLTexture2D.hpp"
 
 class ChunkManager final
 {
@@ -53,6 +54,7 @@ class ChunkManager final
     std::vector<std::future<Chunk>> _compute_chunk;
     std::unordered_map<glm::ivec2, ChunkState> _chunk_map;
     GLShader _shader;
+    GLTexture2D _texture;
 
     uint64_t _nb_displayed_chunk;
 

@@ -61,6 +61,7 @@ Skybox::draw(const glm::mat4 &projection, float skybox_size)
     glBindVertexArray(_vao);
     glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
     glDrawArrays(GL_POINTS, 0, 1);
+    glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
 }
 

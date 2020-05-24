@@ -8,6 +8,7 @@ set_target_properties(glm PROPERTIES
 
 #Setup Glad
 set(GLAD_API "gl=4.1")
+set(GLAD_EXTENSIONS "GL_EXT_texture_filter_anisotropic")
 option(GLAD_INSTALL "" OFF)
 option(BUILD_SHARED_LIBS "" OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glad ${CMAKE_BINARY_DIR}/external/glad/build)

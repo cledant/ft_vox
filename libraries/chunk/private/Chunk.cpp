@@ -179,9 +179,9 @@ void
 Chunk::_debug_generate_plane()
 {
     std::memset(&_block_chunk, 0, sizeof(uint8_t) * TOTAL_BLOCK);
-    uint32_t offset = 65;
+    uint32_t offset = 33;
     for (uint32_t i = offset; i < (BLOCK_PER_PLANE * 3 + offset); ++i) {
-        _block_chunk[i] = DEBUG;
+        _block_chunk[i] = COBBLESTONE;
     }
 }
 
