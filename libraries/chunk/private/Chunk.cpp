@@ -13,6 +13,7 @@ Chunk::Chunk()
   , _chunk_position(0.0f)
   , _space_coord(0)
   , _center(0)
+  , _color_modifier(1.0f)
   , _vao(0)
   , _vbo(0)
 {}
@@ -29,6 +30,7 @@ Chunk::Chunk(Chunk &&src) noexcept
   , _chunk_position(0.0f)
   , _space_coord(0)
   , _center(0)
+  , _color_modifier(1.0f)
   , _vao(0)
   , _vbo(0)
 {
@@ -45,6 +47,7 @@ Chunk::operator=(Chunk &&rhs) noexcept
     _chunk_position = rhs._chunk_position;
     _space_coord = rhs._space_coord;
     _center = rhs._center;
+    _color_modifier = rhs._color_modifier;
     _vao = rhs._vao;
     _vbo = rhs._vbo;
     rhs._vao = 0;
@@ -59,6 +62,7 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
   , _chunk_position(chunk_position)
   , _space_coord(0.0f)
   , _center(0)
+  , _color_modifier(1.0f)
   , _vao(0)
   , _vbo(0)
 {
@@ -124,11 +128,18 @@ Chunk::getNbVisibleBlocks() const
     return (_nb_visible_blocks);
 }
 
+glm::vec4 const &
+Chunk::getColorModifier() const
+{
+    return (_color_modifier);
+}
+
 void
 Chunk::generateChunk()
 {
     // TODO : Actual generation
-    _debug_generate_plane();
+    //_debug_generate_plane();
+    _debug_generate_blocks();
     _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
     _generate_visible_blocks_buffer();
 }
@@ -183,6 +194,21 @@ Chunk::_debug_generate_plane()
     for (uint32_t i = offset; i < (BLOCK_PER_PLANE * 3 + offset); ++i) {
         _block_chunk[i] = COBBLESTONE;
     }
+    _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+}
+
+void
+Chunk::_debug_generate_blocks()
+{
+    std::memset(&_block_chunk, 0, sizeof(uint8_t) * TOTAL_BLOCK);
+    uint32_t offset = 0;
+    for (uint32_t i = 1; i < TOTAL_BLOCKS; ++i) {
+        if (i && !((2 * i) % BLOCK_PER_LINE)) {
+            offset += BLOCK_PER_LINE;
+        }
+        _block_chunk[2 * i + offset] = i;
+    }
+    _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
 void

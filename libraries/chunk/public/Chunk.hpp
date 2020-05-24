@@ -27,6 +27,7 @@ class Chunk final
 
     [[nodiscard]] uint32_t getVao() const;
     [[nodiscard]] uint32_t getNbVisibleBlocks() const;
+    [[nodiscard]] glm::vec4 const &getColorModifier() const;
 
     void generateChunk();
     uint8_t allocateGPUResources();
@@ -39,6 +40,7 @@ class Chunk final
   private:
     // CPU generation related
     inline void _debug_generate_plane();
+    inline void _debug_generate_blocks();
     inline void _generate_visible_blocks_buffer();
     inline uint8_t _compute_block_visible_faces(int32_t index);
 
@@ -68,6 +70,8 @@ class Chunk final
     glm::ivec2 _chunk_position;
     glm::vec3 _space_coord;
     glm::vec3 _center;
+
+    glm::vec4 _color_modifier;
 
     uint32_t _vao;
     uint32_t _vbo;

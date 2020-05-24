@@ -12,4 +12,7 @@ out vec4 color;
 void main()
 {
     color = fs_in.color_modifier * texture(uniform_tex_diffuse, fs_in.texture_coord);
+    if (color.a < 0.5) {
+        discard;
+    }
 }

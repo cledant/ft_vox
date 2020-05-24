@@ -31,6 +31,19 @@ typedef enum BlockType
     GRASS,
     DIRT,
     COBBLESTONE,
+    PLANKS,
+    BEDROCK,
+    SAND,
+    WATER,
+    SNOW,
+    SNOW_GRASS,
+    WOOD,
+    FOLIAGE,
+    TNT,
+    BRICKS,
+    GLASS,
+    ICE,
+    TOTAL_BLOCKS,
 } BlockType;
 
 typedef enum BlockFaces
