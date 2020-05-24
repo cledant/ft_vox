@@ -16,13 +16,16 @@ void main()
 {
     if (fs_in.level_1_texture_coord == NO_TEXTURE) {
         color = fs_in.color_modifier * texture(uniform_tex_diffuse, fs_in.base_texture_coord);
-    } else {
-        vec4 level_1_tex_color = texture(uniform_tex_diffuse, fs_in.level_1_texture_coord);
-        if (level_1_tex_color.a < 0.5) {
-            color = texture(uniform_tex_diffuse, fs_in.base_texture_coord);
-        } else {
-            color = fs_in.color_modifier * level_1_tex_color;
+        if (color.a < 0.5) {
+            discard;
         }
+        return;
+    }
+    vec4 level_1_tex_color = texture(uniform_tex_diffuse, fs_in.level_1_texture_coord);
+    if (level_1_tex_color.a < 0.5) {
+        color = texture(uniform_tex_diffuse, fs_in.base_texture_coord);
+    } else {
+        color = fs_in.color_modifier * level_1_tex_color;
     }
     if (color.a < 0.5) {
         discard;

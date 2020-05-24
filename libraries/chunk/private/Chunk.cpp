@@ -138,8 +138,8 @@ void
 Chunk::generateChunk()
 {
     // TODO : Actual generation
-    //_debug_generate_plane();
-    _debug_generate_blocks();
+    _debug_generate_plane();
+    //_debug_generate_blocks();
     _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
     _generate_visible_blocks_buffer();
 }

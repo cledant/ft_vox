@@ -28,6 +28,8 @@ out GS_OUT {
 #define DOWN_LEFT_OFF vec2(0, TEX_STEP)
 #define DOWN_RIGHT_OFF vec2(TEX_STEP, TEX_STEP)
 
+#define TOTAL_TEX 16
+
 // Up left texture coordinate
 #define STONE vec2(TEX_STEP, 0)
 #define GRASS_TOP vec2(0, 0)
@@ -359,42 +361,30 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     }
 }
 
+// Array for texture coordinate
+const vec2 tex_xy_plus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
+WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
+const vec2 tex_xy_minus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
+WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
+const vec2 tex_xz_plus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
+WOOD_TOP_BOT, FOLIAGE, TNT_TOP, BRICKS, GLASS, ICE);
+const vec2 tex_xz_minus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
+WOOD_TOP_BOT, FOLIAGE, TNT_BOT, BRICKS, GLASS, ICE);
+const vec2 tex_yz_plus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
+WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
+const vec2 tex_yz_minus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
+WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
+vec4 tex_color_modifier[] = vec4[TOTAL_TEX](NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD,
+NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, uniform_vec_color_modifier, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD);
+
 void main()
 {
-    switch (gs_in[0].block_type) {
-        case 1:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, STONE, STONE, STONE, STONE, STONE, STONE, NO_COLOR_MOD);
-        case 2:
+    int type = gs_in[0].block_type;
+    if (type == 2) {
         generate_grass_block(gs_in[0].block_position, gs_in[0].block_faces, uniform_vec_color_modifier);
-        case 3:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, DIRT, DIRT, DIRT, DIRT, DIRT, DIRT, NO_COLOR_MOD);
-        case 4:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, COBBLESTONE, COBBLESTONE, COBBLESTONE, COBBLESTONE, COBBLESTONE, COBBLESTONE, NO_COLOR_MOD);
-        case 5:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, PLANK, PLANK, PLANK, PLANK, PLANK, PLANK, NO_COLOR_MOD);
-        case 6:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, BEDROCK, BEDROCK, BEDROCK, BEDROCK, BEDROCK, BEDROCK, NO_COLOR_MOD);
-        case 7:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, SAND, SAND, SAND, SAND, SAND, SAND, NO_COLOR_MOD);
-        case 8:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, WATER, WATER, WATER, WATER, WATER, WATER, NO_COLOR_MOD);
-        case 9:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, SNOW, SNOW, SNOW, SNOW, SNOW, SNOW, NO_COLOR_MOD);
-        case 10:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, SNOW_GRASS, SNOW_GRASS, SNOW, DIRT, SNOW_GRASS, SNOW_GRASS, NO_COLOR_MOD);
-        case 11:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, WOOD_SIDE, WOOD_SIDE, WOOD_TOP_BOT, WOOD_TOP_BOT, WOOD_SIDE, WOOD_SIDE, NO_COLOR_MOD);
-        case 12:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, uniform_vec_color_modifier);
-        case 13:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, TNT_SIDE, TNT_SIDE, TNT_TOP, TNT_BOT, TNT_SIDE, TNT_SIDE, NO_COLOR_MOD);
-        case 14:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, BRICKS, BRICKS, BRICKS, BRICKS, BRICKS, BRICKS, NO_COLOR_MOD);
-        case 15:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, GLASS, GLASS, GLASS, GLASS, GLASS, GLASS, NO_COLOR_MOD);
-        case 16:
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, ICE, ICE, ICE, ICE, ICE, ICE, NO_COLOR_MOD);
-        default :
-        return;
+    } else {
+        type -= 1;
+        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, tex_xy_plus[type], tex_xy_plus[type],
+        tex_xz_plus[type], tex_xz_minus[type], tex_yz_plus[type], tex_yz_minus[type], tex_color_modifier[type]);
     }
 }
