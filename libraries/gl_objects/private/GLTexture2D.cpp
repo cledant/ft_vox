@@ -13,22 +13,23 @@ GLTexture2D::~GLTexture2D()
     }
 }
 
-GLTexture2D::GLTexture2D(std::string const &filepath)
+GLTexture2D::GLTexture2D(std::string const &filepath,
+                         uint8_t use_nearest_filtering)
   : _tex_id(0)
   , _tex_w(0)
   , _tex_h(0)
   , _tex_nb_chan(0)
 {
-    loadTexture(filepath.c_str());
+    loadTexture(filepath.c_str(), use_nearest_filtering);
 }
 
-GLTexture2D::GLTexture2D(const char *filepath)
+GLTexture2D::GLTexture2D(const char *filepath, uint8_t use_nearest_filtering)
   : _tex_id(0)
   , _tex_w(0)
   , _tex_h(0)
   , _tex_nb_chan(0)
 {
-    loadTexture(filepath);
+    loadTexture(filepath, use_nearest_filtering);
 }
 
 GLTexture2D::GLTexture2D(GLTexture2D &&src) noexcept
@@ -52,7 +53,7 @@ GLTexture2D::operator=(GLTexture2D &&rhs) noexcept
 }
 
 void
-GLTexture2D::loadTexture(const char *filepath)
+GLTexture2D::loadTexture(const char *filepath, uint8_t use_nearest_filtering)
 {
     uint8_t *data;
 
@@ -84,7 +85,9 @@ GLTexture2D::loadTexture(const char *filepath)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(
       GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    GLenum filtering_type =
+      (use_nearest_filtering == 0) ? GL_LINEAR : GL_NEAREST;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_type);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);

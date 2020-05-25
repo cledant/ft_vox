@@ -21,7 +21,7 @@ ChunkManager::init()
                  "./ressources/shaders/textured_chunk/textured_chunk_fs.glsl",
                  "Textured Chunk");
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
-    _texture.loadTexture("./ressources/textures/terrain.png");
+    _texture.loadTexture("./ressources/textures/terrain.png", 1);
 }
 
 void

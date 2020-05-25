@@ -13,10 +13,11 @@ class GLTexture2D final
     GLTexture2D &operator=(GLTexture2D &&rhs) noexcept;
     GLTexture2D(GLTexture2D const &src) = delete;
     GLTexture2D &operator=(GLTexture2D const &rhs) = delete;
-    explicit GLTexture2D(std::string const &filepath);
-    explicit GLTexture2D(char const *filepath);
+    explicit GLTexture2D(std::string const &filepath,
+                         uint8_t use_nearest_filtering);
+    explicit GLTexture2D(char const *filepath, uint8_t use_nearest_filtering);
 
-    void loadTexture(char const *filepath);
+    void loadTexture(char const *filepath, uint8_t use_nearest_filtering);
 
     [[nodiscard]] uint32_t getTextureID() const;
 

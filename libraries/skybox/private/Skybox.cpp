@@ -35,7 +35,7 @@ Skybox::operator=(Skybox &&rhs) noexcept
 void
 Skybox::init(const std::string &skybox_filepath)
 {
-    _texture.loadTexture(skybox_filepath.c_str());
+    _texture.loadTexture(skybox_filepath.c_str(), 0);
     _shader.init("./ressources/shaders/skybox/skybox_vs.glsl",
                  "./ressources/shaders/skybox/skybox_gs.glsl",
                  "./ressources/shaders/skybox/skybox_fs.glsl",
