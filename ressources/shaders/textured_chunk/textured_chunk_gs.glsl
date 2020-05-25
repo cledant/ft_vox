@@ -18,6 +18,16 @@ out GS_OUT {
     vec4 color_modifier;
 } gs_out;
 
+struct BlockType {
+    vec2 id_xy_plus;
+    vec2 id_xy_minus;
+    vec2 id_xz_plus;
+    vec2 id_xz_minus;
+    vec2 id_yz_plus;
+    vec2 id_yz_minus;
+    bool use_color_modifier;
+};
+
 #define NO_COLOR_MOD vec4(1.0)
 
 // Texture should have 16x16 tiles
@@ -54,7 +64,7 @@ out GS_OUT {
 
 #define NO_TEXTURE vec2(2.0)
 
-void generate_grass_block(vec4 block_center, int block_faces, vec4 color_modifier)
+void generate_grass_block(const vec4 block_center, const int block_faces, const vec4 color_modifier)
 {
     //FACE XY-
     if ((block_faces & (1 << 5)) > 0) {
@@ -207,28 +217,32 @@ void generate_grass_block(vec4 block_center, int block_faces, vec4 color_modifie
     }
 }
 
-void generate_textured_block(vec4 block_center, int block_faces, vec2 id_xy_plus, vec2 id_xy_minus, vec2 id_xz_plus,
-vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
+void generate_textured_block(const vec4 block_center, const int block_faces,
+const BlockType type, vec4 color_modifier)
 {
+    if (type.use_color_modifier == false) {
+        color_modifier = NO_COLOR_MOD;
+    }
+
     //FACE XY-
     if ((block_faces & (1 << 5)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_minus + DOWN_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xy_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_minus + DOWN_LEFT_OFF;
+        gs_out.base_texture_coord = type.id_xy_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_minus + UP_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xy_minus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_minus;
+        gs_out.base_texture_coord = type.id_xy_minus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
@@ -238,22 +252,22 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     //FACE XY+
     if ((block_faces & (1 << 4)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_plus;
+        gs_out.base_texture_coord = type.id_xy_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_plus + UP_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xy_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_plus + DOWN_LEFT_OFF;
+        gs_out.base_texture_coord = type.id_xy_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xy_plus + DOWN_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xy_plus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
@@ -263,22 +277,22 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     //FACE XZ-
     if ((block_faces & (1 << 1)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_minus + DOWN_LEFT_OFF;
+        gs_out.base_texture_coord = type.id_xz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_minus;
+        gs_out.base_texture_coord = type.id_xz_minus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_minus + DOWN_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xz_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_minus + UP_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xz_minus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
@@ -288,22 +302,22 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     //FACE XZ+
     if ((block_faces & 1) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_plus + UP_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xz_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_plus + DOWN_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_xz_plus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_plus;
+        gs_out.base_texture_coord = type.id_xz_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_xz_plus + DOWN_LEFT_OFF;
+        gs_out.base_texture_coord = type.id_xz_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
@@ -313,22 +327,22 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     //FACE YZ-
     if ((block_faces & (1 << 3)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_minus + DOWN_LEFT_OFF;
+        gs_out.base_texture_coord = type.id_yz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_minus;
+        gs_out.base_texture_coord = type.id_yz_minus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_minus + DOWN_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_yz_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_minus + UP_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_yz_minus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
@@ -338,22 +352,22 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     //FACE YZ+
     if ((block_faces & (1 << 2)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_plus + DOWN_LEFT_OFF;
+        gs_out.base_texture_coord = type.id_yz_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_plus;
+        gs_out.base_texture_coord = type.id_yz_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_plus +  DOWN_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_yz_plus +  DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
-        gs_out.base_texture_coord = id_yz_plus + UP_RIGHT_OFF;
+        gs_out.base_texture_coord = type.id_yz_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
@@ -361,21 +375,23 @@ vec2 id_xz_minus, vec2 id_yz_plus, vec2 id_yz_minus, vec4 color_modifier)
     }
 }
 
-// Array for texture coordinate
-const vec2 tex_xy_plus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
-WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
-const vec2 tex_xy_minus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
-WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
-const vec2 tex_xz_plus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
-WOOD_TOP_BOT, FOLIAGE, TNT_TOP, BRICKS, GLASS, ICE);
-const vec2 tex_xz_minus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
-WOOD_TOP_BOT, FOLIAGE, TNT_BOT, BRICKS, GLASS, ICE);
-const vec2 tex_yz_plus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
-WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
-const vec2 tex_yz_minus[] = vec2[TOTAL_TEX](STONE, GRASS_TOP, DIRT, COBBLESTONE, PLANK, BEDROCK, SAND, WATER, SNOW, SNOW_GRASS,
-WOOD_SIDE, FOLIAGE, TNT_SIDE, BRICKS, GLASS, ICE);
-vec4 tex_color_modifier[] = vec4[TOTAL_TEX](NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD,
-NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, uniform_vec_color_modifier, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD, NO_COLOR_MOD);
+const BlockType block_type[] = BlockType[TOTAL_TEX](
+BlockType(STONE, STONE, STONE, STONE, STONE, STONE, false),
+BlockType(GRASS_TOP, GRASS_TOP, GRASS_TOP, GRASS_TOP, GRASS_TOP, GRASS_TOP, false),
+BlockType(DIRT, DIRT, DIRT, DIRT, DIRT, DIRT, false),
+BlockType(COBBLESTONE, COBBLESTONE, COBBLESTONE, COBBLESTONE, COBBLESTONE, COBBLESTONE, false),
+BlockType(PLANK, PLANK, PLANK, PLANK, PLANK, PLANK, false),
+BlockType(BEDROCK, BEDROCK, BEDROCK, BEDROCK, BEDROCK, BEDROCK, false),
+BlockType(SAND, SAND, SAND, SAND, SAND, SAND, false),
+BlockType(WATER, WATER, WATER, WATER, WATER, WATER, false),
+BlockType(SNOW, SNOW, SNOW, SNOW, SNOW, SNOW, false),
+BlockType(SNOW_GRASS, SNOW_GRASS, SNOW, SNOW_GRASS, SNOW_GRASS, SNOW_GRASS, false),
+BlockType(WOOD_SIDE, WOOD_SIDE, WOOD_TOP_BOT, WOOD_TOP_BOT, WOOD_SIDE, WOOD_SIDE, false),
+BlockType(FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, true),
+BlockType(TNT_SIDE, TNT_SIDE, TNT_TOP, TNT_BOT, TNT_SIDE, TNT_SIDE, false),
+BlockType(BRICKS, BRICKS, BRICKS, BRICKS, BRICKS, BRICKS, false),
+BlockType(GLASS, GLASS, GLASS, GLASS, GLASS, GLASS, false),
+BlockType(ICE, ICE, ICE, ICE, ICE, ICE, false));
 
 void main()
 {
@@ -384,7 +400,6 @@ void main()
         generate_grass_block(gs_in[0].block_position, gs_in[0].block_faces, uniform_vec_color_modifier);
     } else {
         type -= 1;
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, tex_xy_plus[type], tex_xy_plus[type],
-        tex_xz_plus[type], tex_xz_minus[type], tex_yz_plus[type], tex_yz_minus[type], tex_color_modifier[type]);
+        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, block_type[type], uniform_vec_color_modifier);
     }
 }
