@@ -1,5 +1,7 @@
 #include "glad/glad.h"
 
+#include <iostream>
+
 #include "ChunkManager.hpp"
 
 ChunkManager::ChunkManager()
@@ -74,6 +76,7 @@ void
 ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
 {
     // TODO
+    std::cout << "I ADD BLOCK" << std::endl;
     (void)player_pos;
     (void)direction;
 }
@@ -83,6 +86,7 @@ ChunkManager::removeBlock(glm::vec3 const &player_pos,
                           glm::vec3 const &direction)
 {
     // TODO
+    std::cout << "I REMOVE BLOCK" << std::endl;
     (void)player_pos;
     (void)direction;
 }

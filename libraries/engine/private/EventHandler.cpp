@@ -9,6 +9,7 @@ EventHandler::EventHandler()
   , _perspective(nullptr)
   , _cm(nullptr)
   , _font(nullptr)
+  , _skybox(nullptr)
   , _timers()
   , _movements(0)
   , _mouse_pos(0.0)
@@ -46,6 +47,13 @@ EventHandler::setChunkManager(ChunkManager *cm)
     _cm = cm;
 }
 
+void
+EventHandler::setSkybox(Skybox *skybox)
+
+{
+    _skybox = skybox;
+}
+
 uint8_t
 EventHandler::printUi() const
 {
@@ -60,6 +68,7 @@ EventHandler::processEvents(IOEvents const &events)
     assert(_perspective);
     assert(_font);
     assert(_cm);
+    assert(_skybox);
 
     // Resetting movement tracking
     _movements = glm::ivec3(0);
@@ -101,10 +110,10 @@ EventHandler::processEvents(IOEvents const &events)
     if (_io_manager->isMouseExclusive()) {
         _updateCamera(events.mouse_position);
     }
-    _timers.updated[CAMERA] = 1;
+    _timers.updated[ET_CAMERA] = 1;
 
     // Updating perspective + ortho
-    if (_timers.updated[RENDER_DISTANCE]) {
+    if (_timers.updated[ET_RENDER_DISTANCE]) {
         auto new_render_dist =
           static_cast<float>(_cm->getRenderDistance() + 1) * 20.0f;
         if (new_render_dist > (_perspective->near_far.y * 0.5f)) {
@@ -115,12 +124,24 @@ EventHandler::processEvents(IOEvents const &events)
         _font->setOrthographicProjection(_io_manager->getWindowSize());
         _perspective->ratio = _io_manager->getWindowRatio();
     }
-    if (_io_manager->wasResized() || _timers.updated[RENDER_DISTANCE]) {
+    if (_io_manager->wasResized() || _timers.updated[ET_RENDER_DISTANCE]) {
         _camera->setPerspective(
           glm::perspective(glm::radians(_perspective->fov),
                            _perspective->ratio,
                            _perspective->near_far.x,
                            _perspective->near_far.y));
+    }
+
+    // Player position related update
+    _cm->update(_camera->getPosition());
+    _skybox->update(_camera->getPosition());
+
+    // Interaction related update
+    if (_timers.updated[ET_ADD_BLOCK]) {
+        _cm->addBlock(_camera->getPosition(), _camera->getFront());
+    }
+    if (_timers.updated[ET_REMOVE_BLOCK]) {
+        _cm->removeBlock(_camera->getPosition(), _camera->getFront());
     }
 
     // Setting timers origin
@@ -139,41 +160,42 @@ EventHandler::EventTimers::EventTimers()
   , timer_diff()
   , timer_values()
 {
-    timer_values[SYSTEM] = SYSTEM_TIMER_SECONDS;
-    timer_values[CONFIG] = CONFIG_TIMER_SECONDS;
-    timer_values[ACTION] = ACTION_TIMER_SECONDS;
-    timer_values[CAMERA] = TARGET_PLAYER_TICK_DURATION;
-    timer_values[RENDER_DISTANCE] = CONFIG_TIMER_SECONDS;
+    timer_values[ET_SYSTEM] = SYSTEM_TIMER_SECONDS;
+    timer_values[ET_CONFIG] = CONFIG_TIMER_SECONDS;
+    timer_values[ET_ADD_BLOCK] = ACTION_TIMER_SECONDS;
+    timer_values[ET_REMOVE_BLOCK] = ACTION_TIMER_SECONDS;
+    timer_values[ET_CAMERA] = TARGET_PLAYER_TICK_DURATION;
+    timer_values[ET_RENDER_DISTANCE] = CONFIG_TIMER_SECONDS;
 }
 
 void
 EventHandler::_mouse_exclusive()
 {
-    if (_timers.accept_event[SYSTEM]) {
+    if (_timers.accept_event[ET_SYSTEM]) {
         _previous_mouse_pos = _mouse_pos;
         _io_manager->toggleMouseExclusive();
-        _timers.accept_event[SYSTEM] = 0;
-        _timers.updated[SYSTEM] = 1;
+        _timers.accept_event[ET_SYSTEM] = 0;
+        _timers.updated[ET_SYSTEM] = 1;
     }
 }
 
 void
 EventHandler::_close_win_event()
 {
-    if (_timers.accept_event[SYSTEM]) {
+    if (_timers.accept_event[ET_SYSTEM]) {
         _io_manager->triggerClose();
-        _timers.accept_event[SYSTEM] = 0;
-        _timers.updated[SYSTEM] = 1;
+        _timers.accept_event[ET_SYSTEM] = 0;
+        _timers.updated[ET_SYSTEM] = 1;
     }
 }
 
 void
 EventHandler::_toggle_fullscreen()
 {
-    if (_timers.accept_event[SYSTEM]) {
+    if (_timers.accept_event[ET_SYSTEM]) {
         _io_manager->toggleFullscreen();
-        _timers.accept_event[SYSTEM] = 0;
-        _timers.updated[SYSTEM] = 1;
+        _timers.accept_event[ET_SYSTEM] = 0;
+        _timers.updated[ET_SYSTEM] = 1;
     }
 }
 
@@ -216,50 +238,50 @@ EventHandler::_left()
 void
 EventHandler::_add_block()
 {
-    if (_timers.accept_event[ACTION]) {
-        std::cout << "LEFT CLICK" << std::endl;
-        _timers.accept_event[ACTION] = 0;
-        _timers.updated[ACTION] = 1;
+    if (_timers.accept_event[ET_ADD_BLOCK] &&
+        _timers.accept_event[ET_REMOVE_BLOCK]) {
+        _timers.accept_event[ET_ADD_BLOCK] = 0;
+        _timers.updated[ET_ADD_BLOCK] = 1;
     }
 }
 
 void
 EventHandler::_remove_block()
 {
-    if (_timers.accept_event[ACTION]) {
-        std::cout << "RIGHT CLICK" << std::endl;
-        _timers.accept_event[ACTION] = 0;
-        _timers.updated[ACTION] = 1;
+    if (_timers.accept_event[ET_ADD_BLOCK] &&
+        _timers.accept_event[ET_REMOVE_BLOCK]) {
+        _timers.accept_event[ET_REMOVE_BLOCK] = 0;
+        _timers.updated[ET_REMOVE_BLOCK] = 1;
     }
 }
 
 void
 EventHandler::_increase_render_distance()
 {
-    if (_timers.accept_event[RENDER_DISTANCE]) {
+    if (_timers.accept_event[ET_RENDER_DISTANCE]) {
         _cm->increaseRenderDistance();
-        _timers.accept_event[RENDER_DISTANCE] = 0;
-        _timers.updated[RENDER_DISTANCE] = 1;
+        _timers.accept_event[ET_RENDER_DISTANCE] = 0;
+        _timers.updated[ET_RENDER_DISTANCE] = 1;
     }
 }
 
 void
 EventHandler::_decrease_render_distance()
 {
-    if (_timers.accept_event[RENDER_DISTANCE]) {
+    if (_timers.accept_event[ET_RENDER_DISTANCE]) {
         _cm->decreaseRenderDistance();
-        _timers.accept_event[RENDER_DISTANCE] = 0;
-        _timers.updated[RENDER_DISTANCE] = 1;
+        _timers.accept_event[ET_RENDER_DISTANCE] = 0;
+        _timers.updated[ET_RENDER_DISTANCE] = 1;
     }
 }
 
 void
 EventHandler::_toggle_ui()
 {
-    if (_timers.accept_event[SYSTEM]) {
+    if (_timers.accept_event[ET_SYSTEM]) {
         _print_ui = !_print_ui;
-        _timers.accept_event[SYSTEM] = 0;
-        _timers.updated[SYSTEM] = 1;
+        _timers.accept_event[ET_SYSTEM] = 0;
+        _timers.updated[ET_SYSTEM] = 1;
     }
 }
 
@@ -283,12 +305,13 @@ EventHandler::_updateCamera(glm::vec2 const &mouse_pos)
 
     if (_movements != glm::ivec3(0)) {
         _camera->update_position(_movements,
-                                 _timers.timer_diff[CAMERA] /
-                                   _timers.timer_values[CAMERA]);
+                                 _timers.timer_diff[ET_CAMERA] /
+                                   _timers.timer_values[ET_CAMERA]);
     }
     if (offset != glm::vec2(0.0)) {
-        _camera->update_front(
-          offset, _timers.timer_diff[CAMERA] / _timers.timer_values[CAMERA]);
+        _camera->update_front(offset,
+                              _timers.timer_diff[ET_CAMERA] /
+                                _timers.timer_values[ET_CAMERA]);
         _previous_mouse_pos = _mouse_pos;
     }
     _camera->update_matricies();

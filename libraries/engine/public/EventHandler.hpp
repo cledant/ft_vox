@@ -9,6 +9,7 @@
 #include "Perspective.hpp"
 #include "Font.hpp"
 #include "ChunkManager.hpp"
+#include "Skybox.hpp"
 
 class EventHandler
 {
@@ -25,6 +26,7 @@ class EventHandler
     void setPerspectiveData(Perspective *perspective);
     void setFont(Font *font);
     void setChunkManager(ChunkManager *cm);
+    void setSkybox(Skybox *skybox);
 
     [[nodiscard]] uint8_t printUi() const;
 
@@ -36,18 +38,19 @@ class EventHandler
     // Timer related
     static double constexpr SYSTEM_TIMER_SECONDS = 1.0;
     static double constexpr CONFIG_TIMER_SECONDS = 0.5;
-    static double constexpr ACTION_TIMER_SECONDS = 0.25;
+    static double constexpr ACTION_TIMER_SECONDS = 0.5;
     static constexpr double TARGET_PLAYER_TICK_DURATION =
       1 / TARGET_PLAYER_TICK;
-    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 5;
+    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 6;
 
     enum EventTimersTypes
     {
-        SYSTEM = 0,
-        CONFIG,
-        ACTION,
-        CAMERA,
-        RENDER_DISTANCE
+        ET_SYSTEM = 0,
+        ET_CONFIG,
+        ET_ADD_BLOCK,
+        ET_REMOVE_BLOCK,
+        ET_CAMERA,
+        ET_RENDER_DISTANCE
     };
 
     struct EventTimers final
@@ -57,8 +60,7 @@ class EventHandler
 
         std::array<uint8_t, NB_EVENT_TIMER_TYPES> accept_event;
         std::array<uint8_t, NB_EVENT_TIMER_TYPES> updated;
-        std::array<std::chrono::steady_clock::time_point,
-                   NB_EVENT_TIMER_TYPES>
+        std::array<std::chrono::steady_clock::time_point, NB_EVENT_TIMER_TYPES>
           time_ref;
         std::array<double, NB_EVENT_TIMER_TYPES> timer_diff;
         std::array<double, NB_EVENT_TIMER_TYPES> timer_values;
@@ -89,6 +91,7 @@ class EventHandler
     Perspective *_perspective;
     ChunkManager *_cm;
     Font *_font;
+    Skybox *_skybox;
 
     EventTimers _timers;
 

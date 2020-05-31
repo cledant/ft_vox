@@ -21,6 +21,7 @@ Engine::init()
     _event_handler.setPerspectiveData(&_perspective_data);
     _event_handler.setFont(&_font);
     _event_handler.setChunkManager(&_cm);
+    _event_handler.setSkybox(&_skybox);
     _io_manager.createWindow("ft_vox");
     _perspective_data.near_far = DEFAULT_NEAR_FAR;
     _perspective_data.fov = DEFAULT_FOV;
@@ -46,11 +47,9 @@ Engine::run()
     while (!_io_manager.shouldClose()) {
         _io_manager.clear();
         _event_handler.processEvents(_io_manager.getEvents());
-        _cm.update(_camera.getPosition());
         _cm.draw(_camera.getPerspectiveViewMatrix(),
                  _camera.getFrustumPlanes(),
                  _camera.getAbsFrustumPlanes());
-        _skybox.update(_camera.getPosition());
         _skybox.draw(_camera.getPerspectiveViewMatrix(),
                      _perspective_data.near_far.y);
         if (_event_handler.printUi()) {
