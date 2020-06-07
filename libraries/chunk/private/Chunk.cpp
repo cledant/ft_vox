@@ -77,14 +77,42 @@ void
 Chunk::addBlock(uint16_t index, BlockType type)
 {
     _block_chunk[index] = (_block_chunk[index] & LEFT_3_BITS) | type;
-    generateChunk();
+    _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
+    _generate_visible_blocks_buffer();
+}
+
+void
+Chunk::addBlock(glm::vec3 const &pos, BlockType type)
+{
+    // TODO
+    (void)pos;
+    uint16_t index = 4096;
+    if (!_block_chunk[index]) {
+        _block_chunk[index] = (_block_chunk[index] & LEFT_3_BITS) | type;
+        _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
+        _generate_visible_blocks_buffer();
+    }
 }
 
 void
 Chunk::removeBlock(uint16_t index)
 {
     _block_chunk[index] = 0;
-    generateChunk();
+    _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
+    _generate_visible_blocks_buffer();
+}
+
+void
+Chunk::removeBlock(glm::vec3 const &pos)
+{
+    // TODO
+    (void)pos;
+    uint16_t index = 4096;
+    if (_block_chunk[index]) {
+        _block_chunk[index] = 0;
+        _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
+        _generate_visible_blocks_buffer();
+    }
 }
 
 uint8_t

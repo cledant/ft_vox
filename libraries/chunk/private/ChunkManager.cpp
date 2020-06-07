@@ -29,17 +29,7 @@ ChunkManager::init()
 void
 ChunkManager::update(glm::vec3 const &player_pos)
 {
-    // Update Player position
-    _player_pos.x =
-      static_cast<int32_t>(player_pos.x) / static_cast<int32_t>(BLOCK_PER_LINE);
-    _player_pos.y =
-      static_cast<int32_t>(player_pos.z) / static_cast<int32_t>(LINE_PER_PLANE);
-    if (player_pos.x < 0.0f) {
-        _player_pos.x -= 1;
-    }
-    if (player_pos.z < 0.0f) {
-        _player_pos.y -= 1;
-    }
+    _player_pos = _get_chunk_coordinate(player_pos);
     _remove_out_of_range_chunk();
     _add_available_chunk_to_viewable();
     _chunk_computation();
@@ -73,22 +63,40 @@ ChunkManager::draw(glm::mat4 const &projection,
 }
 
 void
-ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
+ChunkManager::addBlock(glm::vec3 const &player_pos,
+                       glm::vec3 const &direction,
+                       BlockType type)
 {
-    // TODO
-    std::cout << "I ADD BLOCK" << std::endl;
-    (void)player_pos;
-    (void)direction;
+    auto targeted_pos = player_pos + direction;
+    auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+
+    for (auto &it : _chunk) {
+        if (it.getPosition() == targeted_chunk_coord) {
+            it.addBlock(targeted_pos, type);
+            if (!it.allocateGPUResources()) {
+                it.updateGPUResources();
+            }
+            break;
+        }
+    }
 }
 
 void
 ChunkManager::removeBlock(glm::vec3 const &player_pos,
                           glm::vec3 const &direction)
 {
-    // TODO
-    std::cout << "I REMOVE BLOCK" << std::endl;
-    (void)player_pos;
-    (void)direction;
+    auto targeted_pos = player_pos + direction;
+    auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+
+    for (auto &it : _chunk) {
+        if (it.getPosition() == targeted_chunk_coord) {
+            it.removeBlock(targeted_pos);
+            if (!it.allocateGPUResources()) {
+                it.updateGPUResources();
+            }
+            break;
+        }
+    }
 }
 
 void
@@ -238,4 +246,22 @@ ChunkManager::_generate_chunk(glm::ivec2 pos)
 
     new_chunk.generateChunk();
     return (new_chunk);
+}
+
+glm::ivec2
+ChunkManager::_get_chunk_coordinate(const glm::vec3 &space_coord)
+{
+    glm::ivec2 chunk_coord;
+
+    chunk_coord.x = static_cast<int32_t>(space_coord.x) /
+                    static_cast<int32_t>(BLOCK_PER_LINE);
+    chunk_coord.y = static_cast<int32_t>(space_coord.z) /
+                    static_cast<int32_t>(LINE_PER_PLANE);
+    if (space_coord.x < 0.0f) {
+        chunk_coord.x -= 1;
+    }
+    if (space_coord.z < 0.0f) {
+        chunk_coord.y -= 1;
+    }
+    return (chunk_coord);
 }

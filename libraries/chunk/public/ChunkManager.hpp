@@ -11,6 +11,7 @@
 #include "glm/gtx/hash.hpp"
 
 #include "Chunk.hpp"
+#include "ChunkDataStructures.hpp"
 #include "GLShader.hpp"
 #include "GLTexture2D.hpp"
 
@@ -29,17 +30,18 @@ class ChunkManager final
     void draw(glm::mat4 const &projection,
               std::array<glm::vec4, 6> const &frustum_planes,
               std::array<glm::vec4, 6> const &abs_frustum_planes);
-    void addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
+    void addBlock(glm::vec3 const &player_pos,
+                  glm::vec3 const &direction,
+                  BlockType type);
     void removeBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
 
     void increaseRenderDistance();
     void decreaseRenderDistance();
+
     [[nodiscard]] uint64_t getRenderDistance() const;
-
     glm::ivec2 const &getPlayerPosition() const;
-    uint64_t getNbInRangeChunks() const;
-
-    uint64_t getNbDisplayedChunk() const;
+    [[nodiscard]] uint64_t getNbInRangeChunks() const;
+    [[nodiscard]] uint64_t getNbDisplayedChunk() const;
 
   private:
     static constexpr int32_t MIN_RENDER_DISTANCE = 0;
@@ -64,6 +66,8 @@ class ChunkManager final
     inline void _chunk_computation();
     inline uint8_t _add_new_chunk(glm::ivec2 const &pos);
     static inline Chunk _generate_chunk(glm::ivec2 pos);
+    static inline glm::ivec2 _get_chunk_coordinate(
+      glm::vec3 const &space_coord);
 };
 
 #endif // FT_VOX_CHUNKMANAGER_HPP

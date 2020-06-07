@@ -138,7 +138,7 @@ EventHandler::processEvents(IOEvents const &events)
 
     // Interaction related update
     if (_timers.updated[ET_ADD_BLOCK]) {
-        _cm->addBlock(_camera->getPosition(), _camera->getFront());
+        _cm->addBlock(_camera->getPosition(), _camera->getFront(), COBBLESTONE);
     }
     if (_timers.updated[ET_REMOVE_BLOCK]) {
         _cm->removeBlock(_camera->getPosition(), _camera->getFront());

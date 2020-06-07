@@ -18,7 +18,9 @@ class Chunk final
     explicit Chunk(glm::ivec2 const &chunk_position);
 
     void addBlock(uint16_t index, BlockType type);
+    void addBlock(glm::vec3 const &pos, BlockType type);
     void removeBlock(uint16_t index);
+    void removeBlock(glm::vec3 const &pos);
     [[nodiscard]] uint8_t getBlock(uint16_t index) const;
 
     void setPosition(glm::ivec2 const &pos);
