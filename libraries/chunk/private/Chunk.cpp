@@ -73,46 +73,56 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
     _center = _space_coord + EXTENT;
 }
 
-void
+uint8_t
 Chunk::addBlock(uint16_t index, BlockType type)
 {
     _block_chunk[index] = (_block_chunk[index] & LEFT_3_BITS) | type;
     _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
     _generate_visible_blocks_buffer();
+    return (0);
 }
 
-void
+uint8_t
 Chunk::addBlock(glm::vec3 const &pos, BlockType type)
 {
-    // TODO
-    (void)pos;
-    uint16_t index = 4096;
+    auto index = _get_index_from_pos(pos - _space_coord);
+    if (index < 0 || index > TOTAL_BLOCK) {
+        return (1);
+    }
+
     if (!_block_chunk[index]) {
         _block_chunk[index] = (_block_chunk[index] & LEFT_3_BITS) | type;
         _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
         _generate_visible_blocks_buffer();
+        return (0);
     }
+    return (1);
 }
 
-void
+uint8_t
 Chunk::removeBlock(uint16_t index)
 {
     _block_chunk[index] = 0;
     _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
     _generate_visible_blocks_buffer();
+    return (0);
 }
 
-void
+uint8_t
 Chunk::removeBlock(glm::vec3 const &pos)
 {
-    // TODO
-    (void)pos;
-    uint16_t index = 4096;
+    auto index = _get_index_from_pos(pos - _space_coord);
+    if (index < 0 || index > TOTAL_BLOCK) {
+        return (1);
+    }
+
     if (_block_chunk[index]) {
         _block_chunk[index] = 0;
         _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
         _generate_visible_blocks_buffer();
+        return (0);
     }
+    return (1);
 }
 
 uint8_t
@@ -243,7 +253,7 @@ void
 Chunk::_generate_visible_blocks_buffer()
 {
     for (int32_t i = 0; i < TOTAL_BLOCK; ++i) {
-        uint16_t visible_faces = 0;
+        uint16_t visible_faces;
         if (_block_chunk[i] &&
             (visible_faces = _compute_block_visible_faces(i))) {
             _visible_blocks[_nb_visible_blocks] =
@@ -338,4 +348,21 @@ Chunk::_deallocate_gpu()
     if (_vbo) {
         glDeleteBuffers(1, &_vbo);
     }
+}
+
+inline int32_t
+Chunk::_get_index_from_pos(glm::vec3 const &pos)
+{
+    glm::ivec3 chunk_coord;
+
+    chunk_coord.x =
+      static_cast<int32_t>(pos.x) % static_cast<int32_t>(BLOCK_PER_LINE);
+    chunk_coord.y =
+      static_cast<int32_t>(pos.z) % static_cast<int32_t>(LINE_PER_PLANE);
+    chunk_coord.z =
+      static_cast<int32_t>(pos.y) % static_cast<int32_t>(PLANE_PER_CHUNK);
+    int32_t index = chunk_coord.z * static_cast<int32_t>(PLANE_PER_CHUNK) +
+                    chunk_coord.y * static_cast<int32_t>(LINE_PER_PLANE) +
+                    chunk_coord.x;
+    return (index);
 }

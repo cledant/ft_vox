@@ -72,8 +72,8 @@ ChunkManager::addBlock(glm::vec3 const &player_pos,
 
     for (auto &it : _chunk) {
         if (it.getPosition() == targeted_chunk_coord) {
-            it.addBlock(targeted_pos, type);
-            if (!it.allocateGPUResources()) {
+            if (!it.addBlock(targeted_pos, type) &&
+                !it.allocateGPUResources()) {
                 it.updateGPUResources();
             }
             break;
@@ -90,8 +90,7 @@ ChunkManager::removeBlock(glm::vec3 const &player_pos,
 
     for (auto &it : _chunk) {
         if (it.getPosition() == targeted_chunk_coord) {
-            it.removeBlock(targeted_pos);
-            if (!it.allocateGPUResources()) {
+            if (!it.removeBlock(targeted_pos) && !it.allocateGPUResources()) {
                 it.updateGPUResources();
             }
             break;

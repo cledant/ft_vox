@@ -17,10 +17,10 @@ class Chunk final
     Chunk &operator=(Chunk &&rhs) noexcept;
     explicit Chunk(glm::ivec2 const &chunk_position);
 
-    void addBlock(uint16_t index, BlockType type);
-    void addBlock(glm::vec3 const &pos, BlockType type);
-    void removeBlock(uint16_t index);
-    void removeBlock(glm::vec3 const &pos);
+    uint8_t addBlock(uint16_t index, BlockType type);
+    uint8_t addBlock(glm::vec3 const &pos, BlockType type);
+    uint8_t removeBlock(uint16_t index);
+    uint8_t removeBlock(glm::vec3 const &pos);
     [[nodiscard]] uint8_t getBlock(uint16_t index) const;
 
     void setPosition(glm::ivec2 const &pos);
@@ -50,6 +50,8 @@ class Chunk final
     inline uint8_t _allocate_vbo();
     inline uint8_t _allocate_vao();
     inline void _deallocate_gpu();
+
+    static inline int32_t _get_index_from_pos(glm::vec3 const &pos);
 
     /*
      * Buffers that will be used for block type generation
