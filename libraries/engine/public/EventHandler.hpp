@@ -7,7 +7,7 @@
 #include "Camera.hpp"
 #include "IOManager.hpp"
 #include "Perspective.hpp"
-#include "Font.hpp"
+#include "Ui.hpp"
 #include "ChunkManager.hpp"
 #include "Skybox.hpp"
 
@@ -24,7 +24,7 @@ class EventHandler
     void setCamera(Camera *camera);
     void setIOManager(IOManager *io_manager);
     void setPerspectiveData(Perspective *perspective);
-    void setFont(Font *font);
+    void setUi(Ui *Ui);
     void setChunkManager(ChunkManager *cm);
     void setSkybox(Skybox *skybox);
 
@@ -90,7 +90,7 @@ class EventHandler
     IOManager *_io_manager;
     Perspective *_perspective;
     ChunkManager *_cm;
-    Font *_font;
+    Ui *_ui;
     Skybox *_skybox;
 
     EventTimers _timers;

@@ -5,7 +5,7 @@ Engine::Engine()
   , _camera()
   , _event_handler()
   , _perspective_data()
-  , _font()
+  , _ui()
   , _cm()
   , _skybox()
   , _nb_frame(0)
@@ -19,7 +19,7 @@ Engine::init()
     _event_handler.setCamera(&_camera);
     _event_handler.setIOManager(&_io_manager);
     _event_handler.setPerspectiveData(&_perspective_data);
-    _event_handler.setFont(&_font);
+    _event_handler.setUi(&_ui);
     _event_handler.setChunkManager(&_cm);
     _event_handler.setSkybox(&_skybox);
     _io_manager.createWindow("ft_vox");
@@ -31,11 +31,7 @@ Engine::init()
                                             _perspective_data.near_far.x,
                                             _perspective_data.near_far.y));
     _camera.setPosition(START_POS);
-    _font.init("./ressources/fonts/Roboto-Light.ttf",
-               "./ressources/shaders/font/font_vs.glsl",
-               "./ressources/shaders/font/font_fs.glsl",
-               glm::vec2(IOManager::WIN_W, IOManager::WIN_H),
-               24);
+    _ui.init(glm::vec2(IOManager::WIN_W, IOManager::WIN_H));
     _cm.init();
     _skybox.init("./ressources/textures/skybox.png");
     _fps_count_timeref = std::chrono::steady_clock::now();
@@ -53,8 +49,13 @@ Engine::run()
         _skybox.draw(_camera.getPerspectiveViewMatrix(),
                      _perspective_data.near_far.y);
         if (_event_handler.printUi()) {
-            _print_ui_info();
-            _print_ui_keys();
+            _ui.draw(_str_fps,
+                     _camera.getPosition(),
+                     _camera.getFront(),
+                     _cm.getRenderDistance(),
+                     _cm.getPlayerPosition(),
+                     _cm.getNbInRangeChunks(),
+                     _cm.getNbDisplayedChunk());
         }
         _io_manager.render();
         while (glGetError()) {
@@ -74,120 +75,5 @@ Engine::_compute_fps()
         _str_fps = std::to_string(_nb_frame);
         _nb_frame = 0;
         _fps_count_timeref = now;
-    }
-}
-
-void
-Engine::_print_ui_info()
-{
-    auto constexpr start_pos = glm::vec2(15.0f, 30.0f);
-    static const std::array<void (Engine::*)(glm::vec2 const &screen_pos),
-                            NB_DEBUG_UI>
-      func = {
-          &Engine::_print_ui_avg_fps,
-          &Engine::_print_ui_camera_pos,
-          &Engine::_print_ui_direction_vector,
-          &Engine::_print_ui_player_chunk,
-          &Engine::_print_ui_in_range_chunks,
-          &Engine::_print_ui_nb_displayed_chunks,
-          &Engine::_print_ui_render_dist,
-      };
-
-    for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {
-        std::invoke(
-          func[i], this, glm::vec2(start_pos.x, start_pos.y + 30.0f * i));
-    }
-}
-
-void
-Engine::_print_ui_avg_fps(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_fps;
-    ss_fps.precision(2);
-    ss_fps << "Avg FPS: " << _str_fps;
-    _font.drawText(ss_fps.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_camera_pos(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_pos;
-    ss_pos.precision(2);
-    auto camera_pos = _camera.getPosition();
-    ss_pos << "Cam Pos: " << std::fixed << "X = " << camera_pos.x
-           << " | Y = " << camera_pos.y << " | Z = " << camera_pos.z;
-    _font.drawText(ss_pos.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_direction_vector(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_dir;
-    ss_dir.precision(2);
-    auto camera_direction = _camera.getFront();
-    ss_dir << "Cam Direction: " << std::fixed << "X = " << camera_direction.x
-           << " | Y = " << camera_direction.y
-           << " | Z = " << camera_direction.z;
-    _font.drawText(ss_dir.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_render_dist(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_render_dist;
-    ss_render_dist.precision(2);
-    ss_render_dist << "Render Distance: " << std::fixed
-                   << _cm.getRenderDistance();
-    _font.drawText(ss_render_dist.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_player_chunk(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_ui;
-    auto player_pos = _cm.getPlayerPosition();
-    ss_ui.precision(2);
-    ss_ui << "Player Chunk: X = " << std::fixed << player_pos.x
-          << " | Y = " << player_pos.y;
-    _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_in_range_chunks(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_ui;
-    ss_ui.precision(2);
-    ss_ui << "In Range Chunk: " << std::fixed << _cm.getNbInRangeChunks();
-    _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_nb_displayed_chunks(glm::vec2 const &screen_pos)
-{
-    std::stringstream ss_ui;
-    ss_ui.precision(2);
-    ss_ui << "Displayed Chunk: " << std::fixed << _cm.getNbDisplayedChunk();
-    _font.drawText(ss_ui.str(), glm::vec3(1.0f), screen_pos, 1.0f);
-}
-
-void
-Engine::_print_ui_keys()
-{
-    static const std::array<std::string, NB_KEY_DESCRIPTION> key_description = {
-        "ESC = Close",
-        "WASD = Movements",
-        "QE = Down / Up",
-        "- = Decrease Render Dist",
-        "= = Increase Render Dist",
-        "P = Toggle Mouse",
-        "H = Toggle UI"
-    };
-    auto win_size = _io_manager.getWindowSize();
-
-    for (uint16_t i = 0; i < NB_KEY_DESCRIPTION; ++i) {
-        _font.drawText(key_description[i],
-                       glm::vec3(1.0f),
-                       glm::vec2(win_size.x - 300.0f, 30.0f * (i + 1.0f)),
-                       1.0f);
     }
 }

@@ -8,7 +8,7 @@ EventHandler::EventHandler()
   , _io_manager(nullptr)
   , _perspective(nullptr)
   , _cm(nullptr)
-  , _font(nullptr)
+  , _ui(nullptr)
   , _skybox(nullptr)
   , _timers()
   , _movements(0)
@@ -36,9 +36,9 @@ EventHandler::setPerspectiveData(Perspective *perspective)
 }
 
 void
-EventHandler::setFont(Font *font)
+EventHandler::setUi(Ui *Ui)
 {
-    _font = font;
+    _ui = Ui;
 }
 
 void
@@ -66,7 +66,7 @@ EventHandler::processEvents(IOEvents const &events)
     assert(_camera);
     assert(_io_manager);
     assert(_perspective);
-    assert(_font);
+    assert(_ui);
     assert(_cm);
     assert(_skybox);
 
@@ -121,7 +121,7 @@ EventHandler::processEvents(IOEvents const &events)
         }
     }
     if (_io_manager->wasResized()) {
-        _font->setOrthographicProjection(_io_manager->getWindowSize());
+        _ui->setOrthographicProjection(_io_manager->getWindowSize());
         _perspective->ratio = _io_manager->getWindowRatio();
     }
     if (_io_manager->wasResized() || _timers.updated[ET_RENDER_DISTANCE]) {

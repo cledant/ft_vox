@@ -24,15 +24,14 @@ class Font final
     void init(std::string const &path_font,
               std::string const &path_vs,
               std::string const &path_fs,
-              glm::vec2 const &window_size,
               uint64_t font_size);
     void clear();
-
-    void setOrthographicProjection(glm::vec2 const &window_size);
 
     void drawText(std::string const &str,
                   glm::vec3 const &color,
                   glm::vec2 const &pos,
+                  glm::mat4 const &ortho,
+                  glm::vec2 const &win_size,
                   float scale);
 
   private:
@@ -54,8 +53,6 @@ class Font final
     uint8_t _is_init;
     uint64_t _font_size;
     GLShader _shader;
-    glm::vec2 _win_size;
-    glm::mat4 _ortho;
     std::map<char, FontChar> _char_list;
     uint32_t _vao;
     uint32_t _vbo;

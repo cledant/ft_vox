@@ -29,9 +29,10 @@ add_subdirectory(libraries/engine)
 add_subdirectory(libraries/gl_objects)
 add_subdirectory(libraries/chunk)
 add_subdirectory(libraries/skybox)
+add_subdirectory(libraries/ui)
 
 #Main binary
-add_executable(ft_vox binary/private/ft_vox.cpp)
+add_executable(ft_vox binary/private/ft_vox.cpp libraries/ui/public/Ui.hpp)
 target_link_libraries(ft_vox engine iomanager)
 add_dependencies(ft_vox engine iomanager)
 target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)

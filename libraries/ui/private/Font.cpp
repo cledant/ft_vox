@@ -1,7 +1,6 @@
 #include <stdexcept>
 
 #include "glad/glad.h"
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "Font.hpp"
 
@@ -9,8 +8,6 @@ Font::Font()
   : _is_init(0)
   , _font_size(1)
   , _shader()
-  , _win_size(1.0f)
-  , _ortho(1.0f)
   , _char_list()
   , _vao(0)
   , _vbo(0)
@@ -29,8 +26,6 @@ Font::Font(Font &&src) noexcept
   : _is_init(0)
   , _font_size(1)
   , _shader()
-  , _win_size(1.0f)
-  , _ortho(1.0)
   , _char_list()
   , _vao(0)
   , _vbo(0)
@@ -43,7 +38,6 @@ Font::operator=(Font &&rhs) noexcept
 {
     _is_init = rhs._is_init;
     _shader = std::move(rhs._shader);
-    _ortho = rhs._ortho;
     _char_list = rhs._char_list;
     _vao = rhs._vao;
     _vbo = rhs._vbo;
@@ -56,10 +50,9 @@ Font::operator=(Font &&rhs) noexcept
 
 void
 Font::init(std::string const &path_font,
-             std::string const &path_vs,
-             std::string const &path_fs,
-             glm::vec2 const &window_size,
-             uint64_t font_size)
+           std::string const &path_vs,
+           std::string const &path_fs,
+           uint64_t font_size)
 {
     if (!_is_init) {
         _allocate_vbo();
@@ -67,8 +60,6 @@ Font::init(std::string const &path_font,
         _font_size = font_size;
         _shader.init(path_vs, path_fs, "FontShader");
         _loadFont(path_font);
-        _win_size = window_size;
-        _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
         _is_init = 1;
     }
 }
@@ -85,27 +76,22 @@ Font::clear()
 }
 
 void
-Font::setOrthographicProjection(glm::vec2 const &window_size)
-{
-    _win_size = window_size;
-    _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
-}
-
-void
 Font::drawText(std::string const &str,
-                 glm::vec3 const &color,
-                 glm::vec2 const &pos,
-                 float scale)
+               glm::vec3 const &color,
+               glm::vec2 const &pos,
+               glm::mat4 const &ortho,
+               glm::vec2 const &win_size,
+               float scale)
 {
     float pos_x_offseted = pos.x;
-    float pos_y = _win_size.y - pos.y;
+    float pos_y = win_size.y - pos.y;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     _shader.use();
-    _shader.setMat4("uniform_mat_ortho", _ortho);
+    _shader.setMat4("uniform_mat_ortho", ortho);
     _shader.setVec3("uniform_color", color);
     for (auto const &it : str) {
         auto fchar = _char_list.find(it);
@@ -115,7 +101,7 @@ Font::drawText(std::string const &str,
 
         float xpos = pos_x_offseted + fchar->second.bearing.x * scale;
         float ypos =
-                pos_y - (fchar->second.size.y - fchar->second.bearing.y) * scale;
+          pos_y - (fchar->second.size.y - fchar->second.bearing.y) * scale;
         float w = fchar->second.size.x * scale;
         float h = fchar->second.size.y * scale;
         float vertices[6][4] = { { xpos, ypos + h, 0.0, 0.0 },
@@ -218,9 +204,7 @@ Font::_allocate_vao()
 }
 
 uint32_t
-Font::_create_glyph_texture(const void *buffer,
-                              uint32_t tex_w,
-                              uint32_t tex_h)
+Font::_create_glyph_texture(const void *buffer, uint32_t tex_w, uint32_t tex_h)
 {
     uint32_t tex_id;
 
