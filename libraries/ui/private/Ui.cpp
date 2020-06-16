@@ -17,6 +17,8 @@ Ui::init(glm::vec2 const &window_size)
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
                24);
+    _cursor.init(
+      "./ressources/textures/crosshair.png", glm::vec2(5.0f), _win_size);
     _win_size = window_size;
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }

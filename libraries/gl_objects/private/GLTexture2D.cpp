@@ -20,7 +20,7 @@ GLTexture2D::GLTexture2D(std::string const &filepath,
   , _tex_h(0)
   , _tex_nb_chan(0)
 {
-    loadTexture(filepath.c_str(), use_nearest_filtering);
+    init(filepath.c_str(), use_nearest_filtering);
 }
 
 GLTexture2D::GLTexture2D(const char *filepath, uint8_t use_nearest_filtering)
@@ -29,7 +29,7 @@ GLTexture2D::GLTexture2D(const char *filepath, uint8_t use_nearest_filtering)
   , _tex_h(0)
   , _tex_nb_chan(0)
 {
-    loadTexture(filepath, use_nearest_filtering);
+    init(filepath, use_nearest_filtering);
 }
 
 GLTexture2D::GLTexture2D(GLTexture2D &&src) noexcept
@@ -53,7 +53,7 @@ GLTexture2D::operator=(GLTexture2D &&rhs) noexcept
 }
 
 void
-GLTexture2D::loadTexture(const char *filepath, uint8_t use_nearest_filtering)
+GLTexture2D::init(const char *filepath, uint8_t use_nearest_filtering)
 {
     uint8_t *data;
 
@@ -97,6 +97,17 @@ GLTexture2D::loadTexture(const char *filepath, uint8_t use_nearest_filtering)
         throw std::runtime_error("OpenGL Error for texture 2d: " +
                                  std::string(filepath));
     }
+}
+
+void
+GLTexture2D::clear()
+{
+    if (_tex_id) {
+        glDeleteTextures(1, &_tex_id);
+    }
+    _tex_w = 0;
+    _tex_h = 0;
+    _tex_nb_chan = 0;
 }
 
 uint32_t

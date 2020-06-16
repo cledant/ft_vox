@@ -5,41 +5,42 @@
 #include <string>
 
 #include "glm/glm.hpp"
+#include "glad/glad.h"
+
+#include "GLTexture2D.hpp"
+#include "GLShader.hpp"
 
 class Cursor final
 {
   public:
-    Cursor() = default;
-    ~Cursor() = default;
+    Cursor();
+    ~Cursor();
     Cursor(Cursor const &src) = delete;
     Cursor &operator=(Cursor const &rhs) = delete;
     Cursor(Cursor &&src) noexcept;
     Cursor &operator=(Cursor &&rhs) noexcept;
 
-    void init(std::string const &texture_path);
+    void init(std::string const &texture_path,
+              glm::vec2 const &size,
+              glm::vec2 const &center);
     void clear();
 
     void setCenter(glm::vec2 const &center_pos);
     void setSize(glm::vec2 const &size);
 
-    void setOrthographicProjection(glm::vec2 const &window_size);
-
-    void draw();
+    void draw(glm::mat4 const &ortho);
 
     void _allocate_vbo();
     void _allocate_vao();
+    glm::vec2 _compute_center(glm::vec2 const &screen_size);
 
-    glm::mat4 _ortho;
+    uint8_t _is_init;
+    GLTexture2D _tex;
+    GLShader _shader;
     glm::vec2 _size;
     glm::vec2 _center;
     uint32_t _vbo;
     uint32_t _vao;
-
-    static float constexpr _tex_vertices[] = {
-        -1.0f, 1.0f,  0.5f, 0.0f, 1.0f, 1.0f,  1.0f,  0.5f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 0.5f, 0.0f, 0.0f, -1.0f, -1.0f, 0.5f, 0.0f, 0.0f,
-        1.0f,  1.0f,  0.5f, 1.0f, 1.0f, 1.0f,  -1.0f, 0.5f, 1.0f, 0.0f
-    };
 };
 
 #endif // FT_VOX_CURSOR_HPP

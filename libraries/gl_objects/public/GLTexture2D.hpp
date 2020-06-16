@@ -17,7 +17,8 @@ class GLTexture2D final
                          uint8_t use_nearest_filtering);
     explicit GLTexture2D(char const *filepath, uint8_t use_nearest_filtering);
 
-    void loadTexture(char const *filepath, uint8_t use_nearest_filtering);
+    void init(char const *filepath, uint8_t use_nearest_filtering);
+    void clear();
 
     [[nodiscard]] uint32_t getTextureID() const;
 
