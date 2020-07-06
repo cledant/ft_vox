@@ -41,7 +41,6 @@ class EventHandler
     static double constexpr ACTION_TIMER_SECONDS = 0.5;
     static constexpr double TARGET_PLAYER_TICK_DURATION =
       1 / TARGET_PLAYER_TICK;
-    static uint8_t constexpr NB_EVENT_TIMER_TYPES = 6;
 
     enum EventTimersTypes
     {
@@ -50,7 +49,9 @@ class EventHandler
         ET_ADD_BLOCK,
         ET_REMOVE_BLOCK,
         ET_CAMERA,
-        ET_RENDER_DISTANCE
+        ET_RENDER_DISTANCE,
+        ET_PLAYER_BLOCK_CHANGE,
+        ET_NB_EVENT_TIMER_TYPES
     };
 
     struct EventTimers final
@@ -58,12 +59,12 @@ class EventHandler
         EventTimers();
         ~EventTimers() = default;
 
-        std::array<uint8_t, NB_EVENT_TIMER_TYPES> accept_event;
-        std::array<uint8_t, NB_EVENT_TIMER_TYPES> updated;
-        std::array<std::chrono::steady_clock::time_point, NB_EVENT_TIMER_TYPES>
+        std::array<uint8_t, ET_NB_EVENT_TIMER_TYPES> accept_event;
+        std::array<uint8_t, ET_NB_EVENT_TIMER_TYPES> updated;
+        std::array<std::chrono::steady_clock::time_point, ET_NB_EVENT_TIMER_TYPES>
           time_ref;
-        std::array<double, NB_EVENT_TIMER_TYPES> timer_diff;
-        std::array<double, NB_EVENT_TIMER_TYPES> timer_values;
+        std::array<double, ET_NB_EVENT_TIMER_TYPES> timer_diff;
+        std::array<double, ET_NB_EVENT_TIMER_TYPES> timer_values;
     };
 
     // Event handling functions

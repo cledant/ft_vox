@@ -6,6 +6,7 @@
 
 ChunkManager::ChunkManager()
   : _current_render_distance(MIN_RENDER_DISTANCE)
+  , _current_player_block(STONE)
   , _player_pos(0)
   , _chunk()
   , _compute_chunk()
@@ -82,6 +83,24 @@ ChunkManager::addBlock(glm::vec3 const &player_pos,
 }
 
 void
+ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
+{
+    auto targeted_pos = player_pos + direction;
+    auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+
+    for (auto &it : _chunk) {
+        if (it.getPosition() == targeted_chunk_coord) {
+            if (!it.addBlock(targeted_pos,
+                             static_cast<BlockType>(_current_player_block)) &&
+                !it.allocateGPUResources()) {
+                it.updateGPUResources();
+            }
+            break;
+        }
+    }
+}
+
+void
 ChunkManager::removeBlock(glm::vec3 const &player_pos,
                           glm::vec3 const &direction)
 {
@@ -114,6 +133,24 @@ ChunkManager::decreaseRenderDistance()
     }
 }
 
+void
+ChunkManager::increaseCurrentPlayerBlock()
+{
+    _current_player_block += 1;
+    if (_current_player_block == TOTAL_BLOCKS) {
+        _current_player_block = 1;
+    }
+}
+
+void
+ChunkManager::decreaseCurrentPlayerBlock()
+{
+    _current_player_block += 1;
+    if (!_current_player_block) {
+        _current_player_block = TOTAL_BLOCKS - 1;
+    }
+}
+
 uint64_t
 ChunkManager::getRenderDistance() const
 {
@@ -130,6 +167,12 @@ uint64_t
 ChunkManager::getNbInRangeChunks() const
 {
     return (_chunk.size());
+}
+
+int32_t
+ChunkManager::getCurrentPlayerBlock() const
+{
+    return (_current_player_block);
 }
 
 uint64_t

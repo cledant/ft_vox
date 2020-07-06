@@ -69,40 +69,42 @@ EventHandler::processEvents(IOEvents const &events)
     assert(_ui);
     assert(_cm);
     assert(_skybox);
+    assert(_ui);
 
     // Resetting movement tracking
     _movements = glm::ivec3(0);
 
-    static const std::array<void (EventHandler::*)(), NBR_IO_EVENTS> func = {
-        &EventHandler::_mouse_exclusive,
-        &EventHandler::_close_win_event,
-        &EventHandler::_toggle_fullscreen,
-        &EventHandler::_jump,
-        &EventHandler::_crouch,
-        &EventHandler::_front,
-        &EventHandler::_back,
-        &EventHandler::_right,
-        &EventHandler::_left,
-        &EventHandler::_add_block,
-        &EventHandler::_remove_block,
-        &EventHandler::_increase_render_distance,
-        &EventHandler::_decrease_render_distance,
-        &EventHandler::_toggle_ui,
-        &EventHandler::_speed_up,
-    };
+    static const std::array<void (EventHandler::*)(), NB_IO_EVENTS>
+      keyboard_events = {
+          &EventHandler::_mouse_exclusive,
+          &EventHandler::_close_win_event,
+          &EventHandler::_toggle_fullscreen,
+          &EventHandler::_jump,
+          &EventHandler::_crouch,
+          &EventHandler::_front,
+          &EventHandler::_back,
+          &EventHandler::_right,
+          &EventHandler::_left,
+          &EventHandler::_add_block,
+          &EventHandler::_remove_block,
+          &EventHandler::_increase_render_distance,
+          &EventHandler::_decrease_render_distance,
+          &EventHandler::_toggle_ui,
+          &EventHandler::_speed_up,
+      };
 
     // Checking Timers
     auto now = std::chrono::steady_clock::now();
-    for (uint8_t i = 0; i < NB_EVENT_TIMER_TYPES; ++i) {
+    for (uint8_t i = 0; i < ET_NB_EVENT_TIMER_TYPES; ++i) {
         std::chrono::duration<double> time_diff = now - _timers.time_ref[i];
         _timers.timer_diff[i] = time_diff.count();
         _timers.accept_event[i] = (time_diff.count() > _timers.timer_values[i]);
     }
 
     // Looping over events types
-    for (uint8_t i = 0; i < NBR_IO_EVENTS; ++i) {
+    for (uint8_t i = 0; i < NB_IO_EVENTS; ++i) {
         if (events.events[i]) {
-            std::invoke(func[i], this);
+            std::invoke(keyboard_events[i], this);
         }
     }
 
@@ -136,16 +138,28 @@ EventHandler::processEvents(IOEvents const &events)
     _cm->update(_camera->getPosition());
     _skybox->update(_camera->getPosition());
 
-    // Interaction related update
+    // Change player block
+    if (_timers.accept_event[ET_PLAYER_BLOCK_CHANGE]) {
+        if (events.mouse_scroll > 0.001f) {
+            _cm->increaseCurrentPlayerBlock();
+        } else if (events.mouse_scroll < -0.001f) {
+            _cm->decreaseCurrentPlayerBlock();
+        }
+        _io_manager->resetMouseScroll();
+        _timers.accept_event[ET_PLAYER_BLOCK_CHANGE] = 0;
+        _timers.updated[ET_PLAYER_BLOCK_CHANGE] = 1;
+    }
+
+    // Interaction related update (Needs to be done after camera update)
     if (_timers.updated[ET_ADD_BLOCK]) {
-        _cm->addBlock(_camera->getPosition(), _camera->getFront(), COBBLESTONE);
+        _cm->addBlock(_camera->getPosition(), _camera->getFront());
     }
     if (_timers.updated[ET_REMOVE_BLOCK]) {
         _cm->removeBlock(_camera->getPosition(), _camera->getFront());
     }
 
     // Setting timers origin
-    for (uint8_t i = 0; i < NB_EVENT_TIMER_TYPES; ++i) {
+    for (uint8_t i = 0; i < ET_NB_EVENT_TIMER_TYPES; ++i) {
         if (_timers.updated[i]) {
             _timers.time_ref[i] = now;
         }
@@ -166,6 +180,7 @@ EventHandler::EventTimers::EventTimers()
     timer_values[ET_REMOVE_BLOCK] = ACTION_TIMER_SECONDS;
     timer_values[ET_CAMERA] = TARGET_PLAYER_TICK_DURATION;
     timer_values[ET_RENDER_DISTANCE] = CONFIG_TIMER_SECONDS;
+    timer_values[ET_PLAYER_BLOCK_CHANGE] = ACTION_TIMER_SECONDS;
 }
 
 void

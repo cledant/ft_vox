@@ -6,8 +6,6 @@
 
 #include "glm/glm.hpp"
 
-constexpr uint16_t NBR_IO_EVENTS = 15;
-
 enum IOEventsTypes
 {
     MOUSE_EXCLUSIVE = 0,
@@ -25,17 +23,14 @@ enum IOEventsTypes
     DECREASE_RENDER_DISTANCE,
     SHOW_UI,
     SPEED_UP,
+    NB_IO_EVENTS,
 };
 
-struct IOEvents final
+struct IOEvents
 {
-    IOEvents()
-      : events()
-      , mouse_position(0.0){};
-    ~IOEvents() = default;
-
-    std::array<uint8_t, NBR_IO_EVENTS> events;
+    std::array<uint8_t, NB_IO_EVENTS> events;
     glm::vec2 mouse_position;
+    float mouse_scroll;
 };
 
 #endif // FT_VOX_IOEVENTS_HPP

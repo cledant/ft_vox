@@ -41,6 +41,7 @@ class IOManager final
 
     // Keyboard / Mouse Input related
     [[nodiscard]] IOEvents getEvents() const;
+    void resetMouseScroll();
 
     // Render Related
     void render();
@@ -51,6 +52,7 @@ class IOManager final
     std::array<uint8_t, KEYS_BUFF_SIZE> _keys;
     std::array<uint8_t, MOUSE_KEYS_BUFF_SIZE> _mouse_button;
     glm::vec2 _mouse_position;
+    float _mouse_scroll;
 
     // Window related
     GLFWwindow *_win;

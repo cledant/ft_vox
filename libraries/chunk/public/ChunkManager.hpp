@@ -33,15 +33,20 @@ class ChunkManager final
     void addBlock(glm::vec3 const &player_pos,
                   glm::vec3 const &direction,
                   BlockType type);
+    void addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
     void removeBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
 
     void increaseRenderDistance();
     void decreaseRenderDistance();
 
+    void increaseCurrentPlayerBlock();
+    void decreaseCurrentPlayerBlock();
+
     [[nodiscard]] uint64_t getRenderDistance() const;
     glm::ivec2 const &getPlayerPosition() const;
     [[nodiscard]] uint64_t getNbInRangeChunks() const;
     [[nodiscard]] uint64_t getNbDisplayedChunk() const;
+    [[nodiscard]] int32_t getCurrentPlayerBlock() const;
 
   private:
     static constexpr int32_t MIN_RENDER_DISTANCE = 0;
@@ -49,7 +54,7 @@ class ChunkManager final
     static constexpr uint32_t NB_ASYNC_THREAD = 64;
 
     int32_t _current_render_distance;
-
+    int32_t _current_player_block;
     glm::ivec2 _player_pos;
 
     std::vector<Chunk> _chunk;

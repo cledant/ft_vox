@@ -10,6 +10,7 @@ IOManager::IOManager()
   : _keys()
   , _mouse_button()
   , _mouse_position(0.0f)
+  , _mouse_scroll(0.0f)
   , _win(nullptr)
   , _fullscreen(0)
   , _resized(0)
@@ -152,7 +153,7 @@ IOManager::getWindowSize() const
 IOEvents
 IOManager::getEvents() const
 {
-    IOEvents io;
+    IOEvents io = {};
 
     glfwPollEvents();
     io.events[MOUSE_EXCLUSIVE] = _keys[GLFW_KEY_P];
@@ -171,7 +172,14 @@ IOManager::getEvents() const
     io.events[SHOW_UI] = _keys[GLFW_KEY_H];
     io.events[SPEED_UP] = _keys[GLFW_KEY_LEFT_SHIFT];
     io.mouse_position = _mouse_position;
+    io.mouse_scroll = _mouse_scroll;
     return (io);
+}
+
+void
+IOManager::resetMouseScroll()
+{
+    _mouse_scroll = 0.0f;
 }
 
 // Render related
@@ -218,7 +226,6 @@ IOManager::_initCallbacks()
     // Mouse button input
     auto mouse_button_callback =
       [](GLFWwindow *win, int button, int action, int mods) {
-          static_cast<void>(win);
           static_cast<void>(mods);
           if (button >= 0 && button < MOUSE_KEYS_BUFF_SIZE) {
               if (action == GLFW_PRESS)
@@ -228,6 +235,15 @@ IOManager::_initCallbacks()
           }
       };
     glfwSetMouseButtonCallback(_win, mouse_button_callback);
+
+    // Mouse Scroll
+    auto mouse_scroll_callback =
+      [](GLFWwindow *win, double xoffset, double yoffset) {
+          static_cast<void>(win);
+          THIS_WIN_PTR->_mouse_scroll += xoffset;
+          THIS_WIN_PTR->_mouse_scroll += yoffset;
+      };
+    glfwSetScrollCallback(_win, mouse_scroll_callback);
 
     // Close
     auto close_callback = [](GLFWwindow *win) {
