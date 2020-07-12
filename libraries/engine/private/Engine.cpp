@@ -55,7 +55,8 @@ Engine::run()
                      _cm.getRenderDistance(),
                      _cm.getPlayerPosition(),
                      _cm.getNbInRangeChunks(),
-                     _cm.getNbDisplayedChunk());
+                     _cm.getNbDisplayedChunk(),
+                     _cm.getCurrentPlayerBlock());
         }
         _io_manager.render();
         while (glGetError()) {

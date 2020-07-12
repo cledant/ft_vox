@@ -30,7 +30,8 @@ Ui::draw(std::string const &avg_fps,
          uint64_t render_dist,
          glm::ivec2 const &player_pos,
          uint64_t chunk_in_range,
-         uint64_t displayed_chunk)
+         uint64_t displayed_chunk,
+         int32_t player_block)
 {
     // Setup data to be displayed
     std::array<std::stringstream, NB_DEBUG_UI> sstream_array;
@@ -67,6 +68,11 @@ Ui::draw(std::string const &avg_fps,
     // Chunk displayed
     sstream_array[6].precision(2);
     sstream_array[6] << "Displayed Chunk: " << std::fixed << displayed_chunk;
+
+    // Player Chunk
+    sstream_array[7].precision(2);
+    sstream_array[7] << "Player Active Chunk: " << std::fixed
+                     << STR_BLOCK_TYPES[player_block];
 
     _print_ui_info(sstream_array);
     _print_ui_keys();

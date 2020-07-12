@@ -137,7 +137,7 @@ void
 ChunkManager::increaseCurrentPlayerBlock()
 {
     _current_player_block += 1;
-    if (_current_player_block == TOTAL_BLOCKS) {
+    if (_current_player_block >= TOTAL_BLOCKS) {
         _current_player_block = 1;
     }
 }
@@ -145,8 +145,8 @@ ChunkManager::increaseCurrentPlayerBlock()
 void
 ChunkManager::decreaseCurrentPlayerBlock()
 {
-    _current_player_block += 1;
-    if (!_current_player_block) {
+    _current_player_block -= 1;
+    if (_current_player_block <= 0) {
         _current_player_block = TOTAL_BLOCKS - 1;
     }
 }
