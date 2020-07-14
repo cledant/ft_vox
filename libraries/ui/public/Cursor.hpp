@@ -21,24 +21,20 @@ class Cursor final
     Cursor &operator=(Cursor &&rhs) noexcept;
 
     void init(std::string const &texture_path,
-              glm::vec2 const &size,
-              glm::vec2 const &center);
+              glm::vec2 const &cursor_pixel_size);
     void clear();
 
-    void setCenter(glm::vec2 const &center_pos);
-    void setSize(glm::vec2 const &size);
+    void setCursorPixelSize(glm::vec2 const &size);
 
-    void draw(glm::mat4 const &ortho);
+    void draw(glm::mat4 const &ortho, glm::vec2 const &win_size);
 
     void _allocate_vbo();
     void _allocate_vao();
-    glm::vec2 _compute_center(glm::vec2 const &screen_size);
 
     uint8_t _is_init;
     GLTexture2D _tex;
     GLShader _shader;
-    glm::vec2 _size;
-    glm::vec2 _center;
+    glm::vec2 _cursor_pixel_size;
     uint32_t _vbo;
     uint32_t _vao;
 };

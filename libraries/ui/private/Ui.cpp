@@ -1,7 +1,6 @@
 #include "Ui.hpp"
 
 #include <sstream>
-#include <functional>
 
 Ui::Ui()
   : _font()
@@ -17,8 +16,7 @@ Ui::init(glm::vec2 const &window_size)
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
                24);
-    _cursor.init(
-      "./ressources/textures/crosshair.png", glm::vec2(5.0f), _win_size);
+    _cursor.init("./ressources/textures/crosshair.png", glm::vec2(50.0f));
     _win_size = window_size;
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }
@@ -76,6 +74,7 @@ Ui::draw(std::string const &avg_fps,
 
     _print_ui_info(sstream_array);
     _print_ui_keys();
+    _cursor.draw(_ortho, _win_size);
 }
 
 void

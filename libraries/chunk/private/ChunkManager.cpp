@@ -53,6 +53,8 @@ ChunkManager::draw(glm::mat4 const &projection,
         _shader.setVec3("uniform_vec_chunk_position", it.getSpaceCoordinate());
         _shader.setVec4("uniform_vec_color_modifier", it.getColorModifier());
         glBindVertexArray(it.getVao());
+        glActiveTexture(GL_TEXTURE0);
+        _shader.setInt("uniform_tex_diffuse", 0);
         glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
         glDrawArraysInstanced(GL_POINTS, 0, 1, it.getNbVisibleBlocks());
         ++_nb_displayed_chunk;
