@@ -355,12 +355,14 @@ Chunk::_get_index_from_pos(glm::vec3 const &pos)
 {
     glm::ivec3 chunk_coord;
 
+    std::cout << pos.x << " | " << pos.y << " | " << pos.z << std::endl;
+
     chunk_coord.x =
-      static_cast<int32_t>(pos.x) % static_cast<int32_t>(BLOCK_PER_LINE);
+      static_cast<int32_t>(glm::round(pos.x)) % static_cast<int32_t>(BLOCK_PER_LINE);
     chunk_coord.y =
-      static_cast<int32_t>(pos.z) % static_cast<int32_t>(LINE_PER_PLANE);
+      static_cast<int32_t>(glm::round(pos.z)) % static_cast<int32_t>(LINE_PER_PLANE);
     chunk_coord.z =
-      static_cast<int32_t>(pos.y) % static_cast<int32_t>(PLANE_PER_CHUNK);
+      static_cast<int32_t>(glm::round(pos.y)) % static_cast<int32_t>(PLANE_PER_CHUNK);
     int32_t index = chunk_coord.z * static_cast<int32_t>(PLANE_PER_CHUNK) +
                     chunk_coord.y * static_cast<int32_t>(LINE_PER_PLANE) +
                     chunk_coord.x;
