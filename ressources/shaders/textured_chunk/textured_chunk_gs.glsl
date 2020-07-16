@@ -121,22 +121,22 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
-        gs_out.color_modifier = color_modifier;
+        gs_out.color_modifier = NO_COLOR_MOD;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = NO_TEXTURE;
-        gs_out.color_modifier = color_modifier;
+        gs_out.color_modifier = NO_COLOR_MOD;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
-        gs_out.color_modifier = color_modifier;
+        gs_out.color_modifier = NO_COLOR_MOD;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
-        gs_out.color_modifier = color_modifier;
+        gs_out.color_modifier = NO_COLOR_MOD;
         EmitVertex();
         EndPrimitive();
     }
@@ -205,7 +205,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT +  DOWN_RIGHT_OFF;
-        gs_out.level_1_texture_coord = GRASS_SIDE +  DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
@@ -385,7 +385,7 @@ BlockType(BEDROCK, BEDROCK, BEDROCK, BEDROCK, BEDROCK, BEDROCK, false),
 BlockType(SAND, SAND, SAND, SAND, SAND, SAND, false),
 BlockType(WATER, WATER, WATER, WATER, WATER, WATER, false),
 BlockType(SNOW, SNOW, SNOW, SNOW, SNOW, SNOW, false),
-BlockType(SNOW_GRASS, SNOW_GRASS, SNOW, SNOW_GRASS, SNOW_GRASS, SNOW_GRASS, false),
+BlockType(SNOW_GRASS, SNOW_GRASS, SNOW, DIRT, SNOW_GRASS, SNOW_GRASS, false),
 BlockType(WOOD_SIDE, WOOD_SIDE, WOOD_TOP_BOT, WOOD_TOP_BOT, WOOD_SIDE, WOOD_SIDE, false),
 BlockType(FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, FOLIAGE, true),
 BlockType(TNT_SIDE, TNT_SIDE, TNT_TOP, TNT_BOT, TNT_SIDE, TNT_SIDE, false),
