@@ -2,7 +2,6 @@
 
 #include <cstring>
 #include <stdexcept>
-#include <iostream>
 
 #include "glad/glad.h"
 
@@ -230,7 +229,7 @@ Chunk::_debug_generate_plane()
     std::memset(&_block_chunk, 0, sizeof(uint8_t) * TOTAL_BLOCK);
     uint32_t offset = 33;
     for (uint32_t i = offset; i < (BLOCK_PER_PLANE * 3 + offset); ++i) {
-        _block_chunk[i] = COBBLESTONE;
+        _block_chunk[i] = BRICKS;
     }
     _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
@@ -355,14 +354,19 @@ Chunk::_get_index_from_pos(glm::vec3 const &pos)
 {
     glm::ivec3 chunk_coord;
 
-    std::cout << pos.x << " | " << pos.y << " | " << pos.z << std::endl;
+    chunk_coord.x = glm::abs(static_cast<int32_t>(glm::round(pos.x)) %
+                             static_cast<int32_t>(BLOCK_PER_LINE));
+    chunk_coord.y = glm::abs(static_cast<int32_t>(glm::round(pos.z)) %
+                             static_cast<int32_t>(LINE_PER_PLANE));
+    chunk_coord.z = glm::abs(static_cast<int32_t>(glm::round(pos.y)) %
+                             static_cast<int32_t>(PLANE_PER_CHUNK));
 
-    chunk_coord.x =
-      static_cast<int32_t>(glm::round(pos.x)) % static_cast<int32_t>(BLOCK_PER_LINE);
-    chunk_coord.y =
-      static_cast<int32_t>(glm::round(pos.z)) % static_cast<int32_t>(LINE_PER_PLANE);
-    chunk_coord.z =
-      static_cast<int32_t>(glm::round(pos.y)) % static_cast<int32_t>(PLANE_PER_CHUNK);
+    // Should not be drawn
+    if (static_cast<int32_t>(glm::round(pos.y)) /
+        static_cast<int32_t>(PLANE_PER_CHUNK)) {
+        chunk_coord.z = -1;
+    }
+
     int32_t index = chunk_coord.z * static_cast<int32_t>(PLANE_PER_CHUNK) +
                     chunk_coord.y * static_cast<int32_t>(LINE_PER_PLANE) +
                     chunk_coord.x;

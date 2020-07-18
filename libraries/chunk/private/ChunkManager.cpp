@@ -66,39 +66,26 @@ ChunkManager::draw(glm::mat4 const &projection,
 }
 
 void
-ChunkManager::addBlock(glm::vec3 const &player_pos,
-                       glm::vec3 const &direction,
-                       BlockType type)
-{
-    auto targeted_pos = player_pos + direction;
-    auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
-
-    for (auto &it : _chunk) {
-        if (it.getPosition() == targeted_chunk_coord) {
-            if (!it.addBlock(targeted_pos, type) &&
-                !it.allocateGPUResources()) {
-                it.updateGPUResources();
-            }
-            break;
-        }
-    }
-}
-
-void
 ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
 {
-    auto targeted_pos = player_pos + direction;
-    auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+    float i = MAX_BLOCK_DISTANCE_INTERACTION;
+    while (i >= MIN_BLOCK_DISTANCE_ADD) {
+        auto targeted_pos = player_pos + direction * static_cast<float>(i);
+        auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
 
-    for (auto &it : _chunk) {
-        if (it.getPosition() == targeted_chunk_coord) {
-            if (!it.addBlock(targeted_pos,
-                             static_cast<BlockType>(_current_player_block)) &&
-                !it.allocateGPUResources()) {
-                it.updateGPUResources();
+        for (auto &it : _chunk) {
+            if (it.getPosition() == targeted_chunk_coord) {
+                if (!it.addBlock(
+                      targeted_pos,
+                      static_cast<BlockType>(_current_player_block))) {
+                    if (!it.allocateGPUResources()) {
+                        it.updateGPUResources();
+                    }
+                    return;
+                }
             }
-            break;
         }
+        i -= 0.25f;
     }
 }
 
@@ -106,16 +93,22 @@ void
 ChunkManager::removeBlock(glm::vec3 const &player_pos,
                           glm::vec3 const &direction)
 {
-    auto targeted_pos = player_pos + direction;
-    auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+    float i = MIN_BLOCK_DISTANCE_REMOVE;
+    while (i <= MAX_BLOCK_DISTANCE_INTERACTION) {
+        auto targeted_pos = player_pos + direction * static_cast<float>(i);
+        auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
 
-    for (auto &it : _chunk) {
-        if (it.getPosition() == targeted_chunk_coord) {
-            if (!it.removeBlock(targeted_pos) && !it.allocateGPUResources()) {
-                it.updateGPUResources();
+        for (auto &it : _chunk) {
+            if (it.getPosition() == targeted_chunk_coord) {
+                if (!it.removeBlock(targeted_pos)) {
+                    if (!it.allocateGPUResources()) {
+                        it.updateGPUResources();
+                    }
+                    return;
+                }
             }
-            break;
         }
+        i += 0.25f;
     }
 }
 
@@ -297,10 +290,23 @@ ChunkManager::_get_chunk_coordinate(const glm::vec3 &space_coord)
 {
     glm::ivec2 chunk_coord;
 
-    chunk_coord.x = static_cast<int32_t>(space_coord.x) /
+    chunk_coord.x = static_cast<int32_t>(glm::round(space_coord.x)) /
                     static_cast<int32_t>(BLOCK_PER_LINE);
-    chunk_coord.y = static_cast<int32_t>(space_coord.z) /
+    chunk_coord.y = static_cast<int32_t>(glm::round(space_coord.z)) /
                     static_cast<int32_t>(LINE_PER_PLANE);
+
+    // Out of bound checks
+    if (!(static_cast<int32_t>(glm::round(space_coord.x)) %
+          static_cast<int32_t>(BLOCK_PER_LINE)) &&
+        chunk_coord.x) {
+        chunk_coord.x += 1;
+    }
+    if (!(static_cast<int32_t>(glm::round(space_coord.z)) %
+          static_cast<int32_t>(LINE_PER_PLANE)) &&
+        chunk_coord.y) {
+        chunk_coord.y += 1;
+    }
+
     if (space_coord.x < 0.0f) {
         chunk_coord.x -= 1;
     }

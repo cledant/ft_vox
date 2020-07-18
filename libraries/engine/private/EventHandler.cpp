@@ -180,7 +180,7 @@ EventHandler::EventTimers::EventTimers()
     timer_values[ET_REMOVE_BLOCK] = ACTION_TIMER_SECONDS;
     timer_values[ET_CAMERA] = TARGET_PLAYER_TICK_DURATION;
     timer_values[ET_RENDER_DISTANCE] = CONFIG_TIMER_SECONDS;
-    timer_values[ET_PLAYER_BLOCK_CHANGE] = ACTION_TIMER_SECONDS;
+    timer_values[ET_PLAYER_BLOCK_CHANGE] = FAST_ACTION_TIMER_SECONDS;
 }
 
 void

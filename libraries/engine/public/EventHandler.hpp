@@ -39,6 +39,7 @@ class EventHandler
     static double constexpr SYSTEM_TIMER_SECONDS = 1.0;
     static double constexpr CONFIG_TIMER_SECONDS = 0.5;
     static double constexpr ACTION_TIMER_SECONDS = 0.5;
+    static double constexpr FAST_ACTION_TIMER_SECONDS = 0.5;
     static constexpr double TARGET_PLAYER_TICK_DURATION =
       1 / TARGET_PLAYER_TICK;
 
@@ -61,7 +62,8 @@ class EventHandler
 
         std::array<uint8_t, ET_NB_EVENT_TIMER_TYPES> accept_event;
         std::array<uint8_t, ET_NB_EVENT_TIMER_TYPES> updated;
-        std::array<std::chrono::steady_clock::time_point, ET_NB_EVENT_TIMER_TYPES>
+        std::array<std::chrono::steady_clock::time_point,
+                   ET_NB_EVENT_TIMER_TYPES>
           time_ref;
         std::array<double, ET_NB_EVENT_TIMER_TYPES> timer_diff;
         std::array<double, ET_NB_EVENT_TIMER_TYPES> timer_values;

@@ -30,9 +30,6 @@ class ChunkManager final
     void draw(glm::mat4 const &projection,
               std::array<glm::vec4, 6> const &frustum_planes,
               std::array<glm::vec4, 6> const &abs_frustum_planes);
-    void addBlock(glm::vec3 const &player_pos,
-                  glm::vec3 const &direction,
-                  BlockType type);
     void addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
     void removeBlock(glm::vec3 const &player_pos, glm::vec3 const &direction);
 
@@ -52,6 +49,9 @@ class ChunkManager final
     static constexpr int32_t MIN_RENDER_DISTANCE = 0;
     static constexpr int32_t MAX_RENDER_DISTANCE = 128;
     static constexpr uint32_t NB_ASYNC_THREAD = 64;
+    static constexpr float MAX_BLOCK_DISTANCE_INTERACTION = 5.0f;
+    static constexpr float MIN_BLOCK_DISTANCE_ADD = 1.0f;
+    static constexpr float MIN_BLOCK_DISTANCE_REMOVE = 0.25f;
 
     int32_t _current_render_distance;
     int32_t _current_player_block;
