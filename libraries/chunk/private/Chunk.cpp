@@ -130,6 +130,22 @@ Chunk::getBlock(uint16_t index) const
     return (_block_chunk[index]);
 }
 
+uint8_t
+Chunk::getBlock(glm::vec3 const &pos) const
+{
+    auto index = _get_index_from_pos(pos - _space_coord);
+    if (index < 0 || index > TOTAL_BLOCK) {
+        return (0);
+    }
+    return (_block_chunk[index]);
+}
+
+uint16_t
+Chunk::getBlockIndex(glm::vec3 const &pos) const
+{
+    return (_get_index_from_pos(pos - _space_coord));
+}
+
 void
 Chunk::setPosition(glm::ivec2 const &pos)
 {
@@ -251,6 +267,7 @@ Chunk::_debug_generate_blocks()
 void
 Chunk::_generate_visible_blocks_buffer()
 {
+    _nb_visible_blocks = 0;
     for (int32_t i = 0; i < TOTAL_BLOCK; ++i) {
         uint16_t visible_faces;
         if (_block_chunk[i] &&

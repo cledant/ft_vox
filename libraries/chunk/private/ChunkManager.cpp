@@ -68,24 +68,38 @@ ChunkManager::draw(glm::mat4 const &projection,
 void
 ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
 {
-    float i = MAX_BLOCK_DISTANCE_INTERACTION;
-    while (i >= MIN_BLOCK_DISTANCE_ADD) {
+    Chunk *to_add_to = nullptr;
+    uint16_t block_index = 0;
+    float i = MIN_BLOCK_DISTANCE_ADD;
+    uint8_t exit_loop = 0;
+
+    while (i <= MAX_BLOCK_DISTANCE_INTERACTION) {
         auto targeted_pos = player_pos + direction * static_cast<float>(i);
         auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
 
         for (auto &it : _chunk) {
             if (it.getPosition() == targeted_chunk_coord) {
-                if (!it.addBlock(
-                      targeted_pos,
-                      static_cast<BlockType>(_current_player_block))) {
-                    if (!it.allocateGPUResources()) {
-                        it.updateGPUResources();
-                    }
-                    return;
+                auto tmp_block_index = it.getBlockIndex(targeted_pos);
+                if (!it.getBlock(tmp_block_index)) {
+                    block_index = tmp_block_index;
+                    to_add_to = &it;
+                } else {
+                    exit_loop = 1;
                 }
+                break;
             }
         }
-        i -= 0.25f;
+        if (exit_loop) {
+            break;
+        }
+        i += 0.1f;
+    }
+
+    if (to_add_to &&
+        !to_add_to->addBlock(block_index,
+                             static_cast<BlockType>(_current_player_block)) &&
+        !to_add_to->allocateGPUResources()) {
+        to_add_to->updateGPUResources();
     }
 }
 
@@ -108,7 +122,7 @@ ChunkManager::removeBlock(glm::vec3 const &player_pos,
                 }
             }
         }
-        i += 0.25f;
+        i += 0.1f;
     }
 }
 

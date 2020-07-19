@@ -22,6 +22,8 @@ class Chunk final
     uint8_t removeBlock(uint16_t index);
     uint8_t removeBlock(glm::vec3 const &pos);
     [[nodiscard]] uint8_t getBlock(uint16_t index) const;
+    [[nodiscard]] uint8_t getBlock(glm::vec3 const &pos) const;
+    [[nodiscard]] uint16_t getBlockIndex(glm::vec3 const &pos) const;
 
     void setPosition(glm::ivec2 const &pos);
     [[nodiscard]] glm::ivec2 const &getPosition() const;
