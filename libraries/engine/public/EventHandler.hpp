@@ -36,10 +36,10 @@ class EventHandler
     static constexpr double TARGET_PLAYER_TICK = 20.0f;
 
     // Timer related
-    static double constexpr SYSTEM_TIMER_SECONDS = 1.0;
-    static double constexpr CONFIG_TIMER_SECONDS = 0.5;
-    static double constexpr ACTION_TIMER_SECONDS = 0.5;
-    static double constexpr FAST_ACTION_TIMER_SECONDS = 0.5;
+    static constexpr double SYSTEM_TIMER_SECONDS = 1.0;
+    static constexpr double CONFIG_TIMER_SECONDS = 0.5;
+    static constexpr double ACTION_TIMER_SECONDS = 0.5;
+    static constexpr double FAST_ACTION_TIMER_SECONDS = 0.5;
     static constexpr double TARGET_PLAYER_TICK_DURATION =
       1 / TARGET_PLAYER_TICK;
 
