@@ -16,6 +16,7 @@ out GS_OUT {
     vec2 base_texture_coord;
     vec2 level_1_texture_coord;
     vec4 color_modifier;
+    float depth_z;
 } gs_out;
 
 struct BlockType {
@@ -64,6 +65,12 @@ struct BlockType {
 
 #define NO_TEXTURE vec2(2.0)
 
+// Constants for Z fighting
+#define C  1.0
+#define FAR 8000.0
+#define OFFSET 1.0
+const float log_result = 1 / log(C * FAR + OFFSET);
+
 void generate_grass_block(const vec4 block_center, const int block_faces, const vec4 color_modifier)
 {
     //FACE XY-
@@ -72,21 +79,29 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + UP_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = GRASS_SIDE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -97,21 +112,29 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = GRASS_SIDE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + UP_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -122,21 +145,29 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = NO_COLOR_MOD;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = NO_COLOR_MOD;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = NO_COLOR_MOD;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = NO_COLOR_MOD;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -147,21 +178,29 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gs_out.base_texture_coord = GRASS_TOP + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = GRASS_TOP + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = GRASS_TOP;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = GRASS_TOP + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -172,21 +211,29 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = GRASS_SIDE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + UP_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -197,21 +244,29 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = GRASS_SIDE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT +  DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + UP_RIGHT_OFF;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -230,21 +285,29 @@ const BlockType type, vec4 color_modifier)
         gs_out.base_texture_coord = type.id_xy_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_minus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_minus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -255,21 +318,29 @@ const BlockType type, vec4 color_modifier)
         gs_out.base_texture_coord = type.id_xy_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_plus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -280,21 +351,29 @@ const BlockType type, vec4 color_modifier)
         gs_out.base_texture_coord = type.id_xz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_minus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_minus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -305,21 +384,29 @@ const BlockType type, vec4 color_modifier)
         gs_out.base_texture_coord = type.id_xz_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_plus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -330,21 +417,29 @@ const BlockType type, vec4 color_modifier)
         gs_out.base_texture_coord = type.id_yz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_minus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_minus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }
@@ -355,21 +450,29 @@ const BlockType type, vec4 color_modifier)
         gs_out.base_texture_coord = type.id_yz_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_plus +  DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
         gs_out.color_modifier = color_modifier;
+        gl_Position.z = 2.0 * log(gl_Position.w * C + OFFSET) * log_result - 1.0;
+        gl_Position.z *= gl_Position.w;
         EmitVertex();
         EndPrimitive();
     }

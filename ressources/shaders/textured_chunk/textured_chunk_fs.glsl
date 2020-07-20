@@ -6,6 +6,7 @@ in GS_OUT {
     vec2 base_texture_coord;
     vec2 level_1_texture_coord;
     vec4 color_modifier;
+    float depth_z;
 } fs_in;
 
 out vec4 color;
