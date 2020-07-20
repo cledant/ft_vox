@@ -92,7 +92,7 @@ ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
         if (exit_loop) {
             break;
         }
-        i += 0.1f;
+        i += 0.25f;
     }
 
     if (to_add_to &&
@@ -122,7 +122,7 @@ ChunkManager::removeBlock(glm::vec3 const &player_pos,
                 }
             }
         }
-        i += 0.1f;
+        i += 0.25f;
     }
 }
 

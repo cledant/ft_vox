@@ -46,6 +46,10 @@ typedef enum BlockType
     TOTAL_BLOCKS,
 } BlockType;
 
+static constexpr uint8_t BlockTypeTransparency[TOTAL_BLOCKS] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0
+};
+
 typedef enum BlockFaces
 {
     XZ_PLUS = 0,

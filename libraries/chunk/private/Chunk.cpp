@@ -286,31 +286,43 @@ Chunk::_compute_block_visible_faces(int32_t index)
 
     // XZ+
     if (((index + BLOCK_PER_PLANE) >= TOTAL_BLOCK) ||
-        !_block_chunk[index + BLOCK_PER_PLANE]) {
+        !_block_chunk[index + BLOCK_PER_PLANE] ||
+        (BlockTypeTransparency[_block_chunk[index + BLOCK_PER_PLANE]] &&
+         _block_chunk[index + BLOCK_PER_PLANE] != _block_chunk[index])) {
         visible_faces |= (1 << XZ_PLUS);
     }
     // XZ-
     if (((index - BLOCK_PER_PLANE) < 0) ||
-        !_block_chunk[index - BLOCK_PER_PLANE]) {
+        !_block_chunk[index - BLOCK_PER_PLANE] ||
+        (BlockTypeTransparency[_block_chunk[index - BLOCK_PER_PLANE]] &&
+         _block_chunk[index - BLOCK_PER_PLANE] != _block_chunk[index])) {
         visible_faces |= (1 << XZ_MINUS);
     }
     // YZ+
     if (((index % BLOCK_PER_LINE) == YZ_PLUS_UPPER_LIMIT) ||
-        !_block_chunk[index + 1]) {
+        !_block_chunk[index + 1] ||
+        (BlockTypeTransparency[_block_chunk[index + 1]] &&
+         _block_chunk[index + 1] != _block_chunk[index])) {
         visible_faces |= (1 << YZ_PLUS);
     }
     // YZ-
-    if (!(index % BLOCK_PER_LINE) || !_block_chunk[index - 1]) {
+    if (!(index % BLOCK_PER_LINE) || !_block_chunk[index - 1] ||
+        (BlockTypeTransparency[_block_chunk[index - 1]] &&
+         _block_chunk[index - 1] != _block_chunk[index])) {
         visible_faces |= (1 << YZ_MINUS);
     }
     // XY+
     if (((index % BLOCK_PER_PLANE) > XY_PLUS_UPPER_LIMIT) ||
-        !_block_chunk[index + BLOCK_PER_LINE]) {
+        !_block_chunk[index + BLOCK_PER_LINE] ||
+        (BlockTypeTransparency[_block_chunk[index + BLOCK_PER_LINE]] &&
+         _block_chunk[index + BLOCK_PER_LINE] != _block_chunk[index])) {
         visible_faces |= (1 << XY_PLUS);
     }
     // XY-
     if (((index % BLOCK_PER_PLANE) < BLOCK_PER_LINE) ||
-        !_block_chunk[index - BLOCK_PER_LINE]) {
+        !_block_chunk[index - BLOCK_PER_LINE] ||
+        (BlockTypeTransparency[_block_chunk[index - BLOCK_PER_LINE]] &&
+         _block_chunk[index - BLOCK_PER_LINE] != _block_chunk[index])) {
         visible_faces |= (1 << XY_MINUS);
     }
     return (visible_faces);
