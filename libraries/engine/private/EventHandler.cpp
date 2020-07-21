@@ -317,18 +317,14 @@ EventHandler::_updateCamera(glm::vec2 const &mouse_pos)
         first_run = 0;
     }
     glm::vec2 offset = _mouse_pos - _previous_mouse_pos;
-    double timer_coeff_diff =
-      (_timers.timer_diff[ET_CAMERA] > TARGET_PLAYER_TICK_DURATION)
-        ? TARGET_PLAYER_TICK_DURATION
-        : _timers.timer_diff[ET_CAMERA];
 
     if (_movements != glm::ivec3(0)) {
-        _camera->update_position(
-          _movements, timer_coeff_diff / _timers.timer_values[ET_CAMERA]);
+        _camera->update_position(_movements,
+                                 _timers.timer_diff[ET_CAMERA] /
+                                   _timers.timer_values[ET_CAMERA]);
     }
     if (offset != glm::vec2(0.0)) {
-        _camera->update_front(
-          offset, timer_coeff_diff / _timers.timer_values[ET_CAMERA]);
+        _camera->update_front(offset, 0.5f);
         _previous_mouse_pos = _mouse_pos;
     }
     _camera->update_matricies();
