@@ -30,8 +30,8 @@ class Ui final
     void setOrthographicProjection(glm::vec2 const &window_size);
 
   private:
-    static constexpr uint32_t NB_KEY_DESCRIPTION = 7;
-    static constexpr uint32_t NB_DEBUG_UI = 8;
+    static constexpr uint32_t const NB_KEY_DESCRIPTION = 7;
+    static constexpr uint32_t const NB_DEBUG_UI = 8;
 
     static constexpr char const *STR_BLOCK_TYPES[] = {
         "EMPTY",   "STONE", "GRASS",  "DIRT",  "COBBLESTONE", "PLANKS",

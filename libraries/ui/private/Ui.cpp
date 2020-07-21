@@ -88,7 +88,7 @@ void
 Ui::_print_ui_info(
   std::array<std::stringstream, NB_DEBUG_UI> const &sstream_array)
 {
-    auto constexpr start_pos = glm::vec2(15.0f, 30.0f);
+    auto constexpr const start_pos = glm::vec2(15.0f, 30.0f);
 
     for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {
         _font.drawText(sstream_array[i].str(),

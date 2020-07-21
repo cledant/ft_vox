@@ -46,12 +46,12 @@ class ChunkManager final
     [[nodiscard]] int32_t getCurrentPlayerBlock() const;
 
   private:
-    static constexpr int32_t MIN_RENDER_DISTANCE = 0;
-    static constexpr int32_t MAX_RENDER_DISTANCE = 128;
-    static constexpr uint32_t NB_ASYNC_THREAD = 64;
-    static constexpr float MAX_BLOCK_DISTANCE_INTERACTION = 5.0f;
-    static constexpr float MIN_BLOCK_DISTANCE_ADD = 1.5f;
-    static constexpr float MIN_BLOCK_DISTANCE_REMOVE = 0.25f;
+    static constexpr int32_t const MIN_RENDER_DISTANCE = 0;
+    static constexpr int32_t const MAX_RENDER_DISTANCE = 128;
+    static constexpr uint32_t const NB_ASYNC_THREAD = 64;
+    static constexpr float const MAX_BLOCK_DISTANCE_INTERACTION = 5.0f;
+    static constexpr float const MIN_BLOCK_DISTANCE_ADD = 1.5f;
+    static constexpr float const MIN_BLOCK_DISTANCE_REMOVE = 0.25f;
 
     int32_t _current_render_distance;
     int32_t _current_player_block;

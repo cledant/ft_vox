@@ -22,10 +22,10 @@ class IOManager final
     IOManager &operator=(IOManager &&rhs) = delete;
 
     // Constants
-    static constexpr int32_t WIN_W = 1280;
-    static constexpr int32_t WIN_H = 720;
-    static constexpr uint16_t KEYS_BUFF_SIZE = 1024;
-    static constexpr uint16_t MOUSE_KEYS_BUFF_SIZE = 16;
+    static constexpr int32_t const WIN_W = 1280;
+    static constexpr int32_t const WIN_H = 720;
+    static constexpr uint16_t const KEYS_BUFF_SIZE = 1024;
+    static constexpr uint16_t const MOUSE_KEYS_BUFF_SIZE = 16;
 
     // Window related
     void createWindow(std::string &&name);
