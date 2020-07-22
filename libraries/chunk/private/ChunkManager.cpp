@@ -30,7 +30,7 @@ ChunkManager::init()
 void
 ChunkManager::update(glm::vec3 const &player_pos)
 {
-    _player_pos = _get_chunk_coordinate(player_pos);
+    _player_pos = _get_chunk_coordinate(player_pos, 1);
     _remove_out_of_range_chunk();
     _add_available_chunk_to_viewable();
     _chunk_computation();
@@ -71,7 +71,7 @@ ChunkManager::addBlock(glm::vec3 const &player_pos, glm::vec3 const &direction)
 
     while (i <= MAX_BLOCK_DISTANCE_INTERACTION) {
         auto targeted_pos = player_pos + direction * static_cast<float>(i);
-        auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+        auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos, 0);
 
         for (auto &it : _chunk) {
             if (it.getPosition() == targeted_chunk_coord) {
@@ -106,7 +106,7 @@ ChunkManager::removeBlock(glm::vec3 const &player_pos,
     float i = MIN_BLOCK_DISTANCE_REMOVE;
     while (i <= MAX_BLOCK_DISTANCE_INTERACTION) {
         auto targeted_pos = player_pos + direction * static_cast<float>(i);
-        auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos);
+        auto targeted_chunk_coord = _get_chunk_coordinate(targeted_pos, 0);
 
         for (auto &it : _chunk) {
             if (it.getPosition() == targeted_chunk_coord) {
@@ -296,7 +296,8 @@ ChunkManager::_generate_chunk(glm::ivec2 pos)
 }
 
 glm::ivec2
-ChunkManager::_get_chunk_coordinate(const glm::vec3 &space_coord)
+ChunkManager::_get_chunk_coordinate(const glm::vec3 &space_coord,
+                                    uint8_t player_checked)
 {
     glm::ivec2 chunk_coord;
 
@@ -305,13 +306,15 @@ ChunkManager::_get_chunk_coordinate(const glm::vec3 &space_coord)
     chunk_coord.y = static_cast<int32_t>(glm::round(space_coord.z)) /
                     static_cast<int32_t>(LINE_PER_PLANE);
 
-    // Out of bound checks
-    if (!(static_cast<int32_t>(glm::round(space_coord.x)) %
+    // Out of bound checks for box
+    if (!player_checked &&
+        !(static_cast<int32_t>(glm::round(space_coord.x)) %
           static_cast<int32_t>(BLOCK_PER_LINE)) &&
         chunk_coord.x) {
         chunk_coord.x += 1;
     }
-    if (!(static_cast<int32_t>(glm::round(space_coord.z)) %
+    if (!player_checked &&
+        !(static_cast<int32_t>(glm::round(space_coord.z)) %
           static_cast<int32_t>(LINE_PER_PLANE)) &&
         chunk_coord.y) {
         chunk_coord.y += 1;
