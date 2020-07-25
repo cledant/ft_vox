@@ -2,9 +2,9 @@
 
 #include "glad/glad.h"
 
-#include "Font.hpp"
+#include "UiFont.hpp"
 
-Font::Font()
+UiFont::UiFont()
   : _is_init(0)
   , _font_size(1)
   , _shader()
@@ -13,7 +13,7 @@ Font::Font()
   , _vbo(0)
 {}
 
-Font::~Font()
+UiFont::~UiFont()
 {
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
@@ -22,7 +22,7 @@ Font::~Font()
     }
 }
 
-Font::Font(Font &&src) noexcept
+UiFont::UiFont(UiFont &&src) noexcept
   : _is_init(0)
   , _font_size(1)
   , _shader()
@@ -33,8 +33,8 @@ Font::Font(Font &&src) noexcept
     *this = std::move(src);
 }
 
-Font &
-Font::operator=(Font &&rhs) noexcept
+UiFont &
+UiFont::operator=(UiFont &&rhs) noexcept
 {
     _is_init = rhs._is_init;
     _shader = std::move(rhs._shader);
@@ -49,7 +49,7 @@ Font::operator=(Font &&rhs) noexcept
 }
 
 void
-Font::init(std::string const &path_font,
+UiFont::init(std::string const &path_font,
            std::string const &path_vs,
            std::string const &path_fs,
            uint64_t font_size)
@@ -65,7 +65,7 @@ Font::init(std::string const &path_font,
 }
 
 void
-Font::clear()
+UiFont::clear()
 {
     _is_init = 0;
     for (auto &it : _char_list) {
@@ -76,7 +76,7 @@ Font::clear()
 }
 
 void
-Font::drawText(std::string const &str,
+UiFont::drawText(std::string const &str,
                glm::vec3 const &color,
                glm::vec2 const &pos,
                glm::mat4 const &ortho,
@@ -126,7 +126,7 @@ Font::drawText(std::string const &str,
 }
 
 void
-Font::_loadFont(std::string const &path)
+UiFont::_loadFont(std::string const &path)
 {
     FT_Library lib;
     FT_Face face;
@@ -171,7 +171,7 @@ Font::_loadFont(std::string const &path)
 }
 
 void
-Font::_allocate_vbo()
+UiFont::_allocate_vbo()
 {
     glGenBuffers(1, &_vbo);
     if (!_vbo) {
@@ -188,7 +188,7 @@ Font::_allocate_vbo()
 }
 
 void
-Font::_allocate_vao()
+UiFont::_allocate_vao()
 {
     glGenVertexArrays(1, &_vao);
     if (!_vao) {
@@ -204,7 +204,7 @@ Font::_allocate_vao()
 }
 
 uint32_t
-Font::_create_glyph_texture(const void *buffer, uint32_t tex_w, uint32_t tex_h)
+UiFont::_create_glyph_texture(const void *buffer, uint32_t tex_w, uint32_t tex_h)
 {
     uint32_t tex_id;
 

@@ -1,17 +1,18 @@
-#include "Cursor.hpp"
+#include "UiTexture.hpp"
 
 #include <stdexcept>
 
-Cursor::Cursor()
+UiTexture::UiTexture()
   : _is_init(0)
   , _tex()
   , _shader()
-  , _cursor_pixel_size(0.0f)
+  , _pixel_size(0.0f)
+  , _center(0.0f)
   , _vbo(0)
   , _vao(0)
 {}
 
-Cursor::~Cursor()
+UiTexture::~UiTexture()
 {
     if (_vao) {
         glDeleteVertexArrays(1, &_vao);
@@ -21,13 +22,13 @@ Cursor::~Cursor()
     }
 }
 
-Cursor &
-Cursor::operator=(Cursor &&rhs) noexcept
+UiTexture &
+UiTexture::operator=(UiTexture &&rhs) noexcept
 {
     _is_init = rhs._is_init;
     _vbo = rhs._vbo;
     _vao = rhs._vao;
-    _cursor_pixel_size = rhs._cursor_pixel_size;
+    _pixel_size = rhs._pixel_size;
     _tex = std::move(rhs._tex);
     _shader = std::move(rhs._shader);
     rhs._vbo = 0;
@@ -35,11 +36,12 @@ Cursor::operator=(Cursor &&rhs) noexcept
     return (*this);
 }
 
-Cursor::Cursor(Cursor &&src) noexcept
+UiTexture::UiTexture(UiTexture &&src) noexcept
   : _is_init(0)
   , _tex()
   , _shader()
-  , _cursor_pixel_size(0.0f)
+  , _pixel_size(0.0f)
+  , _center(0.0f)
   , _vbo(0)
   , _vao(0)
 {
@@ -47,24 +49,26 @@ Cursor::Cursor(Cursor &&src) noexcept
 }
 
 void
-Cursor::init(std::string const &texture_path,
-             glm::vec2 const &cursor_pixel_size)
+UiTexture::init(std::string const &texture_path,
+                glm::vec2 const &pixel_size,
+                glm::vec2 const &center)
 {
     if (_is_init) {
         return;
     }
     _is_init = 1;
-    _cursor_pixel_size = cursor_pixel_size;
+    _pixel_size = pixel_size;
     _allocate_vbo();
     _allocate_vao();
     _tex.init(texture_path.c_str(), true);
     _shader.init("./ressources/shaders/cursor/cursor_vs.glsl",
                  "./ressources/shaders/cursor/cursor_fs.glsl",
                  "Cursor");
+    _center = center;
 }
 
 void
-Cursor::clear()
+UiTexture::clear()
 {
     _tex.clear();
     _shader.clear();
@@ -76,18 +80,24 @@ Cursor::clear()
     }
     _vao = 0;
     _vbo = 0;
-    _cursor_pixel_size = glm::vec2(0.0f);
+    _pixel_size = glm::vec2(0.0f);
     _is_init = 0;
 }
 
 void
-Cursor::setCursorPixelSize(glm::vec2 const &size)
+UiTexture::setPixelSize(glm::vec2 const &size)
 {
-    _cursor_pixel_size = size;
+    _pixel_size = size;
 }
 
 void
-Cursor::draw(glm::mat4 const &ortho, glm::vec2 const &win_size)
+UiTexture::setCenter(const glm::vec2 &center)
+{
+    _center = center;
+}
+
+void
+UiTexture::draw(glm::mat4 const &ortho)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -97,16 +107,16 @@ Cursor::draw(glm::mat4 const &ortho, glm::vec2 const &win_size)
     _shader.setMat4("uniform_mat_ortho", ortho);
     _shader.setVec3("uniform_color", glm::vec3(1.0f));
 
-    float xpos = (win_size.x / 2) - (_cursor_pixel_size.x / 2);
-    float ypos = (win_size.y / 2) - (_cursor_pixel_size.y / 2);
+    float xpos = _center.x - (_pixel_size.x / 2);
+    float ypos = _center.y - (_pixel_size.y / 2);
     float vertices[6][4] = {
-        { xpos, ypos + _cursor_pixel_size.y, 0.0, 0.0 },
+        { xpos, ypos + _pixel_size.y, 0.0, 0.0 },
         { xpos, ypos, 0.0, 1.0 },
-        { xpos + _cursor_pixel_size.x, ypos, 1.0, 1.0 },
+        { xpos + _pixel_size.x, ypos, 1.0, 1.0 },
 
-        { xpos, ypos + _cursor_pixel_size.y, 0.0, 0.0 },
-        { xpos + _cursor_pixel_size.x, ypos, 1.0, 1.0 },
-        { xpos + _cursor_pixel_size.x, ypos + _cursor_pixel_size.y, 1.0, 0.0 }
+        { xpos, ypos + _pixel_size.y, 0.0, 0.0 },
+        { xpos + _pixel_size.x, ypos, 1.0, 1.0 },
+        { xpos + _pixel_size.x, ypos + _pixel_size.y, 1.0, 0.0 }
     };
     glActiveTexture(GL_TEXTURE0);
     _shader.setInt("uniform_tex", 0);
@@ -121,7 +131,7 @@ Cursor::draw(glm::mat4 const &ortho, glm::vec2 const &win_size)
 }
 
 void
-Cursor::_allocate_vbo()
+UiTexture::_allocate_vbo()
 {
     glGenBuffers(1, &_vbo);
     if (!_vbo) {
@@ -134,7 +144,7 @@ Cursor::_allocate_vbo()
 }
 
 void
-Cursor::_allocate_vao()
+UiTexture::_allocate_vao()
 {
     glGenVertexArrays(1, &_vao);
     if (!_vao) {

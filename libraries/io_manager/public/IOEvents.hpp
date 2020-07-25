@@ -23,6 +23,7 @@ enum IOEventsTypes
     DECREASE_RENDER_DISTANCE,
     SHOW_UI,
     SPEED_UP,
+    SHOW_MAP,
     NB_IO_EVENTS,
 };
 

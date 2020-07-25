@@ -1,5 +1,5 @@
-#ifndef FT_VOX_FONT_HPP
-#define FT_VOX_FONT_HPP
+#ifndef FT_VOX_UIFONT_HPP
+#define FT_VOX_UIFONT_HPP
 
 #include <map>
 #include <string>
@@ -11,15 +11,15 @@
 
 #include FT_FREETYPE_H
 
-class Font final
+class UiFont final
 {
   public:
-    Font();
-    ~Font();
-    Font(Font const &src) = delete;
-    Font &operator=(Font const &rhs) = delete;
-    Font(Font &&src) noexcept;
-    Font &operator=(Font &&rhs) noexcept;
+    UiFont();
+    ~UiFont();
+    UiFont(UiFont const &src) = delete;
+    UiFont &operator=(UiFont const &rhs) = delete;
+    UiFont(UiFont &&src) noexcept;
+    UiFont &operator=(UiFont &&rhs) noexcept;
 
     void init(std::string const &path_font,
               std::string const &path_vs,
@@ -58,4 +58,4 @@ class Font final
     uint32_t _vbo;
 };
 
-#endif // FT_VOX_FONT_HPP
+#endif // FT_VOX_UIFONT_HPP

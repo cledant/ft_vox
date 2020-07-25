@@ -171,6 +171,7 @@ IOManager::getEvents() const
     io.events[DECREASE_RENDER_DISTANCE] = _keys[GLFW_KEY_MINUS];
     io.events[SHOW_UI] = _keys[GLFW_KEY_H];
     io.events[SPEED_UP] = _keys[GLFW_KEY_LEFT_SHIFT];
+    io.events[SHOW_MAP] = _keys[GLFW_KEY_TAB];
     io.mouse_position = _mouse_position;
     io.mouse_scroll = _mouse_scroll;
     return (io);

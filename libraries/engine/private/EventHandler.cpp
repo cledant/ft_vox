@@ -91,6 +91,7 @@ EventHandler::processEvents(IOEvents const &events)
           &EventHandler::_decrease_render_distance,
           &EventHandler::_toggle_ui,
           &EventHandler::_speed_up,
+          &EventHandler::_show_map,
       };
 
     // Checking Timers
@@ -304,6 +305,12 @@ void
 EventHandler::_speed_up()
 {
     _movements *= 20.0f;
+}
+
+void
+EventHandler::_show_map()
+{
+    _ui->displayMap();
 }
 
 void

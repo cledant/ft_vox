@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(lib_ui)
 
 add_library(ui STATIC
-        private/Font.cpp
-        private/Cursor.cpp
+        private/UiFont.cpp
+        private/UiTexture.cpp
         private/Ui.cpp)
 target_include_directories(ui
         PUBLIC

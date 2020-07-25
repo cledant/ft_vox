@@ -7,6 +7,7 @@ Ui::Ui()
   , _cursor()
   , _win_size(1.0f)
   , _ortho(1.0f)
+  , _show_map(0)
 {}
 
 void
@@ -16,7 +17,8 @@ Ui::init(glm::vec2 const &window_size)
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
                24);
-    _cursor.init("./ressources/textures/crosshair.png", glm::vec2(25.0f));
+    _cursor.init(
+      "./ressources/textures/crosshair.png", glm::vec2(25.0f), window_size);
     _win_size = window_size;
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }
@@ -74,14 +76,24 @@ Ui::draw(std::string const &avg_fps,
 
     _print_ui_info(sstream_array);
     _print_ui_keys();
-    _cursor.draw(_ortho, _win_size);
+    if (!_show_map) {
+        _cursor.draw(_ortho);
+    }
+    _show_map = 0;
 }
 
 void
 Ui::setOrthographicProjection(glm::vec2 const &window_size)
 {
     _win_size = window_size;
+    _cursor.setCenter(window_size / 2.0f);
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
+}
+
+void
+Ui::displayMap()
+{
+    _show_map = 1;
 }
 
 void
@@ -110,7 +122,8 @@ Ui::_print_ui_keys()
         "- = Decrease Render Dist",
         "= = Increase Render Dist",
         "P = Toggle Mouse",
-        "H = Toggle UI"
+        "TAB = Show Map",
+        "H = Toggle UI",
     };
 
     for (uint16_t i = 0; i < NB_KEY_DESCRIPTION; ++i) {

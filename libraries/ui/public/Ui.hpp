@@ -4,8 +4,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Font.hpp"
-#include "Cursor.hpp"
+#include "UiFont.hpp"
+#include "UiTexture.hpp"
 
 class Ui final
 {
@@ -28,9 +28,10 @@ class Ui final
               int32_t player_block);
 
     void setOrthographicProjection(glm::vec2 const &window_size);
+    void displayMap();
 
   private:
-    static constexpr uint32_t const NB_KEY_DESCRIPTION = 7;
+    static constexpr uint32_t const NB_KEY_DESCRIPTION = 8;
     static constexpr uint32_t const NB_DEBUG_UI = 8;
 
     static constexpr char const *STR_BLOCK_TYPES[] = {
@@ -39,10 +40,11 @@ class Ui final
         "FOLIAGE", "TNT",   "BRICKS", "GLASS", "ICE",
     };
 
-    Font _font;
-    Cursor _cursor;
+    UiFont _font;
+    UiTexture _cursor;
     glm::vec2 _win_size;
     glm::mat4 _ortho;
+    uint8_t _show_map;
 
     inline void _print_ui_info(
       std::array<std::stringstream, NB_DEBUG_UI> const &sstream_array);
