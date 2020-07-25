@@ -66,7 +66,7 @@ class IOManager final
     uint8_t _mouse_exclusive;
 
     // Callbacks
-    void _initCallbacks();
+    inline void _initCallbacks();
 };
 
 #endif // FT_VOX_IOMANAGER_HPP

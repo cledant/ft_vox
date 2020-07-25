@@ -26,8 +26,8 @@ class TestBoxDrawer final
     void draw(glm::mat4 const &projection);
 
   private:
-    void _allocate_vbo();
-    void _allocate_vao();
+    inline void _allocate_vbo();
+    inline void _allocate_vao();
 
     std::array<glm::vec3, MAX_BOXES> _array;
 

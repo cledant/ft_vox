@@ -64,7 +64,7 @@ class Camera final
     } frustumPlane;
     std::array<glm::vec4, 6> _frustum_planes;
     std::array<glm::vec4, 6> _abs_frustum_planes;
-    void _extractFrustumPlanes();
+    inline void _extractFrustumPlanes();
 
     float _mouse_sensitivity;
     float _movement_speed;

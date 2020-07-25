@@ -43,10 +43,10 @@ class Font final
         size_t advance;
     };
 
-    void _loadFont(std::string const &path);
-    void _allocate_vbo();
-    void _allocate_vao();
-    static uint32_t _create_glyph_texture(const void *buffer,
+    inline void _loadFont(std::string const &path);
+    inline void _allocate_vbo();
+    inline void _allocate_vao();
+    static inline uint32_t _create_glyph_texture(const void *buffer,
                                           uint32_t tex_w,
                                           uint32_t tex_h);
 

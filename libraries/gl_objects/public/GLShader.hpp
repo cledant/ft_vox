@@ -36,15 +36,15 @@ class GLShader final
     void setFloat(std::string const &name, float data);
 
   private:
-    void _readFile(std::string const &path, std::string &content) const;
-    [[nodiscard]] uint32_t _loadShader(std::string const &path,
-                                       int32_t shader_type) const;
-    [[nodiscard]] uint32_t _linkShaders(int32_t vs, int32_t fs) const;
-    [[nodiscard]] uint32_t _linkShaders(int32_t vs,
-                                        int32_t gs,
-                                        int32_t fs) const;
+    inline void _readFile(std::string const &path, std::string &content) const;
+    [[nodiscard]] inline uint32_t _loadShader(std::string const &path,
+                                              int32_t shader_type) const;
+    [[nodiscard]] inline uint32_t _linkShaders(int32_t vs, int32_t fs) const;
+    [[nodiscard]] inline uint32_t _linkShaders(int32_t vs,
+                                               int32_t gs,
+                                               int32_t fs) const;
     [[nodiscard]] std::string _shaderError(uint32_t shader) const;
-    void _setUniform(std::string const &name);
+    inline void _setUniform(std::string const &name);
 
     uint8_t _is_init;
     uint32_t _program;

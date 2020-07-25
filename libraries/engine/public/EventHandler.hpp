@@ -70,24 +70,24 @@ class EventHandler
     };
 
     // Event handling functions
-    void _mouse_exclusive();
-    void _close_win_event();
-    void _toggle_fullscreen();
-    void _jump();
-    void _crouch();
-    void _front();
-    void _back();
-    void _right();
-    void _left();
-    void _add_block();
-    void _remove_block();
-    void _increase_render_distance();
-    void _decrease_render_distance();
-    void _toggle_ui();
-    void _speed_up();
+    inline void _mouse_exclusive();
+    inline void _close_win_event();
+    inline void _toggle_fullscreen();
+    inline void _jump();
+    inline void _crouch();
+    inline void _front();
+    inline void _back();
+    inline void _right();
+    inline void _left();
+    inline void _add_block();
+    inline void _remove_block();
+    inline void _increase_render_distance();
+    inline void _decrease_render_distance();
+    inline void _toggle_ui();
+    inline void _speed_up();
 
     // Camera Related
-    void _updateCamera(glm::vec2 const &mouse_pos);
+    inline void _updateCamera(glm::vec2 const &mouse_pos);
 
     Camera *_camera;
     IOManager *_io_manager;

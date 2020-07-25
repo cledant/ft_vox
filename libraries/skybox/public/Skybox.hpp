@@ -27,8 +27,8 @@ class Skybox final
     uint32_t _vao;
     uint32_t _vbo;
 
-    void _allocate_vao();
-    void _allocate_vbo();
+    inline void _allocate_vao();
+    inline void _allocate_vbo();
 };
 
 #endif // FT_VOX_SKYBOX_HPP

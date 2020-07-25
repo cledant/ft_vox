@@ -44,9 +44,9 @@ class Ui final
     glm::vec2 _win_size;
     glm::mat4 _ortho;
 
-    void _print_ui_info(
+    inline void _print_ui_info(
       std::array<std::stringstream, NB_DEBUG_UI> const &sstream_array);
-    void _print_ui_keys();
+    inline void _print_ui_keys();
 };
 
 #endif // FT_VOX_UI_HPP

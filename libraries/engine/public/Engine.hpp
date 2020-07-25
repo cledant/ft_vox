@@ -30,7 +30,7 @@ class Engine final
     static constexpr glm::vec3 const START_POS =
       glm::vec3(-1000.0f, 10.0f, -1000.0f);
 
-    void _compute_fps();
+    inline void _compute_fps();
 
     IOManager _io_manager;
     Camera _camera;

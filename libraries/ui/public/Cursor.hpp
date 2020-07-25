@@ -28,8 +28,9 @@ class Cursor final
 
     void draw(glm::mat4 const &ortho, glm::vec2 const &win_size);
 
-    void _allocate_vbo();
-    void _allocate_vao();
+  private:
+    inline void _allocate_vbo();
+    inline void _allocate_vao();
 
     uint8_t _is_init;
     GLTexture2D _tex;
