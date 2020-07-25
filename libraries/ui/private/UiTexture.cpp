@@ -3,8 +3,7 @@
 #include <stdexcept>
 
 UiTexture::UiTexture()
-  : _is_init(0)
-  , _tex()
+  : _tex()
   , _shader()
   , _pixel_size(0.0f)
   , _center(0.0f)
@@ -25,7 +24,6 @@ UiTexture::~UiTexture()
 UiTexture &
 UiTexture::operator=(UiTexture &&rhs) noexcept
 {
-    _is_init = rhs._is_init;
     _vbo = rhs._vbo;
     _vao = rhs._vao;
     _pixel_size = rhs._pixel_size;
@@ -37,8 +35,7 @@ UiTexture::operator=(UiTexture &&rhs) noexcept
 }
 
 UiTexture::UiTexture(UiTexture &&src) noexcept
-  : _is_init(0)
-  , _tex()
+  : _tex()
   , _shader()
   , _pixel_size(0.0f)
   , _center(0.0f)
@@ -51,19 +48,34 @@ UiTexture::UiTexture(UiTexture &&src) noexcept
 void
 UiTexture::init(std::string const &texture_path,
                 glm::vec2 const &pixel_size,
-                glm::vec2 const &center)
+                glm::vec2 const &center,
+                std::string const &vs_path,
+                std::string const &fs_path,
+                std::string const &shader_name)
 {
-    if (_is_init) {
-        return;
-    }
-    _is_init = 1;
     _pixel_size = pixel_size;
     _allocate_vbo();
     _allocate_vao();
-    _tex.init(texture_path.c_str(), true);
-    _shader.init("./ressources/shaders/cursor/cursor_vs.glsl",
-                 "./ressources/shaders/cursor/cursor_fs.glsl",
-                 "Cursor");
+    _tex.init(texture_path.c_str(), 1);
+    _shader.init(vs_path, fs_path, shader_name);
+    _center = center;
+}
+
+void
+UiTexture::init(void const *texture_buffer,
+                glm::ivec2 const &tex_size,
+                int32_t tex_nb_chan,
+                glm::vec2 const &pixel_size,
+                glm::vec2 const &center,
+                std::string const &vs_path,
+                std::string const &fs_path,
+                std::string const &shader_name)
+{
+    _pixel_size = pixel_size;
+    _allocate_vbo();
+    _allocate_vao();
+    _tex.init(texture_buffer, tex_size, tex_nb_chan, 0);
+    _shader.init(vs_path, fs_path, shader_name);
     _center = center;
 }
 
@@ -81,7 +93,6 @@ UiTexture::clear()
     _vao = 0;
     _vbo = 0;
     _pixel_size = glm::vec2(0.0f);
-    _is_init = 0;
 }
 
 void
@@ -135,7 +146,7 @@ UiTexture::_allocate_vbo()
 {
     glGenBuffers(1, &_vbo);
     if (!_vbo) {
-        throw std::runtime_error("Cursor: Failed to create vbo");
+        throw std::runtime_error("UiTexture: Failed to create vbo");
     }
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(
@@ -148,7 +159,7 @@ UiTexture::_allocate_vao()
 {
     glGenVertexArrays(1, &_vao);
     if (!_vao) {
-        throw std::runtime_error("Cursor: Failed to create vao");
+        throw std::runtime_error("UiTexture: Failed to create vao");
     }
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);

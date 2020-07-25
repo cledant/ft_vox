@@ -2,7 +2,10 @@
 #define FT_VOX_GLTEXTURE2D_HPP
 
 #include <string>
+#include <array>
 #include <cstdint>
+
+#include "glm/glm.hpp"
 
 class GLTexture2D final
 {
@@ -18,14 +21,27 @@ class GLTexture2D final
     explicit GLTexture2D(char const *filepath, uint8_t use_nearest_filtering);
 
     void init(char const *filepath, uint8_t use_nearest_filtering);
+    void init(void const *buffer,
+              glm::ivec2 size,
+              int32_t nb_chan,
+              uint8_t use_nearest_filtering);
     void clear();
 
     [[nodiscard]] uint32_t getTextureID() const;
 
+    static constexpr glm::ivec2 const DEFAULT_TEX_SIZE = glm::ivec2(300);
+    static constexpr int32_t const DEFAULT_NB_TEX_CHAN = 3;
+    static constexpr std::array<uint32_t,
+                                DEFAULT_TEX_SIZE.x *DEFAULT_TEX_SIZE.y> const
+      DEFAULT_TEX_BUFFER = {};
+
   private:
+    inline void _creating_gpu_tex(void const *data,
+                                  uint8_t use_nearest_filtering);
+
     uint32_t _tex_id;
-    int32_t _tex_w;
-    int32_t _tex_h;
+    // x = w | y = h
+    glm::ivec2 _tex_size;
     int32_t _tex_nb_chan;
 };
 

@@ -33,6 +33,7 @@ class Ui final
   private:
     static constexpr uint32_t const NB_KEY_DESCRIPTION = 8;
     static constexpr uint32_t const NB_DEBUG_UI = 8;
+    static constexpr int32_t const OFFSET_MAP = 150;
 
     static constexpr char const *STR_BLOCK_TYPES[] = {
         "EMPTY",   "STONE", "GRASS",  "DIRT",  "COBBLESTONE", "PLANKS",
@@ -42,6 +43,7 @@ class Ui final
 
     UiFont _font;
     UiTexture _cursor;
+    UiTexture _map;
     glm::vec2 _win_size;
     glm::mat4 _ortho;
     uint8_t _show_map;

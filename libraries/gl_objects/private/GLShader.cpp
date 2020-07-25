@@ -8,6 +8,7 @@
 GLShader::GLShader()
   : _is_init(0)
   , _program(0)
+  , _prog_name()
 {}
 
 GLShader::GLShader(GLShader &&src) noexcept
@@ -16,6 +17,8 @@ GLShader::GLShader(GLShader &&src) noexcept
     _program = src._program;
     _uniform_id = std::move(src._uniform_id);
     src._program = 0;
+    _prog_name = std::move(src._prog_name);
+    src._prog_name = "";
 }
 
 GLShader &
@@ -25,6 +28,8 @@ GLShader::operator=(GLShader &&rhs) noexcept
     _program = rhs._program;
     _uniform_id = std::move(rhs._uniform_id);
     rhs._program = 0;
+    _prog_name = std::move(rhs._prog_name);
+    rhs._prog_name = "";
     return (*this);
 }
 
@@ -38,7 +43,10 @@ GLShader::init(std::string const &path_vs,
     }
     uint32_t vs = 0;
     uint32_t fs = 0;
+    _prog_name = prog_name;
+#ifndef NDEBUG
     std::cout << "Loading Shader : " << prog_name << std::endl;
+#endif
 
     try {
         vs = _loadShader(path_vs, GL_VERTEX_SHADER);
@@ -70,7 +78,10 @@ GLShader::init(std::string const &path_vs,
     uint32_t vs = 0;
     uint32_t gs = 0;
     uint32_t fs = 0;
+    _prog_name = prog_name;
+#ifndef NDEBUG
     std::cout << "Loading Shader : " << prog_name << std::endl;
+#endif
 
     try {
         vs = _loadShader(path_vs, GL_VERTEX_SHADER);
@@ -213,7 +224,8 @@ GLShader::_linkShaders(int32_t vs, int32_t fs) const
     uint32_t program = glCreateProgram();
 
     if (!program) {
-        throw std::runtime_error("GLShader: Failed to allocate shader program");
+        throw std::runtime_error("GLShader: Failed to allocate shader:" +
+                                 _prog_name);
     }
     glAttachShader(program, vs);
     glAttachShader(program, fs);
@@ -223,7 +235,8 @@ GLShader::_linkShaders(int32_t vs, int32_t fs) const
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glDeleteShader(program);
-        throw std::runtime_error("GLShader: Failed to link shader program");
+        throw std::runtime_error("GLShader: Failed to link shader: " +
+                                 _prog_name);
     }
     return (program);
 }
@@ -234,7 +247,8 @@ GLShader::_linkShaders(int32_t vs, int32_t gs, int32_t fs) const
     uint32_t program = glCreateProgram();
 
     if (!program) {
-        throw std::runtime_error("GLShader: Failed to allocate shader program");
+        throw std::runtime_error("GLShader: Failed to allocate shader: " +
+                                 _prog_name);
     }
     glAttachShader(program, vs);
     glAttachShader(program, gs);
@@ -245,7 +259,8 @@ GLShader::_linkShaders(int32_t vs, int32_t gs, int32_t fs) const
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glDeleteShader(program);
-        throw std::runtime_error("GLShader: Failed to link shader program");
+        throw std::runtime_error("GLShader: Failed to link shader: " +
+                                 _prog_name);
     }
     return (program);
 }
@@ -268,7 +283,8 @@ GLShader::_setUniform(std::string const &name)
     if (entry == _uniform_id.end()) {
         int32_t id = glGetUniformLocation(_program, name.c_str());
         if (id < 0) {
-            throw std::runtime_error("GLShader: Invalid uniforn name: " + name);
+            throw std::runtime_error("GLShader: Invalid uniforn name: " + name +
+                                     " in shader: " + _prog_name);
         }
         _uniform_id[name] = id;
     }

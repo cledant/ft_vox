@@ -49,6 +49,7 @@ class GLShader final
     uint8_t _is_init;
     uint32_t _program;
     std::map<std::string, int32_t> _uniform_id;
+    std::string _prog_name;
 };
 
 #endif
