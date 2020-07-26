@@ -7,6 +7,19 @@
 #include "UiFont.hpp"
 #include "UiTexture.hpp"
 
+typedef struct UiInfo
+{
+    std::string const &avg_fps;
+    glm::vec3 const &camera_pos;
+    glm::vec3 const &camera_direction;
+    uint64_t render_dist;
+    glm::ivec2 const &player_pos;
+    uint64_t chunk_in_range;
+    uint64_t displayed_chunk;
+    int32_t player_block;
+    uint64_t seed;
+} UiInfo;
+
 class Ui final
 {
   public:
@@ -18,21 +31,14 @@ class Ui final
     Ui &operator=(Ui &&rhs) = delete;
 
     void init(glm::vec2 const &window_size);
-    void draw(std::string const &avg_fps,
-              glm::vec3 const &camera_pos,
-              glm::vec3 const &camera_direction,
-              uint64_t render_dist,
-              glm::ivec2 const &player_pos,
-              uint64_t chunk_in_range,
-              uint64_t displayed_chunk,
-              int32_t player_block);
+    void draw(UiInfo const &info);
 
     void setOrthographicProjection(glm::vec2 const &window_size);
     void displayMap();
 
   private:
     static constexpr uint32_t const NB_KEY_DESCRIPTION = 8;
-    static constexpr uint32_t const NB_DEBUG_UI = 8;
+    static constexpr uint32_t const NB_DEBUG_UI = 9;
     static constexpr int32_t const OFFSET_MAP = 150;
 
     static constexpr char const *STR_BLOCK_TYPES[] = {

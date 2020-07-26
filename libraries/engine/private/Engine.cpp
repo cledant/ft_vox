@@ -14,7 +14,7 @@ Engine::Engine()
 {}
 
 void
-Engine::init()
+Engine::init(uint64_t seed)
 {
     _event_handler.setCamera(&_camera);
     _event_handler.setIOManager(&_io_manager);
@@ -32,7 +32,7 @@ Engine::init()
                                             _perspective_data.near_far.y));
     _camera.setPosition(START_POS);
     _ui.init(glm::vec2(IOManager::WIN_W, IOManager::WIN_H));
-    _cm.init();
+    _cm.init(seed);
     _skybox.init("./ressources/textures/skybox.png");
     _fps_count_timeref = std::chrono::steady_clock::now();
 }
@@ -49,14 +49,16 @@ Engine::run()
         _skybox.draw(_camera.getPerspectiveViewMatrix(),
                      _perspective_data.near_far.y);
         if (_event_handler.printUi()) {
-            _ui.draw(_str_fps,
-                     _camera.getPosition(),
-                     _camera.getFront(),
-                     _cm.getRenderDistance(),
-                     _cm.getPlayerPosition(),
-                     _cm.getNbInRangeChunks(),
-                     _cm.getNbDisplayedChunk(),
-                     _cm.getCurrentPlayerBlock());
+            UiInfo info = { _str_fps,
+                            _camera.getPosition(),
+                            _camera.getFront(),
+                            _cm.getRenderDistance(),
+                            _cm.getPlayerPosition(),
+                            _cm.getNbInRangeChunks(),
+                            _cm.getNbDisplayedChunk(),
+                            _cm.getCurrentPlayerBlock(),
+                            _cm.getSeed() };
+            _ui.draw(info);
         }
         _io_manager.render();
         while (glGetError()) {

@@ -38,55 +38,53 @@ Ui::init(glm::vec2 const &window_size)
 }
 
 void
-Ui::draw(std::string const &avg_fps,
-         glm::vec3 const &camera_pos,
-         glm::vec3 const &camera_direction,
-         uint64_t render_dist,
-         glm::ivec2 const &player_pos,
-         uint64_t chunk_in_range,
-         uint64_t displayed_chunk,
-         int32_t player_block)
+Ui::draw(UiInfo const &info)
 {
     // Setup data to be displayed
     std::array<std::stringstream, NB_DEBUG_UI> sstream_array;
 
     // Avg Fps
     sstream_array[0].precision(2);
-    sstream_array[0] << "Avg FPS: " << avg_fps;
+    sstream_array[0] << "Avg FPS: " << info.avg_fps;
 
     // Camera pos
     sstream_array[1].precision(2);
-    sstream_array[1] << "Cam Pos: " << std::fixed << "X = " << camera_pos.x
-                     << " | Y = " << camera_pos.y << " | Z = " << camera_pos.z;
+    sstream_array[1] << "Cam Pos: " << std::fixed << "X = " << info.camera_pos.x
+                     << " | Y = " << info.camera_pos.y
+                     << " | Z = " << info.camera_pos.z;
 
     // Camera Direction
     sstream_array[2].precision(2);
     sstream_array[2] << "Cam Direction: " << std::fixed
-                     << "X = " << camera_direction.x
-                     << " | Y = " << camera_direction.y
-                     << " | Z = " << camera_direction.z;
+                     << "X = " << info.camera_direction.x
+                     << " | Y = " << info.camera_direction.y
+                     << " | Z = " << info.camera_direction.z;
 
     // Render Distance
     sstream_array[3].precision(2);
-    sstream_array[3] << "Render Distance: " << std::fixed << render_dist;
+    sstream_array[3] << "Render Distance: " << std::fixed << info.render_dist;
 
     // Player position
     sstream_array[4].precision(2);
-    sstream_array[4] << "Player Chunk: X = " << std::fixed << player_pos.x
-                     << " | Y = " << player_pos.y;
+    sstream_array[4] << "Player Chunk: X = " << std::fixed << info.player_pos.x
+                     << " | Y = " << info.player_pos.y;
 
     // Chunk in range
     sstream_array[5].precision(2);
-    sstream_array[5] << "In Range Chunk: " << std::fixed << chunk_in_range;
+    sstream_array[5] << "In Range Chunk: " << std::fixed << info.chunk_in_range;
 
     // Chunk displayed
     sstream_array[6].precision(2);
-    sstream_array[6] << "Displayed Chunk: " << std::fixed << displayed_chunk;
+    sstream_array[6] << "Displayed Chunk: " << std::fixed
+                     << info.displayed_chunk;
 
     // Player Chunk
     sstream_array[7].precision(2);
     sstream_array[7] << "Player Active Chunk: " << std::fixed
-                     << STR_BLOCK_TYPES[player_block];
+                     << STR_BLOCK_TYPES[info.player_block];
+
+    // Seed
+    sstream_array[8] << "Seed: " << info.seed;
 
     if (!_show_map) {
         _cursor.draw(_ortho);

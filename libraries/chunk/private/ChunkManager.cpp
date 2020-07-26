@@ -14,10 +14,11 @@ ChunkManager::ChunkManager()
   , _shader()
   , _texture()
   , _nb_displayed_chunk(0)
+  , _seed(0)
 {}
 
 void
-ChunkManager::init()
+ChunkManager::init(uint64_t seed)
 {
     _shader.init("./ressources/shaders/textured_chunk/textured_chunk_vs.glsl",
                  "./ressources/shaders/textured_chunk/textured_chunk_gs.glsl",
@@ -25,6 +26,7 @@ ChunkManager::init()
                  "Textured Chunk");
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
     _texture.init("./ressources/textures/terrain.png", 1);
+    _seed = seed;
 }
 
 void
@@ -174,6 +176,12 @@ ChunkManager::getNbInRangeChunks() const
     return (_chunk.size());
 }
 
+uint64_t
+ChunkManager::getNbDisplayedChunk() const
+{
+    return (_nb_displayed_chunk);
+}
+
 int32_t
 ChunkManager::getCurrentPlayerBlock() const
 {
@@ -181,9 +189,9 @@ ChunkManager::getCurrentPlayerBlock() const
 }
 
 uint64_t
-ChunkManager::getNbDisplayedChunk() const
+ChunkManager::getSeed() const
 {
-    return (_nb_displayed_chunk);
+    return (_seed);
 }
 
 uint8_t

@@ -25,7 +25,7 @@ class ChunkManager final
     ChunkManager(ChunkManager &&src) = delete;
     ChunkManager &operator=(ChunkManager &&rhs) = delete;
 
-    void init();
+    void init(uint64_t seed);
     void update(glm::vec3 const &player_pos);
     void draw(glm::mat4 const &projection,
               std::array<glm::vec4, 6> const &frustum_planes,
@@ -44,6 +44,7 @@ class ChunkManager final
     [[nodiscard]] uint64_t getNbInRangeChunks() const;
     [[nodiscard]] uint64_t getNbDisplayedChunk() const;
     [[nodiscard]] int32_t getCurrentPlayerBlock() const;
+    [[nodiscard]] uint64_t getSeed() const;
 
   private:
     static constexpr int32_t const MIN_RENDER_DISTANCE = 0;
@@ -64,6 +65,8 @@ class ChunkManager final
     GLTexture2D _texture;
 
     uint64_t _nb_displayed_chunk;
+
+    uint64_t _seed;
 
     inline uint8_t _is_chunk_out_of_range(glm::ivec2 const &pos) const;
     inline void _remove_out_of_range_chunk();

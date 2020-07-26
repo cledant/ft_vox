@@ -20,15 +20,14 @@ class Engine final
     Engine(Engine &&src) = delete;
     Engine &operator=(Engine &&rhs) = delete;
 
-    void init();
+    void init(uint64_t seed);
     void run();
 
   private:
     static constexpr glm::vec2 const DEFAULT_NEAR_FAR =
       glm::vec2(0.1f, 5000.0f);
     static constexpr float const DEFAULT_FOV = 45.0f;
-    static constexpr glm::vec3 const START_POS =
-      glm::vec3(0.0f, 10.0f, 0.0f);
+    static constexpr glm::vec3 const START_POS = glm::vec3(0.0f, 10.0f, 0.0f);
 
     inline void _compute_fps();
 
