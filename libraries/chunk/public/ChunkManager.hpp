@@ -71,8 +71,8 @@ class ChunkManager final
     inline void _chunk_computation();
     inline uint8_t _add_new_chunk(glm::ivec2 const &pos);
     static inline Chunk _generate_chunk(glm::ivec2 pos);
-    static inline glm::ivec2 _get_chunk_coordinate(glm::vec3 const &space_coord,
-                                                   uint8_t player_checked);
+    static inline glm::ivec2 _get_chunk_coordinate(
+      glm::vec3 const &space_coord);
 };
 
 #endif // FT_VOX_CHUNKMANAGER_HPP

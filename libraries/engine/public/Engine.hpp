@@ -28,7 +28,7 @@ class Engine final
       glm::vec2(0.1f, 5000.0f);
     static constexpr float const DEFAULT_FOV = 45.0f;
     static constexpr glm::vec3 const START_POS =
-      glm::vec3(-1000.0f, 10.0f, -1000.0f);
+      glm::vec3(0.0f, 10.0f, 0.0f);
 
     inline void _compute_fps();
 
