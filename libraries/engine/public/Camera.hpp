@@ -15,8 +15,8 @@ class Camera final
     ~Camera() = default;
     Camera(const Camera &src) = default;
     Camera &operator=(Camera const &rhs) = default;
-    Camera(Camera &&src) = delete;
-    Camera &operator=(Camera &&rhs) = delete;
+    Camera(Camera &&src) = default;
+    Camera &operator=(Camera &&rhs) = default;
 
     void update_position(glm::ivec3 const &mov, float coeff);
     void update_front(glm::vec2 const &offsets, float coeff);

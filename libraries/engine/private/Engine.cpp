@@ -1,5 +1,7 @@
 #include "Engine.hpp"
 
+#include <random>
+
 Engine::Engine()
   : _io_manager()
   , _camera()
@@ -14,7 +16,7 @@ Engine::Engine()
 {}
 
 void
-Engine::init(uint64_t seed)
+Engine::init(Options const &opts)
 {
     _event_handler.setCamera(&_camera);
     _event_handler.setIOManager(&_io_manager);
@@ -32,7 +34,7 @@ Engine::init(uint64_t seed)
                                             _perspective_data.near_far.y));
     _camera.setPosition(START_POS);
     _ui.init(glm::vec2(IOManager::WIN_W, IOManager::WIN_H));
-    _cm.init(seed);
+    _cm.init(opts.seed.value_or(_generate_seed()));
     _skybox.init("./ressources/textures/skybox.png");
     _fps_count_timeref = std::chrono::steady_clock::now();
 }
@@ -79,4 +81,13 @@ Engine::_compute_fps()
         _nb_frame = 0;
         _fps_count_timeref = now;
     }
+}
+
+uint32_t
+Engine::_generate_seed()
+{
+    std::random_device rd;
+    std::mt19937_64 gen(rd());
+    std::uniform_int_distribution<uint32_t> dist;
+    return (dist(gen));
 }

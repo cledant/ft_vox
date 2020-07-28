@@ -30,11 +30,12 @@ add_subdirectory(libraries/gl_objects)
 add_subdirectory(libraries/chunk)
 add_subdirectory(libraries/skybox)
 add_subdirectory(libraries/ui)
+add_subdirectory(libraries/args)
 
 #Main binary
-add_executable(ft_vox binary/private/ft_vox.cpp libraries/ui/public/Ui.hpp)
-target_link_libraries(ft_vox engine iomanager)
-add_dependencies(ft_vox engine iomanager)
+add_executable(ft_vox binary/private/ft_vox.cpp)
+target_link_libraries(ft_vox engine iomanager arg_parsing)
+add_dependencies(ft_vox engine iomanager arg_parsing)
 target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ressources DESTINATION ${CMAKE_BINARY_DIR})

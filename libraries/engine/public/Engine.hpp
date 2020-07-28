@@ -9,6 +9,7 @@
 #include "TestBoxDrawer.hpp"
 #include "ChunkManager.hpp"
 #include "Skybox.hpp"
+#include "ArgsParsing.hpp"
 
 class Engine final
 {
@@ -20,7 +21,7 @@ class Engine final
     Engine(Engine &&src) = delete;
     Engine &operator=(Engine &&rhs) = delete;
 
-    void init(uint64_t seed);
+    void init(Options const &opts);
     void run();
 
   private:
@@ -30,6 +31,7 @@ class Engine final
     static constexpr glm::vec3 const START_POS = glm::vec3(0.0f, 10.0f, 0.0f);
 
     inline void _compute_fps();
+    static inline uint32_t _generate_seed();
 
     IOManager _io_manager;
     Camera _camera;

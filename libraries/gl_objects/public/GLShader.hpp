@@ -43,7 +43,7 @@ class GLShader final
     [[nodiscard]] inline uint32_t _linkShaders(int32_t vs,
                                                int32_t gs,
                                                int32_t fs) const;
-    [[nodiscard]] std::string _shaderError(uint32_t shader) const;
+    [[nodiscard]] inline std::string _shaderError(uint32_t shader) const;
     inline void _setUniform(std::string const &name);
 
     uint8_t _is_init;
