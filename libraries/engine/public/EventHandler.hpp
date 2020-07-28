@@ -27,6 +27,7 @@ class EventHandler
     void setUi(Ui *Ui);
     void setChunkManager(ChunkManager *cm);
     void setSkybox(Skybox *skybox);
+    void setInvertYAxis(uint8_t val);
 
     [[nodiscard]] uint8_t printUi() const;
 
@@ -104,6 +105,7 @@ class EventHandler
     glm::vec2 _previous_mouse_pos;
 
     uint8_t _print_ui;
+    uint8_t _invert_y_axis;
 };
 
 #endif // FT_VOX_EVENTHANDLER_HPP

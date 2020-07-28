@@ -6,7 +6,11 @@
 static void
 displayHelp()
 {
-    std::cout << "TODO help" << std::endl;
+    std::cout << "./ft_vox options:" << std::endl;
+    std::cout << "\t --seed=[positive number] to set seed for chunk generation"
+              << std::endl;
+    std::cout << "\t --invertMouseY to invert mouse Y axis" << std::endl;
+    std::cout << "\t -h | --help to display help" << std::endl;
 }
 
 int

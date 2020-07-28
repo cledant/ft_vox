@@ -24,6 +24,7 @@ Engine::init(Options const &opts)
     _event_handler.setUi(&_ui);
     _event_handler.setChunkManager(&_cm);
     _event_handler.setSkybox(&_skybox);
+    _event_handler.setInvertYAxis(opts.invert_y_axis);
     _io_manager.createWindow("ft_vox");
     _perspective_data.near_far = DEFAULT_NEAR_FAR;
     _perspective_data.fov = DEFAULT_FOV;

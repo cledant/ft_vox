@@ -15,6 +15,7 @@ EventHandler::EventHandler()
   , _mouse_pos(0.0)
   , _previous_mouse_pos(0.0)
   , _print_ui(1)
+  , _invert_y_axis(0)
 {}
 
 void
@@ -52,6 +53,12 @@ EventHandler::setSkybox(Skybox *skybox)
 
 {
     _skybox = skybox;
+}
+
+void
+EventHandler::setInvertYAxis(uint8_t val)
+{
+    _invert_y_axis = val;
 }
 
 uint8_t
@@ -319,6 +326,9 @@ EventHandler::_updateCamera(glm::vec2 const &mouse_pos)
     static uint8_t first_run = 1;
 
     _mouse_pos = mouse_pos;
+    if (_invert_y_axis) {
+        _mouse_pos.y = -mouse_pos.y;
+    }
     if (first_run) {
         _previous_mouse_pos = _mouse_pos;
         first_run = 0;
