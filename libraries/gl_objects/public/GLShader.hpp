@@ -2,7 +2,7 @@
 #define SHADER_HPP
 
 #include <string>
-#include <map>
+#include <unordered_map>
 
 #include "glm/glm.hpp"
 
@@ -44,11 +44,11 @@ class GLShader final
                                                int32_t gs,
                                                int32_t fs) const;
     [[nodiscard]] inline std::string _shaderError(uint32_t shader) const;
-    inline void _setUniform(std::string const &name);
+    inline int32_t _setGetUniform(std::string const &name);
 
     uint8_t _is_init;
     uint32_t _program;
-    std::map<std::string, int32_t> _uniform_id;
+    std::unordered_map<std::string, int32_t> _uniform_id;
     std::string _prog_name;
 };
 

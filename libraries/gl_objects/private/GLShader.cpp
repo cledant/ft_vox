@@ -126,25 +126,24 @@ GLShader::use() const
 void
 GLShader::setVec2(std::string const &name, glm::vec2 const &data)
 {
-    _setUniform(name);
     glUniform2fv(
-      _uniform_id[name], 1, reinterpret_cast<GLfloat const *>(&data));
+      _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
 }
 
 void
 GLShader::setVec3(std::string const &name, glm::vec3 const &data)
 {
-    _setUniform(name);
+    _setGetUniform(name);
     glUniform3fv(
-      _uniform_id[name], 1, reinterpret_cast<GLfloat const *>(&data));
+      _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
 }
 
 void
 GLShader::setVec4(std::string const &name, glm::vec4 const &data)
 {
-    _setUniform(name);
+    _setGetUniform(name);
     glUniform4fv(
-      _uniform_id[name], 1, reinterpret_cast<GLfloat const *>(&data));
+      _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
 }
 
 void
@@ -152,32 +151,30 @@ GLShader::setVec4Array(std::string const &name,
                        glm::vec4 const &data,
                        uint64_t array_size)
 {
-    _setUniform(name);
-    glUniform4fv(
-      _uniform_id[name], array_size, reinterpret_cast<GLfloat const *>(&data));
+    _setGetUniform(name);
+    glUniform4fv(_setGetUniform(name), array_size, reinterpret_cast<GLfloat const *>(&data));
 }
 
 void
 GLShader::setMat4(std::string const &name, glm::mat4 const &data)
 {
-    _setUniform(name);
-    glUniformMatrix4fv(
-      _uniform_id[name], 1, GL_FALSE, reinterpret_cast<const GLfloat *>(&data));
+    _setGetUniform(name);
+    glUniformMatrix4fv(_setGetUniform(name), 1, GL_FALSE, reinterpret_cast<const GLfloat *>(&data));
 }
 
 void
 GLShader::setInt(std::string const &name, int data)
 {
-    _setUniform(name);
-    glUniform1i(_uniform_id[name], data);
+    _setGetUniform(name);
+    glUniform1i(_setGetUniform(name), data);
 }
 
 void
 GLShader::setFloat(std::string const &name, float data)
 {
-    _setUniform(name);
+    _setGetUniform(name);
     glUniform1fv(
-      _uniform_id[name], 1, reinterpret_cast<GLfloat const *>(&data));
+      _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
 }
 
 void
@@ -276,8 +273,8 @@ GLShader::_shaderError(uint32_t shader) const
     return (std::string(msg));
 }
 
-void
-GLShader::_setUniform(std::string const &name)
+int32_t
+GLShader::_setGetUniform(std::string const &name)
 {
     auto entry = _uniform_id.find(name);
     if (entry == _uniform_id.end()) {
@@ -286,6 +283,8 @@ GLShader::_setUniform(std::string const &name)
             throw std::runtime_error("GLShader: Invalid uniforn name: " + name +
                                      " in shader: " + _prog_name);
         }
-        _uniform_id[name] = id;
+        _uniform_id.try_emplace(name, id);
+        return (id);
     }
+    return (entry->second);
 }
