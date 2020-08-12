@@ -34,7 +34,6 @@ class Ui final
     void draw(UiInfo const &info);
 
     void setOrthographicProjection(glm::vec2 const &window_size);
-    void displayMap();
 
   private:
     static constexpr uint32_t const NB_KEY_DESCRIPTION = 8;
@@ -49,10 +48,8 @@ class Ui final
 
     UiFont _font;
     UiTexture _cursor;
-    UiTexture _map;
     glm::vec2 _win_size;
     glm::mat4 _ortho;
-    uint8_t _show_map;
 
     inline void _print_ui_info(
       std::array<std::stringstream, NB_DEBUG_UI> const &sstream_array);

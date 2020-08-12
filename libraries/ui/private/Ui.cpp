@@ -6,10 +6,8 @@
 Ui::Ui()
   : _font()
   , _cursor()
-  , _map()
   , _win_size(1.0f)
   , _ortho(1.0f)
-  , _show_map(0)
 {}
 
 void
@@ -25,14 +23,6 @@ Ui::init(glm::vec2 const &window_size)
                  "./ressources/shaders/cursor/cursor_vs.glsl",
                  "./ressources/shaders/cursor/cursor_fs.glsl",
                  "Cursor");
-    _map.init(GLTexture2D::DEFAULT_TEX_BUFFER.data(),
-              glm::ivec2(100),
-              GLTexture2D::DEFAULT_NB_TEX_CHAN,
-              glm::ivec2(window_size.y - OFFSET_MAP),
-              glm::vec2(window_size / 2.0f),
-              "./ressources/shaders/ui_texture/ui_texture_vs.glsl",
-              "./ressources/shaders/ui_texture/ui_texture_fs.glsl",
-              "Ui_texture");
     _win_size = window_size;
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }
@@ -86,14 +76,9 @@ Ui::draw(UiInfo const &info)
     // Seed
     sstream_array[8] << "Seed: " << info.seed;
 
-    if (!_show_map) {
-        _cursor.draw(_ortho);
-    } else {
-        _map.draw(_ortho);
-    }
+    _cursor.draw(_ortho);
     _print_ui_info(sstream_array);
     _print_ui_keys();
-    _show_map = 0;
 }
 
 void
@@ -101,15 +86,7 @@ Ui::setOrthographicProjection(glm::vec2 const &window_size)
 {
     _win_size = window_size;
     _cursor.setCenter(window_size / 2.0f);
-    _map.setCenter(window_size / 2.0f);
-    _map.setPixelSize(glm::ivec2(window_size.y - OFFSET_MAP));
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
-}
-
-void
-Ui::displayMap()
-{
-    _show_map = 1;
 }
 
 void

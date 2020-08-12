@@ -317,7 +317,6 @@ EventHandler::_speed_up()
 void
 EventHandler::_show_map()
 {
-    _ui->displayMap();
 }
 
 void
