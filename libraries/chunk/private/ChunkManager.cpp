@@ -284,8 +284,8 @@ uint8_t
 ChunkManager::_add_new_chunk(glm::ivec2 const &pos)
 {
     if (_chunk_map[pos] == DELETED) {
-        _compute_chunk.emplace_back(
-          std::async(std::launch::async, &ChunkManager::_generate_chunk, pos));
+        _compute_chunk.emplace_back(std::async(
+          std::launch::async, &ChunkManager::_generate_chunk, pos, _seed));
         _chunk_map[pos] = PENDING;
     }
     if (_compute_chunk.size() >= NB_ASYNC_THREAD) {
@@ -295,11 +295,11 @@ ChunkManager::_add_new_chunk(glm::ivec2 const &pos)
 }
 
 Chunk
-ChunkManager::_generate_chunk(glm::ivec2 pos)
+ChunkManager::_generate_chunk(glm::ivec2 pos, uint64_t seed)
 {
     auto new_chunk = Chunk(pos);
 
-    new_chunk.generateChunk();
+    new_chunk.generateChunk(seed);
     return (new_chunk);
 }
 

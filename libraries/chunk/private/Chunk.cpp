@@ -2,8 +2,11 @@
 
 #include <cstring>
 #include <stdexcept>
+#include <sstream>
+#include <iostream>
 
 #include "glad/glad.h"
+#include "glm/gtc/noise.hpp"
 
 Chunk::Chunk()
   : _block_chunk()
@@ -188,11 +191,9 @@ Chunk::getColorModifier() const
 }
 
 void
-Chunk::generateChunk()
+Chunk::generateChunk(uint64_t seed)
 {
-    // TODO : Actual generation
-    _debug_generate_plane();
-    //_debug_generate_blocks();
+    _generate_with_seed(seed);
     _visible_blocks = std::make_unique<uint32_t[]>(TOTAL_BLOCK);
     _generate_visible_blocks_buffer();
 }
@@ -237,6 +238,68 @@ Chunk::isChunkInFrustum(
         ++i;
     }
     return (1);
+}
+
+void
+Chunk::_generate_with_seed(uint64_t seed)
+{
+    for (int32_t i = 0; i < BLOCK_PER_LINE; ++i) {
+        for (int32_t j = 0; j < LINE_PER_PLANE; ++j) {
+            glm::vec2 elevation_moisture =
+              _generate_elevation_moisture(i, j, seed);
+            _compute_block_from_xy_pos(i, j, elevation_moisture);
+        }
+    }
+    _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+}
+
+glm::vec2
+Chunk::_generate_elevation_moisture(int32_t x, int32_t y, uint64_t seed)
+{
+    // TODO use my own perlin noise
+    (void)seed;
+    auto global_pos =
+      glm::vec2(_space_coord.x + x, _space_coord.z + y * BLOCK_PER_PLANE);
+
+    glm::vec2 elevation_moisture = {};
+    elevation_moisture.x = glm::abs(glm::simplex(global_pos));
+    return (elevation_moisture);
+}
+
+void
+Chunk::_compute_block_from_xy_pos(int32_t x,
+                                  int32_t y,
+                                  const glm::vec2 &elevation_moisture)
+{
+    int32_t z = elevation_moisture.x / NORMALIZED_PLANE_PER_CHUNK;
+    if (z >= 256 || z < 0) {
+        std::stringstream sstream;
+
+        sstream << "Z value = ";
+        sstream << z;
+        throw std::runtime_error(sstream.str());
+    }
+    if (!z) {
+        _block_chunk[x + y * LINE_PER_PLANE] = BEDROCK;
+        return;
+    }
+
+    for (int32_t i = z; i >= 0; --i) {
+        float current_e = static_cast<float>(i) * NORMALIZED_PLANE_PER_CHUNK;
+
+        if (current_e < 0.1f) {
+            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+              BEDROCK;
+        } else if (current_e < 0.2f) {
+            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = WATER;
+        } else if (current_e < 0.4f) {
+            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = SAND;
+        } else if (current_e < 0.6f) {
+            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = DIRT;
+        } else {
+            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = SNOW;
+        }
+    }
 }
 
 void

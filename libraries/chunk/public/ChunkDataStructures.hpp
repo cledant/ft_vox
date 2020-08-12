@@ -25,6 +25,9 @@ static constexpr int32_t const XY_PLUS_UPPER_LIMIT =
   PLANE_PER_CHUNK - BLOCK_PER_LINE - 1;
 static constexpr int32_t const YZ_PLUS_UPPER_LIMIT = BLOCK_PER_LINE - 1;
 
+static constexpr float const NORMALIZED_PLANE_PER_CHUNK =
+  1.0f / static_cast<float>(PLANE_PER_CHUNK);
+
 typedef enum BlockType
 {
     EMPTY = 0,

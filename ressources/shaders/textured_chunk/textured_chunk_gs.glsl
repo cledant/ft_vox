@@ -8,8 +8,8 @@ uniform vec4 uniform_vec_color_modifier;
 
 in VS_OUT {
     vec4 block_position;
-    int block_type;
-    int block_faces;
+    uint block_type;
+    uint block_faces;
 } gs_in[];
 
 out GS_OUT {
@@ -71,10 +71,10 @@ struct BlockType {
 #define OFFSET 1.0
 const float log_result = 1 / log(C * FAR + OFFSET);
 
-void generate_grass_block(const vec4 block_center, const int block_faces, const vec4 color_modifier)
+void generate_grass_block(const vec4 block_center, const uint block_faces, const vec4 color_modifier)
 {
     //FACE XY-
-    if ((block_faces & (1 << 5)) > 0) {
+    if ((block_faces & (1u << 5)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
@@ -107,7 +107,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
     }
 
     //FACE XY+
-    if ((block_faces & (1 << 4)) > 0) {
+    if ((block_faces & (1u << 4)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = GRASS_SIDE;
@@ -140,7 +140,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
     }
 
     //FACE XZ-
-    if ((block_faces & (1 << 1)) > 0) {
+    if ((block_faces & (1u << 1)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -173,7 +173,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
     }
 
     //FACE XZ+
-    if ((block_faces & 1) > 0) {
+    if ((block_faces & 1u) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = GRASS_TOP + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -206,7 +206,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
     }
 
     //FACE YZ-
-    if ((block_faces & (1 << 3)) > 0) {
+    if ((block_faces & (1u << 3)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
@@ -239,7 +239,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
     }
 
     //FACE YZ+
-    if ((block_faces & (1 << 2)) > 0) {
+    if ((block_faces & (1u << 2)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
@@ -272,7 +272,7 @@ void generate_grass_block(const vec4 block_center, const int block_faces, const 
     }
 }
 
-void generate_textured_block(const vec4 block_center, const int block_faces,
+void generate_textured_block(const vec4 block_center, const uint block_faces,
 const BlockType type, vec4 color_modifier)
 {
     if (type.use_color_modifier == false) {
@@ -280,7 +280,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XY-
-    if ((block_faces & (1 << 5)) > 0) {
+    if ((block_faces & (1u << 5)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -313,7 +313,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XY+
-    if ((block_faces & (1 << 4)) > 0) {
+    if ((block_faces & (1u << 4)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -346,7 +346,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XZ-
-    if ((block_faces & (1 << 1)) > 0) {
+    if ((block_faces & (1u << 1)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -379,7 +379,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XZ+
-    if ((block_faces & 1) > 0) {
+    if ((block_faces & 1u) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -412,7 +412,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE YZ-
-    if ((block_faces & (1 << 3)) > 0) {
+    if ((block_faces & (1u << 3)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -445,7 +445,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE YZ+
-    if ((block_faces & (1 << 2)) > 0) {
+    if ((block_faces & (1u << 2)) > 0) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -498,7 +498,7 @@ BlockType(ICE, ICE, ICE, ICE, ICE, ICE, false));
 
 void main()
 {
-    int type = gs_in[0].block_type;
+    uint type = gs_in[0].block_type;
     if (type == 2) {
         generate_grass_block(gs_in[0].block_position, gs_in[0].block_faces, uniform_vec_color_modifier);
     } else {
