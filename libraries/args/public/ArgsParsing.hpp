@@ -6,7 +6,7 @@
 
 typedef struct Options
 {
-    std::optional<uint64_t> seed;
+    std::optional<uint32_t> seed;
     uint8_t help;
     uint8_t invert_y_axis;
 } Options;

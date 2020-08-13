@@ -24,10 +24,11 @@ static void
 setSeed(Options &opts, std::string_view arg)
 {
     try {
-        opts.seed = std::stol(arg.substr(7).data());
-        if (opts.seed < 0 || opts.seed > std::numeric_limits<uint32_t>::max()) {
+        int64_t seed = std::stol(arg.substr(7).data());
+        if (seed < 0 || seed > std::numeric_limits<uint32_t>::max()) {
             throw std::runtime_error("");
         }
+        opts.seed = seed;
     } catch (std::exception const &e) {
         std::stringstream err;
         err << "Seed should be a number between: "

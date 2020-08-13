@@ -1,18 +1,23 @@
 #include "Ui.hpp"
 
 #include <sstream>
-#include <cstring>
+
+#include "NoiseUtils.hpp"
 
 Ui::Ui()
   : _font()
   , _cursor()
+  , _map()
   , _win_size(1.0f)
   , _ortho(1.0f)
+  , _show_map(0)
 {}
 
 void
-Ui::init(glm::vec2 const &window_size)
+Ui::init(glm::vec2 const &window_size, uint32_t seed)
 {
+    std::array<uint8_t, 3 * 512 * 512> map_buffer = {};
+
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
                "./ressources/shaders/font/font_fs.glsl",
@@ -23,6 +28,15 @@ Ui::init(glm::vec2 const &window_size)
                  "./ressources/shaders/cursor/cursor_vs.glsl",
                  "./ressources/shaders/cursor/cursor_fs.glsl",
                  "Cursor");
+    generateMap(MAP_SIZE, seed, map_buffer.data());
+    _map.init(map_buffer.data(),
+              MAP_SIZE,
+              3,
+              glm::ivec2(window_size.y - OFFSET_MAP),
+              glm::vec2(window_size / 2.0f),
+              "./ressources/shaders/ui_texture/ui_texture_vs.glsl",
+              "./ressources/shaders/ui_texture/ui_texture_fs.glsl",
+              "Ui_texture");
     _win_size = window_size;
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
 }
@@ -76,9 +90,14 @@ Ui::draw(UiInfo const &info)
     // Seed
     sstream_array[8] << "Seed: " << info.seed;
 
-    _cursor.draw(_ortho);
+    if (!_show_map) {
+        _cursor.draw(_ortho);
+    } else {
+        _map.draw(_ortho);
+    }
     _print_ui_info(sstream_array);
     _print_ui_keys();
+    _show_map = 0;
 }
 
 void
@@ -86,7 +105,15 @@ Ui::setOrthographicProjection(glm::vec2 const &window_size)
 {
     _win_size = window_size;
     _cursor.setCenter(window_size / 2.0f);
+    _map.setCenter(window_size / 2.0f);
+    _map.setPixelSize(glm::ivec2(window_size.y - OFFSET_MAP));
     _ortho = glm::ortho(0.0f, _win_size.x, 0.0f, _win_size.y);
+}
+
+void
+Ui::displayMap()
+{
+    _show_map = 1;
 }
 
 void

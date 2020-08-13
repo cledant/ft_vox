@@ -31,9 +31,10 @@ add_subdirectory(libraries/chunk)
 add_subdirectory(libraries/skybox)
 add_subdirectory(libraries/ui)
 add_subdirectory(libraries/args)
+add_subdirectory(libraries/noise)
 
 #Main binary
-add_executable(ft_vox binary/private/ft_vox.cpp)
+add_executable(ft_vox binary/private/ft_vox.cpp libraries/noise/public/PerlinNoise.hpp)
 target_link_libraries(ft_vox engine iomanager arg_parsing)
 add_dependencies(ft_vox engine iomanager arg_parsing)
 target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)

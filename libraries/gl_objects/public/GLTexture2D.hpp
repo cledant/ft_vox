@@ -29,12 +29,6 @@ class GLTexture2D final
 
     [[nodiscard]] uint32_t getTextureID() const;
 
-    static constexpr glm::ivec2 const DEFAULT_TEX_SIZE = glm::ivec2(300);
-    static constexpr int32_t const DEFAULT_NB_TEX_CHAN = 3;
-    static constexpr std::array<uint32_t,
-                                DEFAULT_TEX_SIZE.x *DEFAULT_TEX_SIZE.y> const
-      DEFAULT_TEX_BUFFER = {};
-
   private:
     inline void _creating_gpu_tex(void const *data,
                                   uint8_t use_nearest_filtering);

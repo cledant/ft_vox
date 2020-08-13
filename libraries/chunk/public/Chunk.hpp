@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "ChunkDataStructures.hpp"
+#include "PerlinNoise.hpp"
 
 class Chunk final
 {
@@ -33,7 +34,7 @@ class Chunk final
     [[nodiscard]] uint32_t getNbVisibleBlocks() const;
     [[nodiscard]] glm::vec4 const &getColorModifier() const;
 
-    void generateChunk(uint64_t seed);
+    void generateChunk(PerlinNoise const &pn);
     uint8_t allocateGPUResources();
     void updateGPUResources();
 
@@ -43,10 +44,7 @@ class Chunk final
 
   private:
     // CPU generation related
-    inline void _generate_with_seed(uint64_t seed);
-    inline glm::vec2 _generate_elevation_moisture(int32_t x,
-                                                  int32_t y,
-                                                  uint64_t seed);
+    inline void _generate_with_seed(PerlinNoise const &pn);
     inline void _compute_block_from_xy_pos(int32_t x,
                                            int32_t y,
                                            glm::vec2 const &elevation_moisture);

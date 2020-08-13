@@ -34,8 +34,8 @@ Engine::init(Options const &opts)
                                             _perspective_data.near_far.x,
                                             _perspective_data.near_far.y));
     _camera.setPosition(START_POS);
-    _ui.init(glm::vec2(IOManager::WIN_W, IOManager::WIN_H));
     _cm.init(opts.seed.value_or(_generate_seed()));
+    _ui.init(glm::vec2(IOManager::WIN_W, IOManager::WIN_H), _cm.getSeed());
     _skybox.init("./ressources/textures/skybox.png");
     _fps_count_timeref = std::chrono::steady_clock::now();
 }

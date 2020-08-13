@@ -15,6 +15,12 @@ static constexpr int32_t const TOTAL_BLOCK =
 static constexpr int32_t const BLOCK_PER_PLANE =
   BLOCK_PER_LINE * LINE_PER_PLANE;
 
+static constexpr int32_t const MAX_CHUNK_MAP = 8192;
+static constexpr int32_t const MAX_BLOCK_PER_LINE =
+  MAX_CHUNK_MAP * BLOCK_PER_LINE;
+static constexpr int32_t const MAX_LINE_PER_PLANE =
+  MAX_CHUNK_MAP * LINE_PER_PLANE;
+
 static constexpr glm::vec3 const CHUNK_SIZE =
   glm::vec3(BLOCK_PER_LINE, PLANE_PER_CHUNK, LINE_PER_PLANE);
 static constexpr glm::vec3 const EXTENT = CHUNK_SIZE * 0.5f;
@@ -24,9 +30,6 @@ static constexpr uint8_t const LEFT_3_BITS = 224;
 static constexpr int32_t const XY_PLUS_UPPER_LIMIT =
   PLANE_PER_CHUNK - BLOCK_PER_LINE - 1;
 static constexpr int32_t const YZ_PLUS_UPPER_LIMIT = BLOCK_PER_LINE - 1;
-
-static constexpr float const NORMALIZED_PLANE_PER_CHUNK =
-  1.0f / static_cast<float>(PLANE_PER_CHUNK);
 
 typedef enum BlockType
 {

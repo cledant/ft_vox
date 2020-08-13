@@ -18,7 +18,7 @@ IOManager::IOManager()
   , _h(0)
   , _w_viewport(0)
   , _h_viewport(0)
-  , _win_name("")
+  , _win_name()
   , _mouse_exclusive(0)
 {
     if (!glfwInit()) {

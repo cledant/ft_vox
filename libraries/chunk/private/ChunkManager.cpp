@@ -14,7 +14,7 @@ ChunkManager::ChunkManager()
   , _shader()
   , _texture()
   , _nb_displayed_chunk(0)
-  , _seed(0)
+  , _pn()
 {}
 
 void
@@ -26,7 +26,7 @@ ChunkManager::init(uint64_t seed)
                  "Textured Chunk");
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
     _texture.init("./ressources/textures/terrain.png", 1);
-    _seed = seed;
+    _pn.setSeed(seed);
 }
 
 void
@@ -188,10 +188,10 @@ ChunkManager::getCurrentPlayerBlock() const
     return (_current_player_block);
 }
 
-uint64_t
+uint32_t
 ChunkManager::getSeed() const
 {
-    return (_seed);
+    return (_pn.getSeed());
 }
 
 uint8_t
@@ -285,7 +285,7 @@ ChunkManager::_add_new_chunk(glm::ivec2 const &pos)
 {
     if (_chunk_map[pos] == DELETED) {
         _compute_chunk.emplace_back(std::async(
-          std::launch::async, &ChunkManager::_generate_chunk, pos, _seed));
+          std::launch::async, &ChunkManager::_generate_chunk, pos, _pn));
         _chunk_map[pos] = PENDING;
     }
     if (_compute_chunk.size() >= NB_ASYNC_THREAD) {
@@ -295,11 +295,11 @@ ChunkManager::_add_new_chunk(glm::ivec2 const &pos)
 }
 
 Chunk
-ChunkManager::_generate_chunk(glm::ivec2 pos, uint64_t seed)
+ChunkManager::_generate_chunk(glm::ivec2 pos, PerlinNoise pn)
 {
     auto new_chunk = Chunk(pos);
 
-    new_chunk.generateChunk(seed);
+    new_chunk.generateChunk(pn);
     return (new_chunk);
 }
 
