@@ -20,7 +20,7 @@ sum_array(Iterator begin, Iterator end, T init_val)
 constexpr std::array<float, 4> const OCTAVE_COEFF = { 0.8f,
                                                       0.65f,
                                                       1.00f,
-                                                      0.15f };
+                                                      0.65f };
 
 constexpr float const OCTAVE_COEFF_SUM =
   sum_array(OCTAVE_COEFF.begin(), OCTAVE_COEFF.end(), 0.0f);
