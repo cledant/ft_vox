@@ -6,14 +6,13 @@
 
 PerlinNoise::PerlinNoise()
   : _seed(0)
-  , _grad_table()
+  , _grad_table_3d()
   , _perm_table()
-{
-}
+{}
 
 PerlinNoise::PerlinNoise(uint32_t seed)
   : _seed(0)
-  , _grad_table()
+  , _grad_table_3d()
   , _perm_table()
 {
     setSeed(seed);
@@ -35,8 +34,8 @@ PerlinNoise::getSeed() const
 float
 PerlinNoise::noise2d(glm::vec2 const &vec) const
 {
-    // TODO 2d perlin noise
-    return (noise3d(glm::vec3(vec.x, vec.y, 0.5f)));
+    // TODO real 2d noise
+    return (noise3d(glm::vec3(vec, 0.5f)));
 }
 
 float
@@ -50,14 +49,14 @@ PerlinNoise::noise3d(glm::vec3 const &vec) const
     float v = glm::smoothstep(0.0f, 1.0f, t.y);
     float w = glm::smoothstep(0.0f, 1.0f, t.z);
 
-    glm::vec3 const &c000 = _grad_table[_hash(i0)];
-    glm::vec3 const &c100 = _grad_table[_hash(glm::ivec3(i1.x, i0.y, i0.z))];
-    glm::vec3 const &c010 = _grad_table[_hash(glm::ivec3(i0.x, i1.y, i0.z))];
-    glm::vec3 const &c110 = _grad_table[_hash(glm::ivec3(i1.x, i1.y, i0.z))];
-    glm::vec3 const &c001 = _grad_table[_hash(glm::ivec3(i0.x, i0.y, i1.z))];
-    glm::vec3 const &c101 = _grad_table[_hash(glm::ivec3(i1.x, i0.y, i1.z))];
-    glm::vec3 const &c011 = _grad_table[_hash(glm::ivec3(i0.x, i1.y, i1.z))];
-    glm::vec3 const &c111 = _grad_table[_hash(i1)];
+    glm::vec3 const &c000 = _grad_table_3d[_hash(i0)];
+    glm::vec3 const &c100 = _grad_table_3d[_hash(glm::ivec3(i1.x, i0.y, i0.z))];
+    glm::vec3 const &c010 = _grad_table_3d[_hash(glm::ivec3(i0.x, i1.y, i0.z))];
+    glm::vec3 const &c110 = _grad_table_3d[_hash(glm::ivec3(i1.x, i1.y, i0.z))];
+    glm::vec3 const &c001 = _grad_table_3d[_hash(glm::ivec3(i0.x, i0.y, i1.z))];
+    glm::vec3 const &c101 = _grad_table_3d[_hash(glm::ivec3(i1.x, i0.y, i1.z))];
+    glm::vec3 const &c011 = _grad_table_3d[_hash(glm::ivec3(i0.x, i1.y, i1.z))];
+    glm::vec3 const &c111 = _grad_table_3d[_hash(i1)];
 
     auto v0 = glm::vec3(t);
     auto v1 = glm::vec3(t - 1.0f);
@@ -92,11 +91,11 @@ PerlinNoise::_init_tables()
     for (uint32_t i = 0; i < GRADIENT_TABLE_SIZE; ++i) {
         float grad_len2 = 2.0f;
         while (grad_len2 > 1.0f) {
-            _grad_table[i] = glm::vec3(
+            _grad_table_3d[i] = glm::vec3(
               2 * real_rd(gen) - 1, 2 * real_rd(gen) - 1, 2 * real_rd(gen) - 1);
-            grad_len2 = glm::length2(_grad_table[i]);
+            grad_len2 = glm::length2(_grad_table_3d[i]);
         }
-        _grad_table[i] = glm::normalize(_grad_table[i]);
+        _grad_table_3d[i] = glm::normalize(_grad_table_3d[i]);
         _perm_table[i] = i;
     }
 

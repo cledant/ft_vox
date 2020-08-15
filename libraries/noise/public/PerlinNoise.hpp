@@ -21,7 +21,15 @@ class PerlinNoise final
 
     [[nodiscard]] uint32_t getSeed() const;
 
+    /** \brief Generate 2D perlin noise
+     * \param A 2D vector
+     * \return Value between [-1; 1]
+     */
     [[nodiscard]] float noise2d(glm::vec2 const &vec) const;
+    /** \brief Generate 3D perlin noise
+     * \param A 3D vector
+     * \return value between [-1; 1]
+     */
     [[nodiscard]] float noise3d(glm::vec3 const &vec) const;
 
   private:
@@ -35,7 +43,7 @@ class PerlinNoise final
     [[nodiscard]] inline int32_t _hash(glm::ivec3 const &vec) const;
 
     uint32_t _seed;
-    std::array<glm::vec3, GRADIENT_TABLE_SIZE> _grad_table;
+    std::array<glm::vec3, GRADIENT_TABLE_SIZE> _grad_table_3d;
     std::array<uint32_t, PERMUTATION_TABLE_SIZE> _perm_table;
 };
 
