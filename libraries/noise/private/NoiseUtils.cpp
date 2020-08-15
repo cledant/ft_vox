@@ -9,7 +9,7 @@ generateValueWithOctave(glm::vec2 const &coord, PerlinNoise const &pn)
                       OCTAVE_COEFF[3] * noise2dRemapped(8.0f * coord, pn);
 
     elevation /= (OCTAVE_COEFF_SUM);
-    elevation = glm::pow(elevation, 2.85f);
+    elevation = glm::pow(elevation, 3.85f);
     return (elevation);
 }
 

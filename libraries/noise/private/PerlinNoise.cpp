@@ -89,13 +89,12 @@ PerlinNoise::_init_tables()
     std::uniform_real_distribution real_rd;
 
     for (uint32_t i = 0; i < GRADIENT_TABLE_SIZE; ++i) {
-        float grad_len2 = 2.0f;
-        while (grad_len2 > 1.0f) {
-            _grad_table_3d[i] = glm::vec3(
-              2 * real_rd(gen) - 1, 2 * real_rd(gen) - 1, 2 * real_rd(gen) - 1);
-            grad_len2 = glm::length2(_grad_table_3d[i]);
-        }
-        _grad_table_3d[i] = glm::normalize(_grad_table_3d[i]);
+        float theta = glm::acos(2 * real_rd(gen) - 1);
+        float phi = 2.0f * real_rd(gen) * M_PI;
+
+        _grad_table_3d[i] = glm::vec3(glm::cos(phi) * glm::sin(theta),
+                                      glm::sin(phi) * glm::sin(theta),
+                                      glm::cos(theta));
         _perm_table[i] = i;
     }
 
