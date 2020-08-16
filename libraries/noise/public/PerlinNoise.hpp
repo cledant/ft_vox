@@ -40,9 +40,11 @@ class PerlinNoise final
       GRADIENT_TABLE_SIZE * 2;
 
     inline void _init_tables();
-    [[nodiscard]] inline int32_t _hash(glm::ivec3 const &vec) const;
+    [[nodiscard]] inline int32_t _hash_3d(glm::ivec3 const &vec) const;
+    [[nodiscard]] inline int32_t _hash_2d(glm::ivec2 const &vec) const;
 
     uint32_t _seed;
+    std::array<glm::vec2, GRADIENT_TABLE_SIZE> _grad_table_2d;
     std::array<glm::vec3, GRADIENT_TABLE_SIZE> _grad_table_3d;
     std::array<uint32_t, PERMUTATION_TABLE_SIZE> _perm_table;
 };
