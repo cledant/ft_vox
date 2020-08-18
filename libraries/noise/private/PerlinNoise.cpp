@@ -36,8 +36,8 @@ PerlinNoise::getSeed() const
 float
 PerlinNoise::noise2d(glm::vec2 const &vec) const
 {
-    auto i0 =
-      glm::ivec2(glm::floor(vec)) % glm::ivec2(GRADIENT_TABLE_MAX_INDEX);
+    auto i0 = glm::ivec2(glm::floor(glm::abs(vec))) %
+              glm::ivec2(GRADIENT_TABLE_MAX_INDEX);
     auto i1 = glm::ivec2(i0 + 1) % glm::ivec2(GRADIENT_TABLE_MAX_INDEX);
     auto t = vec - glm::floor(vec);
     float u = glm::smoothstep(0.0f, 1.0f, t.x);
@@ -66,8 +66,8 @@ PerlinNoise::noise2d(glm::vec2 const &vec) const
 float
 PerlinNoise::noise3d(glm::vec3 const &vec) const
 {
-    auto i0 =
-      glm::ivec3(glm::floor(vec)) % glm::ivec3(GRADIENT_TABLE_MAX_INDEX);
+    auto i0 = glm::ivec3(glm::floor(glm::abs(vec))) %
+              glm::ivec3(GRADIENT_TABLE_MAX_INDEX);
     auto i1 = glm::ivec3(i0 + 1) % glm::ivec3(GRADIENT_TABLE_MAX_INDEX);
     auto t = vec - glm::floor(vec);
     float u = glm::smoothstep(0.0f, 1.0f, t.x);

@@ -1,15 +1,10 @@
 #include "NoiseUtils.hpp"
 
 float
-generateValueWithOctave(glm::vec2 const &coord, PerlinNoise const &pn)
+getElevation(glm::vec2 const &coord, PerlinNoise const &pn)
 {
-    float elevation = OCTAVE_COEFF[0] * noise2dRemapped(coord, pn) +
-                      OCTAVE_COEFF[1] * noise2dRemapped(2.0f * coord, pn) +
-                      OCTAVE_COEFF[2] * noise2dRemapped(4.0f * coord, pn) +
-                      OCTAVE_COEFF[3] * noise2dRemapped(8.0f * coord, pn);
-
-    elevation /= (OCTAVE_COEFF_SUM);
-    elevation = glm::pow(elevation, 3.85f);
+    float elevation = noise2dRemapped(512.0f * coord, pn) -
+                      0.35f * noise2dRemapped(1024.0f * coord, pn);
     return (elevation);
 }
 
@@ -23,15 +18,28 @@ generateMap(const glm::ivec2 &size, uint32_t seed, void *buffer)
     PerlinNoise pn(seed);
     for (int32_t i = 0; i < size.x; ++i) {
         for (int32_t j = 0; j < size.y; ++j) {
-            auto pos = glm::vec2(i / static_cast<float>(size.x) + 0.5f,
-                                 j / static_cast<float>(size.y) + 0.5f);
-            auto elevation = generateValueWithOctave(pos, pn);
+            // Display map between 0.0f and 1.0f
+            auto pos = glm::vec2(i / static_cast<float>(size.x),
+                                 j / static_cast<float>(size.y));
+            auto elevation = getElevation(pos, pn);
 
-            glm::i8vec3 *pixel =
-              static_cast<glm::i8vec3 *>(buffer) + i + j * size.y;
-            pixel->r = elevation * 255.0f;
-            pixel->g = elevation * 255.0f;
-            pixel->b = elevation * 255.0f;
+            glm::u8vec3 *pixel =
+              static_cast<glm::u8vec3 *>(buffer) + i + j * size.y;
+            if (elevation < 0.0f) {
+                *pixel = MAP_COLOR_BLACK;
+            } else if (elevation < 0.20f) {
+                *pixel = MAP_COLOR_BLUE;
+            } else if (elevation < 0.40f) {
+                *pixel = MAP_COLOR_YELLOW;
+            } else if (elevation < 0.60f) {
+                *pixel = MAP_COLOR_BROWN;
+            } else if (elevation < 0.80f) {
+                *pixel = MAP_COLOR_GREEN;
+            } else if (elevation <= 1.0f) {
+                *pixel = MAP_COLOR_WHITE;
+            } else {
+                *pixel = MAP_COLOR_RED;
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ Ui::Ui()
 void
 Ui::init(glm::vec2 const &window_size, uint32_t seed)
 {
-    std::array<uint8_t, 3 * 512 * 512> map_buffer = {};
+    std::array<uint8_t, 3 * MAP_SIZE.x * MAP_SIZE.y> map_buffer = {};
 
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",

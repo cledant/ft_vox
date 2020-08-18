@@ -244,15 +244,17 @@ Chunk::_generate_with_seed(PerlinNoise const &pn)
 {
     for (int32_t i = 0; i < BLOCK_PER_LINE; ++i) {
         for (int32_t j = 0; j < LINE_PER_PLANE; ++j) {
-            auto block_space_coord = glm::vec2(
-              ((_space_coord.x + i) / static_cast<float>(MAX_BLOCK_PER_LINE)) +
-                0.5f,
-              ((_space_coord.z + j) / static_cast<float>(MAX_LINE_PER_PLANE)) +
-                0.5f);
+            // uv_coord is be between [0;1]
+            auto uv_coord =
+              glm::mod(glm::abs(glm::vec2(
+                         (_space_coord.x + i + (MAX_BLOCK_PER_LINE / 2)),
+                         (_space_coord.z + j + (MAX_LINE_PER_PLANE / 2)))),
+                       glm::vec2(MAX_BLOCK_PER_LINE, MAX_LINE_PER_PLANE));
+            uv_coord.x /= static_cast<float>(MAX_BLOCK_PER_LINE);
+            uv_coord.y /= static_cast<float>(MAX_LINE_PER_PLANE);
 
             auto elevation_moisture = glm::vec2(0.0f);
-            elevation_moisture.x =
-              generateValueWithOctave(block_space_coord, pn);
+            elevation_moisture.x = getElevation(uv_coord, pn);
             _compute_block_from_xy_pos(i, j, elevation_moisture);
         }
     }
@@ -264,8 +266,7 @@ Chunk::_compute_block_from_xy_pos(int32_t x,
                                   int32_t y,
                                   const glm::vec2 &elevation_moisture)
 {
-    int32_t z = (elevation_moisture.x * PLANE_PER_CHUNK) - 1;
-    z = (z >= 256) ? 255 : z;
+    int32_t z = elevation_moisture.x * (PLANE_PER_CHUNK - 1);
     z = (z < 0) ? 0 : z;
 
     for (int32_t i = z; i >= 0; --i) {
