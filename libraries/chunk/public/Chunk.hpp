@@ -47,7 +47,8 @@ class Chunk final
     inline void _generate_with_seed(PerlinNoise const &pn);
     inline void _fill_block_chunk(int32_t x,
                                   int32_t y,
-                                  glm::vec2 const &elevation_temperature);
+                                  glm::vec2 const &elevation_temperature,
+                                  glm::vec2 const &cave_limits);
     inline void _debug_generate_plane();
     inline void _debug_generate_blocks();
     inline void _generate_visible_blocks_buffer();

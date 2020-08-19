@@ -254,7 +254,8 @@ Chunk::_generate_with_seed(PerlinNoise const &pn)
             uv_coord.y /= static_cast<float>(MAX_LINE_PER_PLANE);
 
             auto elevation_temperature = getElevationTemperature(uv_coord, pn);
-            _fill_block_chunk(i, j, elevation_temperature);
+            auto cave_limits = getCaveLimits(uv_coord, pn);
+            _fill_block_chunk(i, j, elevation_temperature, cave_limits);
         }
     }
     _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -263,13 +264,23 @@ Chunk::_generate_with_seed(PerlinNoise const &pn)
 void
 Chunk::_fill_block_chunk(int32_t x,
                          int32_t y,
-                         const glm::vec2 &elevation_temperature)
+                         glm::vec2 const &elevation_temperature,
+                         glm::vec2 const &cave_limits)
 {
     int32_t z_max = elevation_temperature.x * (PLANE_PER_CHUNK - 1);
+    int32_t cave_skip_min = cave_limits.x * (PLANE_PER_CHUNK - 1);
+    int32_t cave_skip_max = cave_limits.y * (PLANE_PER_CHUNK - 1);
     z_max = (z_max < 0) ? 0 : z_max;
+    z_max = glm::max(z_max, cave_skip_max - 2);
 
     // Adding blocks
     for (int32_t i = 0; i <= z_max; ++i) {
+        // Cave generation
+        if (i > cave_skip_min && i < cave_skip_max) {
+            continue;
+        }
+
+        // Land generation
         if (elevation_temperature.y <= COLD_TEMP) {
             if (i <= BEDROCK_LEVEL) {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
@@ -318,10 +329,7 @@ Chunk::_fill_block_chunk(int32_t x,
             } else if (i < WATER_LEVEL) {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
                   STONE;
-            } else if (i == WATER_LEVEL) {
-                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
-                  SAND;
-            } else if (i == z_max && i < 100) {
+            } else if (i == WATER_LEVEL || (i == z_max && i < 100)) {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
                   SAND;
             } else if (i == z_max && i >= 100 && i <= SNOW_LEVEL) {
@@ -336,8 +344,9 @@ Chunk::_fill_block_chunk(int32_t x,
             }
         }
     }
+
     // Filling with water
-    for (int32_t i = z_max; i <= WATER_LEVEL; ++i) {
+    for (int32_t i = 0; i <= WATER_LEVEL; ++i) {
         if (!_block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK]) {
             if (elevation_temperature.y <= COLD_TEMP) {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =

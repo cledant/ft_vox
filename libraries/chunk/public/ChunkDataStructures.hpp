@@ -75,8 +75,8 @@ typedef enum ChunkState
 } ChunkState;
 
 // Biomes Constants
-static constexpr int32_t const BEDROCK_LEVEL = 10;
-static constexpr int32_t const WATER_LEVEL = 30;
+static constexpr int32_t const BEDROCK_LEVEL = 5;
+static constexpr int32_t const WATER_LEVEL = 25;
 static constexpr int32_t const SNOW_LEVEL = 150;
 static constexpr float const COLD_TEMP = 0.45f;
 static constexpr float const DESERT_TEMP = 0.60f;

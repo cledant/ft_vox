@@ -11,11 +11,15 @@ getElevationTemperature(glm::vec2 const &coord, PerlinNoise const &pn)
     return (em);
 }
 
-float
-getCave(glm::vec2 const &coord, PerlinNoise const &pn)
+glm::vec2
+getCaveLimits(glm::vec2 const &coord, PerlinNoise const &pn)
 {
-    float cave = noise2dRemapped(2048.0f * coord, pn);
-    return (cave);
+    float limits_1 = 0.275f * noise2dRemapped(4096.0f * coord, pn);
+    float limits_2 = 0.175f * noise2dRemapped(768.0f * coord, pn);
+    if (limits_1 < limits_2) {
+        return (glm::vec2(limits_1, limits_2));
+    }
+    return (glm::vec2(limits_2, limits_1));
 }
 
 void
