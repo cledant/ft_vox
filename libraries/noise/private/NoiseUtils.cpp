@@ -1,11 +1,21 @@
 #include "NoiseUtils.hpp"
 
-float
-getElevation(glm::vec2 const &coord, PerlinNoise const &pn)
+glm::vec2
+getElevationTemperature(glm::vec2 const &coord, PerlinNoise const &pn)
 {
-    float elevation = noise2dRemapped(512.0f * coord, pn) -
-                      0.35f * noise2dRemapped(1024.0f * coord, pn);
-    return (elevation);
+    glm::vec2 em = {};
+
+    em.x = noise2dRemapped(512.0f * coord, pn) -
+           0.35f * noise2dRemapped(1024.0f * coord, pn);
+    em.y = noise2dRemapped(320.0f * coord, pn);
+    return (em);
+}
+
+float
+getCave(glm::vec2 const &coord, PerlinNoise const &pn)
+{
+    float cave = noise2dRemapped(2048.0f * coord, pn);
+    return (cave);
 }
 
 void
@@ -21,25 +31,12 @@ generateMap(const glm::ivec2 &size, uint32_t seed, void *buffer)
             // Display map between 0.0f and 1.0f
             auto pos = glm::vec2(i / static_cast<float>(size.x),
                                  j / static_cast<float>(size.y));
-            auto elevation = getElevation(pos, pn);
+            auto elevation = getElevationTemperature(pos, pn);
+            (void)elevation;
 
             glm::u8vec3 *pixel =
               static_cast<glm::u8vec3 *>(buffer) + i + j * size.y;
-            if (elevation < 0.0f) {
-                *pixel = MAP_COLOR_BLACK;
-            } else if (elevation < 0.20f) {
-                *pixel = MAP_COLOR_BLUE;
-            } else if (elevation < 0.40f) {
-                *pixel = MAP_COLOR_YELLOW;
-            } else if (elevation < 0.60f) {
-                *pixel = MAP_COLOR_BROWN;
-            } else if (elevation < 0.80f) {
-                *pixel = MAP_COLOR_GREEN;
-            } else if (elevation <= 1.0f) {
-                *pixel = MAP_COLOR_WHITE;
-            } else {
-                *pixel = MAP_COLOR_RED;
-            }
+            *pixel = MAP_COLOR_BLACK;
         }
     }
 }

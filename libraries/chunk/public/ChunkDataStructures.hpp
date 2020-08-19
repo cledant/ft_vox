@@ -6,7 +6,7 @@
 #define GLM_FORCE_SWIZZLE
 #include "glm/glm.hpp"
 
-// Constants
+// Chunks Constants
 static constexpr int32_t const BLOCK_PER_LINE = 16;
 static constexpr int32_t const LINE_PER_PLANE = 16;
 static constexpr int32_t const PLANE_PER_CHUNK = 256;
@@ -73,5 +73,12 @@ typedef enum ChunkState
     PENDING,
     VISIBLE
 } ChunkState;
+
+// Biomes Constants
+static constexpr int32_t const BEDROCK_LEVEL = 10;
+static constexpr int32_t const WATER_LEVEL = 30;
+static constexpr int32_t const SNOW_LEVEL = 150;
+static constexpr float const COLD_TEMP = 0.45f;
+static constexpr float const DESERT_TEMP = 0.60f;
 
 #endif // FT_VOX_CHUNKDATASTRUCTURES_HPP

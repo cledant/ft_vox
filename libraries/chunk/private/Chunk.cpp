@@ -253,34 +253,102 @@ Chunk::_generate_with_seed(PerlinNoise const &pn)
             uv_coord.x /= static_cast<float>(MAX_BLOCK_PER_LINE);
             uv_coord.y /= static_cast<float>(MAX_LINE_PER_PLANE);
 
-            auto elevation_moisture = glm::vec2(0.0f);
-            elevation_moisture.x = getElevation(uv_coord, pn);
-            _compute_block_from_xy_pos(i, j, elevation_moisture);
+            auto elevation_temperature = getElevationTemperature(uv_coord, pn);
+            _fill_block_chunk(i, j, elevation_temperature);
         }
     }
     _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
 void
-Chunk::_compute_block_from_xy_pos(int32_t x,
-                                  int32_t y,
-                                  const glm::vec2 &elevation_moisture)
+Chunk::_fill_block_chunk(int32_t x,
+                         int32_t y,
+                         const glm::vec2 &elevation_temperature)
 {
-    int32_t z = elevation_moisture.x * (PLANE_PER_CHUNK - 1);
-    z = (z < 0) ? 0 : z;
+    int32_t z_max = elevation_temperature.x * (PLANE_PER_CHUNK - 1);
+    z_max = (z_max < 0) ? 0 : z_max;
 
-    for (int32_t i = z; i >= 0; --i) {
-        if (i < 50) {
-            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
-              BEDROCK;
-        } else if (i < 100) {
-            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = SAND;
-        } else if (i < 150) {
-            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = DIRT;
-        } else if (i < 200) {
-            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = GRASS;
+    // Adding blocks
+    for (int32_t i = 0; i <= z_max; ++i) {
+        if (elevation_temperature.y <= COLD_TEMP) {
+            if (i <= BEDROCK_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  BEDROCK;
+            } else if (i < WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  STONE;
+            } else if (i == z_max && i <= SNOW_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SNOW_GRASS;
+            } else if (i > SNOW_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SNOW;
+            } else {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  DIRT;
+            }
+        } else if (elevation_temperature.y <= DESERT_TEMP) {
+            if (i <= BEDROCK_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  BEDROCK;
+            } else if (i < WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  STONE;
+            } else if (i == WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SAND;
+            } else if (i == z_max && i < 140) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  GRASS;
+            } else if ((i == z_max && i >= 140 && i < SNOW_LEVEL) ||
+                       i == SNOW_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SNOW_GRASS;
+            } else if (i > SNOW_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SNOW;
+            } else {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  DIRT;
+            }
         } else {
-            _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] = SNOW;
+            if (i <= BEDROCK_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  BEDROCK;
+            } else if (i < WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  STONE;
+            } else if (i == WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SAND;
+            } else if (i == z_max && i < 100) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SAND;
+            } else if (i == z_max && i >= 100 && i <= SNOW_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  EMPTY;
+            } else if (i > SNOW_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SNOW;
+            } else {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  COBBLESTONE;
+            }
+        }
+    }
+    // Filling with water
+    for (int32_t i = z_max; i <= WATER_LEVEL; ++i) {
+        if (!_block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK]) {
+            if (elevation_temperature.y <= COLD_TEMP) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  ICE;
+            } else if (elevation_temperature.y <= DESERT_TEMP) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  WATER;
+            } else {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SAND;
+            }
         }
     }
 }

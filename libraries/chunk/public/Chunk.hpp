@@ -45,9 +45,9 @@ class Chunk final
   private:
     // CPU generation related
     inline void _generate_with_seed(PerlinNoise const &pn);
-    inline void _compute_block_from_xy_pos(int32_t x,
-                                           int32_t y,
-                                           glm::vec2 const &elevation_moisture);
+    inline void _fill_block_chunk(int32_t x,
+                                  int32_t y,
+                                  glm::vec2 const &elevation_temperature);
     inline void _debug_generate_plane();
     inline void _debug_generate_blocks();
     inline void _generate_visible_blocks_buffer();

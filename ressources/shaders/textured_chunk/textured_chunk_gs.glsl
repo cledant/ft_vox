@@ -46,7 +46,7 @@ struct BlockType {
 #define GRASS_TOP vec2(0, 0)
 #define GRASS_SIDE vec2(6 * TEX_STEP, 2 * TEX_STEP)
 #define DIRT vec2(2 * TEX_STEP, 0)
-#define COBBLESTONE vec2(TEX_STEP, 0)
+#define COBBLESTONE vec2(0, TEX_STEP)
 #define PLANK vec2(4 * TEX_STEP, 0)
 #define BEDROCK vec2(TEX_STEP, TEX_STEP)
 #define SAND vec2(2 * TEX_STEP, TEX_STEP)
