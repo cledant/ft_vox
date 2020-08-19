@@ -25,24 +25,9 @@ getCaveLimits(glm::vec2 const &coord, PerlinNoise const &pn)
 void
 generateMap(const glm::ivec2 &size, uint32_t seed, void *buffer)
 {
-    if (!buffer) {
-        return;
-    }
-
-    PerlinNoise pn(seed);
-    for (int32_t i = 0; i < size.x; ++i) {
-        for (int32_t j = 0; j < size.y; ++j) {
-            // Display map between 0.0f and 1.0f
-            auto pos = glm::vec2(i / static_cast<float>(size.x),
-                                 j / static_cast<float>(size.y));
-            auto elevation = getElevationTemperature(pos, pn);
-            (void)elevation;
-
-            glm::u8vec3 *pixel =
-              static_cast<glm::u8vec3 *>(buffer) + i + j * size.y;
-            *pixel = MAP_COLOR_BLACK;
-        }
-    }
+    (void)size;
+    (void)seed;
+    (void)buffer;
 }
 
 float

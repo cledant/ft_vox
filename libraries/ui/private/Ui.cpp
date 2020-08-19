@@ -143,7 +143,6 @@ Ui::_print_ui_keys()
         "= = Increase Render Dist",
         "P = Toggle Mouse",
         "F5 = Toggle Fullscreen",
-        "TAB = Show Map",
         "H = Toggle UI",
     };
 
