@@ -68,6 +68,7 @@ IOManager::createWindow(std::string &&name)
         _initCallbacks();
 #ifdef NDEBUG
         toggleMouseExclusive();
+        toggleFullscreen();
 #endif
         glEnable(GL_DEPTH_TEST);
     }

@@ -37,7 +37,7 @@ class Ui final
     void displayMap();
 
   private:
-    static constexpr uint32_t const NB_KEY_DESCRIPTION = 8;
+    static constexpr uint32_t const NB_KEY_DESCRIPTION = 9;
     static constexpr uint32_t const NB_DEBUG_UI = 9;
     static constexpr int32_t const OFFSET_MAP = 150;
 

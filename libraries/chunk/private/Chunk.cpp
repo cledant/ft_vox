@@ -271,7 +271,6 @@ Chunk::_fill_block_chunk(int32_t x,
     int32_t cave_skip_min = cave_limits.x * (PLANE_PER_CHUNK - 1);
     int32_t cave_skip_max = cave_limits.y * (PLANE_PER_CHUNK - 1);
     z_max = (z_max < 0) ? 0 : z_max;
-    z_max = glm::max(z_max, cave_skip_max - 2);
 
     // Adding blocks
     for (int32_t i = 0; i <= z_max; ++i) {
@@ -294,6 +293,9 @@ Chunk::_fill_block_chunk(int32_t x,
             } else if (i > SNOW_LEVEL) {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
                   SNOW;
+            } else if (i == cave_skip_min && i > WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  SNOW_GRASS;
             } else {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
                   DIRT;
@@ -318,6 +320,9 @@ Chunk::_fill_block_chunk(int32_t x,
             } else if (i > SNOW_LEVEL) {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
                   SNOW;
+            } else if (i == cave_skip_min && i > WATER_LEVEL) {
+                _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
+                  GRASS;
             } else {
                 _block_chunk[x + y * LINE_PER_PLANE + i * PLANE_PER_CHUNK] =
                   DIRT;

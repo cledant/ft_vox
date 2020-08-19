@@ -49,7 +49,7 @@ class ChunkManager final
     [[nodiscard]] uint32_t getSeed() const;
 
   private:
-    static constexpr int32_t const MIN_RENDER_DISTANCE = 0;
+    static constexpr int32_t const MIN_RENDER_DISTANCE = 10;
     static constexpr int32_t const MAX_RENDER_DISTANCE = 128;
     static constexpr uint32_t const NB_ASYNC_THREAD = 64;
     static constexpr float const MAX_BLOCK_DISTANCE_INTERACTION = 5.0f;

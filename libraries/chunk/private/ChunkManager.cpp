@@ -27,6 +27,7 @@ ChunkManager::init(uint64_t seed)
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
     _texture.init("./ressources/textures/terrain.png", 1);
     _pn.setSeed(seed);
+    _current_render_distance = MIN_RENDER_DISTANCE;
 }
 
 void
