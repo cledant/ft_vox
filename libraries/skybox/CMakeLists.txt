@@ -10,4 +10,8 @@ target_include_directories(skybox
         ${CMAKE_CURRENT_SOURCE_DIR}/private)
 add_dependencies(skybox glad glm globjects)
 target_link_libraries(skybox PUBLIC glad glm globjects)
-target_compile_options(skybox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
+set_target_properties(skybox PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO)
+target_compile_options(skybox PRIVATE -Wall -Wextra -Werror)

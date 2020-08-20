@@ -11,4 +11,8 @@ target_include_directories(noise
         ${CMAKE_CURRENT_SOURCE_DIR}/private)
 add_dependencies(noise glm)
 target_link_libraries(noise PUBLIC glm pthread)
-target_compile_options(noise PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
+set_target_properties(noise PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO)
+target_compile_options(noise PRIVATE -Wall -Wextra -Werror)

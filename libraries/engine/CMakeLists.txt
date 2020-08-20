@@ -13,4 +13,8 @@ target_include_directories(engine
         ${CMAKE_CURRENT_SOURCE_DIR}/private)
 add_dependencies(engine ui iomanager globjects chunk skybox)
 target_link_libraries(engine PUBLIC ui iomanager glm globjects chunk skybox arg_parsing)
-target_compile_options(engine PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
+set_target_properties(engine PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO)
+target_compile_options(engine PRIVATE -Wall -Wextra -Werror)

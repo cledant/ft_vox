@@ -12,4 +12,8 @@ target_include_directories(globjects
         ${CMAKE_SOURCE_DIR}/external/stb)
 add_dependencies(globjects glad glm freetype)
 target_link_libraries(globjects PUBLIC glad glm freetype)
-target_compile_options(globjects PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
+set_target_properties(globjects PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO)
+target_compile_options(globjects PRIVATE -Wall -Wextra -Werror)

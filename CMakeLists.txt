@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.10)
 project(ft_vox)
 
+#Detecting + setting global LTO
+include(CheckIPOSupported)
+check_ipo_supported(RESULT lto_supported OUTPUT lto_output)
+
+if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND lto_supported)
+    message("Compiling with LTO enabled")
+    cmake_policy(SET CMP0069 NEW)
+    set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif ()
+
+#Setting global C/CXX compile options
+set(CMAKE_CXX_FLAGS "-march=native -pipe")
+set(CMAKE_C_FLAGS "-march=native -pipe")
+
 #Setup glm
 add_library(glm INTERFACE IMPORTED)
 set_target_properties(glm PROPERTIES
@@ -34,9 +49,13 @@ add_subdirectory(libraries/args)
 add_subdirectory(libraries/noise)
 
 #Main binary
-add_executable(ft_vox binary/private/ft_vox.cpp libraries/noise/public/PerlinNoise.hpp)
+add_executable(ft_vox binary/private/ft_vox.cpp)
 target_link_libraries(ft_vox engine iomanager arg_parsing)
 add_dependencies(ft_vox engine iomanager arg_parsing)
-target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror -std=c++17 -march=native -flto)
+set_target_properties(ft_vox PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO)
+target_compile_options(ft_vox PRIVATE -Wall -Wextra -Werror)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ressources DESTINATION ${CMAKE_BINARY_DIR})
