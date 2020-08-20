@@ -10,11 +10,36 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND lto_supported)
     cmake_policy(SET CMP0069 NEW)
     set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+else ()
+    message("LTO not supported")
 endif ()
 
 #Setting global C/CXX compile options
-set(CMAKE_CXX_FLAGS "-march=native -pipe")
-set(CMAKE_C_FLAGS "-march=native -pipe")
+set(FT_VOX_OPTI_TYPE NATIVE CACHE STRING "")
+
+if (${FT_VOX_OPTI_TYPE} STREQUAL NATIVE)
+    message("Build binary for current computer arch")
+    set(CMAKE_CXX_FLAGS "-march=native -pipe")
+    set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+elseif (${FT_VOX_OPTI_TYPE} STREQUAL AVX2)
+    message("Build binary with AVX2 profile")
+    set(CMAKE_CXX_FLAGS "-march=core2 -mtune=haswell \
+    -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4.1 -msse4.2 \
+    -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mfsgsbase \
+    -mlzcnt -mmovbe -mpclmul -mpopcnt -maes \
+    -mrdrnd  -pipe")
+    set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+elseif (${FT_VOX_OPTI_TYPE} STREQUAL SSE4)
+    message("Build binary with SSE4 profile")
+    set(CMAKE_CXX_FLAGS "-march=core2 -mtune=nehalem \
+    -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4.1 -msse4.2 \
+    -mpopcnt -pipe")
+    set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+else ()
+    message("No arch optimization selected")
+    set(CMAKE_CXX_FLAGS "-pipe")
+    set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+endif ()
 
 #Setup glm
 add_library(glm INTERFACE IMPORTED)
