@@ -124,12 +124,18 @@ GLTexture2D::_creating_gpu_tex(void const *data, uint8_t use_nearest_filtering)
                  data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(
-      GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    GLenum filtering_type =
+    GLenum filtering_min_type = (use_nearest_filtering == 0)
+                                  ? GL_LINEAR_MIPMAP_LINEAR
+                                  : GL_NEAREST_MIPMAP_LINEAR;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filtering_min_type);
+    GLenum filtering_mag_type =
       (use_nearest_filtering == 0) ? GL_LINEAR : GL_NEAREST;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_type);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_mag_type);
+    float max_anisotropy;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropy);
+    float cur_anisotropy = (max_anisotropy < 32.0f) ? max_anisotropy : 32.0f;
+    glTexParameterf(
+      GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, cur_anisotropy);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
