@@ -47,6 +47,9 @@ class IOManager final
     void render();
     void clear() const;
 
+    // Hardware related
+    [[nodiscard]] std::string const &getGpuInfo() const;
+
   private:
     // Input
     std::array<uint8_t, KEYS_BUFF_SIZE> _keys;
@@ -64,6 +67,9 @@ class IOManager final
     int32_t _h_viewport;
     std::string _win_name;
     uint8_t _mouse_exclusive;
+
+    // Hardware related
+    std::string _gpu_info;
 
     // Callbacks
     inline void _initCallbacks();

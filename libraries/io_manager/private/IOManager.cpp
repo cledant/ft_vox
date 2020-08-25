@@ -1,6 +1,7 @@
 #include "IOManager.hpp"
 
 #include <stdexcept>
+#include <sstream>
 
 #include "glm/glm.hpp"
 
@@ -71,6 +72,9 @@ IOManager::createWindow(std::string &&name)
         toggleFullscreen();
 #endif
         glEnable(GL_DEPTH_TEST);
+        std::stringstream gpu_info;
+        gpu_info << reinterpret_cast<char const *>(glGetString(GL_RENDERER));
+        _gpu_info = gpu_info.str();
     }
 }
 
@@ -270,4 +274,10 @@ IOManager::_initCallbacks()
         glViewport(0, 0, w, h);
     };
     glfwSetFramebufferSizeCallback(_win, framebuffer_size_callback);
+}
+
+std::string const &
+IOManager::getGpuInfo() const
+{
+    return (_gpu_info);
 }

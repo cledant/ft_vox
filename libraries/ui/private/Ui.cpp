@@ -16,7 +16,7 @@ Ui::Ui()
 void
 Ui::init(glm::vec2 const &window_size, uint32_t seed)
 {
-    std::array<uint8_t, 3 * MAP_SIZE.x * MAP_SIZE.y> map_buffer = {};
+    std::array<uint8_t, 3 *MAP_SIZE.x *MAP_SIZE.y> map_buffer = {};
 
     _font.init("./ressources/fonts/Roboto-Light.ttf",
                "./ressources/shaders/font/font_vs.glsl",
@@ -45,50 +45,45 @@ void
 Ui::draw(UiInfo const &info)
 {
     // Setup data to be displayed
-    std::array<std::stringstream, NB_DEBUG_UI> sstream_array;
+    std::array<std::stringstream, UI_DBG_TOTAL> sstream_array;
 
-    // Avg Fps
-    sstream_array[0].precision(2);
-    sstream_array[0] << "Avg FPS: " << info.avg_fps;
+    sstream_array[UI_DBG_AVG_FPS].precision(2);
+    sstream_array[UI_DBG_AVG_FPS] << "Avg FPS: " << info.avg_fps;
 
-    // Camera pos
-    sstream_array[1].precision(2);
-    sstream_array[1] << "Cam Pos: " << std::fixed << "X = " << info.camera_pos.x
-                     << " | Y = " << info.camera_pos.y
-                     << " | Z = " << info.camera_pos.z;
+    sstream_array[UI_DBG_GPU_INFO] << "GPU: " << info.gpu_info;
 
-    // Camera Direction
-    sstream_array[2].precision(2);
-    sstream_array[2] << "Cam Direction: " << std::fixed
-                     << "X = " << info.camera_direction.x
-                     << " | Y = " << info.camera_direction.y
-                     << " | Z = " << info.camera_direction.z;
+    sstream_array[UI_DBG_CAM_POSITION].precision(2);
+    sstream_array[UI_DBG_CAM_POSITION]
+      << "Cam Pos: " << std::fixed << "X = " << info.camera_pos.x
+      << " | Y = " << info.camera_pos.y << " | Z = " << info.camera_pos.z;
 
-    // Render Distance
-    sstream_array[3].precision(2);
-    sstream_array[3] << "Render Distance: " << std::fixed << info.render_dist;
+    sstream_array[UI_DBG_CAM_DIRECTION].precision(2);
+    sstream_array[UI_DBG_CAM_DIRECTION] << "Cam Direction: " << std::fixed
+                                        << "X = " << info.camera_direction.x
+                                        << " | Y = " << info.camera_direction.y
+                                        << " | Z = " << info.camera_direction.z;
 
-    // Player position
-    sstream_array[4].precision(2);
-    sstream_array[4] << "Player Chunk: X = " << std::fixed << info.player_pos.x
-                     << " | Y = " << info.player_pos.y;
+    sstream_array[UI_DBG_RENDER_DISTANCE].precision(2);
+    sstream_array[UI_DBG_RENDER_DISTANCE] << "Render Distance: " << std::fixed
+                                          << info.render_dist;
 
-    // Chunk in range
-    sstream_array[5].precision(2);
-    sstream_array[5] << "In Range Chunk: " << std::fixed << info.chunk_in_range;
+    sstream_array[UI_DBG_PLAYER_POSITION].precision(2);
+    sstream_array[UI_DBG_PLAYER_POSITION] << "Player Chunk: X = " << std::fixed
+                                          << info.player_pos.x
+                                          << " | Y = " << info.player_pos.y;
+    sstream_array[UI_DBG_CHUNK_IN_RANGE].precision(2);
+    sstream_array[UI_DBG_CHUNK_IN_RANGE] << "In Range Chunk: " << std::fixed
+                                         << info.chunk_in_range;
 
-    // Chunk displayed
-    sstream_array[6].precision(2);
-    sstream_array[6] << "Displayed Chunk: " << std::fixed
-                     << info.displayed_chunk;
+    sstream_array[UI_DBG_CHUNK_DISPLAYED].precision(2);
+    sstream_array[UI_DBG_CHUNK_DISPLAYED] << "Displayed Chunk: " << std::fixed
+                                          << info.displayed_chunk;
 
-    // Player Chunk
-    sstream_array[7].precision(2);
-    sstream_array[7] << "Player Active Chunk: " << std::fixed
-                     << STR_BLOCK_TYPES[info.player_block];
+    sstream_array[UI_DBG_PLAYER_CHUNK].precision(2);
+    sstream_array[UI_DBG_PLAYER_CHUNK] << "Player Active Chunk: " << std::fixed
+                                       << STR_BLOCK_TYPES[info.player_block];
 
-    // Seed
-    sstream_array[8] << "Seed: " << info.seed;
+    sstream_array[UI_DBG_SEED] << "Seed: " << info.seed;
 
     if (!_show_map) {
         _cursor.draw(_ortho);
@@ -118,11 +113,11 @@ Ui::displayMap()
 
 void
 Ui::_print_ui_info(
-  std::array<std::stringstream, NB_DEBUG_UI> const &sstream_array)
+  std::array<std::stringstream, UI_DBG_TOTAL> const &sstream_array)
 {
     auto constexpr const start_pos = glm::vec2(15.0f, 30.0f);
 
-    for (uint32_t i = 0; i < NB_DEBUG_UI; ++i) {
+    for (uint32_t i = 0; i < UI_DBG_TOTAL; ++i) {
         _font.drawText(sstream_array[i].str(),
                        glm::vec3(1.0f),
                        glm::vec2(start_pos.x, start_pos.y + 30.0f * i),

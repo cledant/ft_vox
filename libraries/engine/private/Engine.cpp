@@ -60,7 +60,8 @@ Engine::run()
                             _cm.getNbInRangeChunks(),
                             _cm.getNbDisplayedChunk(),
                             _cm.getCurrentPlayerBlock(),
-                            _cm.getSeed() };
+                            _cm.getSeed(),
+                            _io_manager.getGpuInfo() };
             _ui.draw(info);
         }
         _io_manager.render();
@@ -69,6 +70,7 @@ Engine::run()
         }
         _compute_fps();
     }
+    _io_manager.deleteWindow();
 }
 
 void

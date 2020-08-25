@@ -18,6 +18,7 @@ typedef struct UiInfo
     uint64_t displayed_chunk;
     int32_t player_block;
     uint64_t seed;
+    std::string const &gpu_info;
 } UiInfo;
 
 class Ui final
@@ -38,8 +39,22 @@ class Ui final
 
   private:
     static constexpr uint32_t const NB_KEY_DESCRIPTION = 8;
-    static constexpr uint32_t const NB_DEBUG_UI = 9;
     static constexpr int32_t const OFFSET_MAP = 150;
+
+    typedef enum UiDebugType
+    {
+        UI_DBG_AVG_FPS = 0,
+        UI_DBG_GPU_INFO,
+        UI_DBG_CAM_POSITION,
+        UI_DBG_CAM_DIRECTION,
+        UI_DBG_RENDER_DISTANCE,
+        UI_DBG_PLAYER_POSITION,
+        UI_DBG_CHUNK_IN_RANGE,
+        UI_DBG_CHUNK_DISPLAYED,
+        UI_DBG_PLAYER_CHUNK,
+        UI_DBG_SEED,
+        UI_DBG_TOTAL
+    } UiDebugType;
 
     static constexpr char const *STR_BLOCK_TYPES[] = {
         "EMPTY",   "STONE", "GRASS",  "DIRT",  "COBBLESTONE", "PLANKS",
@@ -57,7 +72,7 @@ class Ui final
     uint8_t _show_map;
 
     inline void _print_ui_info(
-      std::array<std::stringstream, NB_DEBUG_UI> const &sstream_array);
+      std::array<std::stringstream, UI_DBG_TOTAL> const &sstream_array);
     inline void _print_ui_keys();
 };
 
