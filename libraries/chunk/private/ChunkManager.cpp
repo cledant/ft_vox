@@ -8,6 +8,7 @@ ChunkManager::ChunkManager()
   : _current_render_distance(MIN_RENDER_DISTANCE)
   , _current_player_block(STONE)
   , _player_pos(0)
+  , _player_space_pos(0.0f)
   , _chunk()
   , _compute_chunk()
   , _chunk_map()
@@ -34,6 +35,7 @@ void
 ChunkManager::update(glm::vec3 const &player_pos)
 {
     _player_pos = _get_chunk_coordinate(player_pos);
+    _player_space_pos = player_pos;
     _remove_out_of_range_chunk();
     _add_available_chunk_to_viewable();
     _chunk_computation();
@@ -47,6 +49,7 @@ ChunkManager::draw(glm::mat4 const &projection,
     _nb_displayed_chunk = 0;
     _shader.use();
     _shader.setMat4("uniform_mat_perspec_view", projection);
+    _shader.setVec3("uniform_vec_camera_pos", _player_space_pos);
     for (auto &it : _chunk) {
         if (!it.isChunkInFrustum(frustum_planes, abs_frustum_planes)) {
             continue;

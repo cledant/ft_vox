@@ -5,6 +5,7 @@ layout (triangle_strip, max_vertices = 24) out;
 
 uniform mat4 uniform_mat_perspec_view;
 uniform vec4 uniform_vec_color_modifier;
+uniform vec3 uniform_vec_camera_pos;
 
 in VS_OUT {
     vec4 block_position;
@@ -71,10 +72,11 @@ struct BlockType {
 #define OFFSET 1.0
 const float log_result = 1 / log(C * FAR + OFFSET);
 
-void generate_grass_block(const vec4 block_center, const uint block_faces, const vec4 color_modifier)
+void generate_grass_block(const vec4 block_center, const uint block_faces,
+const vec4 color_modifier, const float[6] backface_culling)
 {
     //FACE XY-
-    if ((block_faces & (1u << 5)) > 0) {
+    if ((block_faces & (1u << 5)) > 0 && backface_culling[0] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_RIGHT_OFF;
@@ -107,7 +109,7 @@ void generate_grass_block(const vec4 block_center, const uint block_faces, const
     }
 
     //FACE XY+
-    if ((block_faces & (1u << 4)) > 0) {
+    if ((block_faces & (1u << 4)) > 0 && backface_culling[1] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT;
         gs_out.level_1_texture_coord = GRASS_SIDE;
@@ -140,7 +142,7 @@ void generate_grass_block(const vec4 block_center, const uint block_faces, const
     }
 
     //FACE XZ-
-    if ((block_faces & (1u << 1)) > 0) {
+    if ((block_faces & (1u << 1)) > 0 && backface_culling[2] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -173,7 +175,7 @@ void generate_grass_block(const vec4 block_center, const uint block_faces, const
     }
 
     //FACE XZ+
-    if ((block_faces & 1u) > 0) {
+    if ((block_faces & 1u) > 0 && backface_culling[3] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = GRASS_TOP + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -206,7 +208,7 @@ void generate_grass_block(const vec4 block_center, const uint block_faces, const
     }
 
     //FACE YZ-
-    if ((block_faces & (1u << 3)) > 0) {
+    if ((block_faces & (1u << 3)) > 0 && backface_culling[4] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
@@ -239,7 +241,7 @@ void generate_grass_block(const vec4 block_center, const uint block_faces, const
     }
 
     //FACE YZ+
-    if ((block_faces & (1u << 2)) > 0) {
+    if ((block_faces & (1u << 2)) > 0 && backface_culling[5] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = DIRT + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = GRASS_SIDE + DOWN_LEFT_OFF;
@@ -273,14 +275,14 @@ void generate_grass_block(const vec4 block_center, const uint block_faces, const
 }
 
 void generate_textured_block(const vec4 block_center, const uint block_faces,
-const BlockType type, vec4 color_modifier)
+const BlockType type, vec4 color_modifier, const float[6] backface_culling)
 {
     if (type.use_color_modifier == false) {
         color_modifier = NO_COLOR_MOD;
     }
 
     //FACE XY-
-    if ((block_faces & (1u << 5)) > 0) {
+    if ((block_faces & (1u << 5)) > 0 && backface_culling[0] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_minus + DOWN_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -313,7 +315,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XY+
-    if ((block_faces & (1u << 4)) > 0) {
+    if ((block_faces & (1u << 4)) > 0 && backface_culling[1] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xy_plus;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -346,7 +348,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XZ-
-    if ((block_faces & (1u << 1)) > 0) {
+    if ((block_faces & (1u << 1)) > 0 && backface_culling[2] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -379,7 +381,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE XZ+
-    if ((block_faces & 1u) > 0) {
+    if ((block_faces & 1u) > 0 && backface_culling[3] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_xz_plus + UP_RIGHT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -412,7 +414,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE YZ-
-    if ((block_faces & (1u << 3)) > 0) {
+    if ((block_faces & (1u << 3)) > 0 && backface_culling[4] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_minus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -445,7 +447,7 @@ const BlockType type, vec4 color_modifier)
     }
 
     //FACE YZ+
-    if ((block_faces & (1u << 2)) > 0) {
+    if ((block_faces & (1u << 2)) > 0 && backface_culling[5] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.base_texture_coord = type.id_yz_plus + DOWN_LEFT_OFF;
         gs_out.level_1_texture_coord = NO_TEXTURE;
@@ -478,6 +480,26 @@ const BlockType type, vec4 color_modifier)
     }
 }
 
+float[6] compute_backface_culling_tests(const vec4 block_center)
+{
+    float[6] result;
+    vec3 view_to_block_center = gl_in[0].gl_Position.xyz + block_center.xyz - uniform_vec_camera_pos;
+
+    //XY-
+    result[0] = dot(vec3(0.0f, 0.0f, -1.0f), (view_to_block_center + vec3(0.0f, 0.0f, -0.5f)));
+    //XY+
+    result[1] = dot(vec3(0.0f, 0.0f, 1.0f), (view_to_block_center + vec3(0.0f, 0.0f, 0.5f)));
+    //XZ-
+    result[2] = dot(vec3(0.0f, -1.0f, 0.0f), (view_to_block_center + vec3(0.0f, -0.5f, 0.0f)));
+    //XZ+
+    result[3] = dot(vec3(0.0f, 1.0f, 0.0f), (view_to_block_center + vec3(0.0f, 0.5f, 0.0f)));
+    //YZ-
+    result[4] = dot(vec3(-1.0f, 0.0f, 0.0f), (view_to_block_center + vec3(-0.5f, 0.0f, 0.0f)));
+    //YZ+
+    result[5] = dot(vec3(1.0f, 0.0f, 0.0f), (view_to_block_center + vec3(0.5f, 0.0f, 0.0f)));
+    return (result);
+}
+
 const BlockType block_type[] = BlockType[TOTAL_TEX](
 BlockType(STONE, STONE, STONE, STONE, STONE, STONE, false),
 BlockType(GRASS_TOP, GRASS_TOP, GRASS_TOP, GRASS_TOP, GRASS_TOP, GRASS_TOP, false),
@@ -499,10 +521,13 @@ BlockType(ICE, ICE, ICE, ICE, ICE, ICE, false));
 void main()
 {
     uint type = gs_in[0].block_type;
+    float[6] backface_culling = compute_backface_culling_tests(gs_in[0].block_position);
     if (type == 2) {
-        generate_grass_block(gs_in[0].block_position, gs_in[0].block_faces, uniform_vec_color_modifier);
+        generate_grass_block(gs_in[0].block_position, gs_in[0].block_faces, uniform_vec_color_modifier,
+        backface_culling);
     } else {
         type -= 1;
-        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, block_type[type], uniform_vec_color_modifier);
+        generate_textured_block(gs_in[0].block_position, gs_in[0].block_faces, block_type[type],
+        uniform_vec_color_modifier, backface_culling);
     }
 }

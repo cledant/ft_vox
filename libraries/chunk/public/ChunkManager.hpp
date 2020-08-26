@@ -59,6 +59,7 @@ class ChunkManager final
     int32_t _current_render_distance;
     int32_t _current_player_block;
     glm::ivec2 _player_pos;
+    glm::vec3 _player_space_pos;
 
     std::vector<Chunk> _chunk;
     std::vector<std::future<Chunk>> _compute_chunk;
