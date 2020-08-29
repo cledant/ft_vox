@@ -3,6 +3,7 @@
 #include <random>
 
 #include "glm/gtx/norm.hpp"
+#include "glm/gtc/constants.hpp"
 
 PerlinNoise::PerlinNoise()
   : _seed(0)
@@ -129,7 +130,7 @@ PerlinNoise::_init_tables()
         _grad_table_2d[i] = glm::normalize(_grad_table_2d[i]);
 
         float theta = glm::acos(2 * real_rd(gen) - 1);
-        float phi = 2.0f * real_rd(gen) * M_PI;
+        float phi = 2.0f * real_rd(gen) * glm::pi<float>();
         _grad_table_3d[i] = glm::vec3(glm::cos(phi) * glm::sin(theta),
                                       glm::sin(phi) * glm::sin(theta),
                                       glm::cos(theta));

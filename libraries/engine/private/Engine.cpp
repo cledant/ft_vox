@@ -51,7 +51,7 @@ Engine::run()
                  _camera.getAbsFrustumPlanes());
         _skybox.draw(_camera.getPerspectiveViewMatrix(),
                      _perspective_data.near_far.y);
-        if (_event_handler.printUi()) {
+/*        if (_event_handler.printUi()) {
             UiInfo info = { _str_fps,
                             _camera.getPosition(),
                             _camera.getFront(),
@@ -63,7 +63,7 @@ Engine::run()
                             _cm.getSeed(),
                             _io_manager.getGpuInfo() };
             _ui.draw(info);
-        }
+        }*/
         _io_manager.render();
         while (glGetError()) {
             std::cout << "Cleaning gl error" << std::endl;

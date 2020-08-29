@@ -36,8 +36,11 @@ in VS_OUT {
 
 out GS_OUT {
     vec2 base_texture_coord;
+    vec2 level_1_texture_coord;
     float depth_z;
     flat bool use_color_modifier;
+    flat bool use_level_1_color_modifier;
+    flat bool use_level_1_texture;
 } gs_out;
 
 #define NO_COLOR_MOD vec4(1.0)
@@ -55,132 +58,168 @@ const BlockTextureType tex_type, const float[6] backface_culling)
 {
     //FACE XY-
     gs_out.use_color_modifier = (type == 11);
+    gs_out.use_level_1_color_modifier = (type == 1);
+    gs_out.use_level_1_texture = (type == 1);
     if ((block_faces & (1u << 5)) > 0 && backface_culling[0] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_minus + DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_minus + DOWN_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_minus + DOWN_LEFT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_minus  + DOWN_LEFT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_minus + UP_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_minus  + UP_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_minus;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_minus;
         EmitVertex();
         EndPrimitive();
     }
 
     //FACE XY+
     gs_out.use_color_modifier = (type == 11);
+    gs_out.use_level_1_color_modifier = (type == 1);
+    gs_out.use_level_1_texture = (type == 1);
     if ((block_faces & (1u << 4)) > 0 && backface_culling[1] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_plus;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_plus;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_plus + UP_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_plus + UP_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_plus + DOWN_LEFT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_plus + DOWN_LEFT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xy_plus + DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xy_plus + DOWN_RIGHT_OFF;
         EmitVertex();
         EndPrimitive();
     }
 
     //FACE XZ-
     gs_out.use_color_modifier = (type == 11);
+    gs_out.use_level_1_color_modifier = false;
+    gs_out.use_level_1_texture = false;
     if ((block_faces & (1u << 1)) > 0 && backface_culling[2] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_minus + DOWN_LEFT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_minus + DOWN_LEFT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_minus;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_minus;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_minus + DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_minus + DOWN_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_minus + UP_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_minus + UP_RIGHT_OFF;
         EmitVertex();
         EndPrimitive();
     }
 
     //FACE XZ+
     gs_out.use_color_modifier = (type == 1 || type == 11);
+    gs_out.use_level_1_color_modifier = false;
+    gs_out.use_level_1_texture = false;
     if ((block_faces & 1u) > 0 && backface_culling[3] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_plus + UP_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_plus + UP_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_plus + DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_plus + DOWN_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_plus;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_plus;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_xz_plus + DOWN_LEFT_OFF;
+        gs_out.level_1_texture_coord = tex_type.level_1_tex_xz_plus + DOWN_LEFT_OFF;
         EmitVertex();
         EndPrimitive();
     }
 
     //FACE YZ-
     gs_out.use_color_modifier = (type == 11);
+    gs_out.use_level_1_color_modifier = (type == 1);
+    gs_out.use_level_1_texture = (type == 1);
     if ((block_faces & (1u << 3)) > 0 && backface_culling[4] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_minus + DOWN_LEFT_OFF;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_minus + DOWN_LEFT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_minus;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_minus;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_minus + DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_minus + DOWN_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_minus + UP_RIGHT_OFF;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_minus + UP_RIGHT_OFF;
         EmitVertex();
         EndPrimitive();
     }
 
     //FACE YZ+
     gs_out.use_color_modifier = (type == 11);
+    gs_out.use_level_1_color_modifier = (type == 1);
+    gs_out.use_level_1_texture = (type == 1);
     if ((block_faces & (1u << 2)) > 0 && backface_culling[5] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_plus + DOWN_LEFT_OFF;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_plus + DOWN_LEFT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_plus;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_plus;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_plus + DOWN_RIGHT_OFF;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_plus + DOWN_RIGHT_OFF;
         EmitVertex();
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
         gs_out.base_texture_coord = tex_type.id_yz_plus + UP_RIGHT_OFF;
+        gs_out.level_1_texture_coord= tex_type.level_1_tex_yz_plus + UP_RIGHT_OFF;
         EmitVertex();
         EndPrimitive();
     }
