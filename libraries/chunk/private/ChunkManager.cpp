@@ -46,7 +46,6 @@ ChunkManager::init(uint64_t seed)
                    0,
                    _ubo_texture_type,
                    sizeof(BlockTextureType) * NB_SHADER_TEXTURE);
-    std::cout << sizeof(BlockTextureType) << std::endl;
 }
 
 void
