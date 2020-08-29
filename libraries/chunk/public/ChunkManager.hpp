@@ -12,6 +12,7 @@
 
 #include "Chunk.hpp"
 #include "ChunkDataStructures.hpp"
+#include "ChunkShaderDataStructure.hpp"
 #include "GLShader.hpp"
 #include "GLTexture2D.hpp"
 #include "PerlinNoise.hpp"
@@ -21,7 +22,7 @@ class ChunkManager final
 {
   public:
     ChunkManager();
-    ~ChunkManager() = default;
+    ~ChunkManager();
     ChunkManager(const ChunkManager &src) = delete;
     ChunkManager &operator=(ChunkManager const &rhs) = delete;
     ChunkManager(ChunkManager &&src) = delete;
@@ -71,10 +72,14 @@ class ChunkManager final
 
     PerlinNoise _pn;
 
+    uint32_t _ubo_texture_type;
+    float _log_z_fighting;
+
     inline uint8_t _is_chunk_out_of_range(glm::ivec2 const &pos) const;
     inline void _remove_out_of_range_chunk();
     inline void _add_available_chunk_to_viewable();
     inline void _chunk_computation();
+    inline void _init_texture_type_ubo();
     inline uint8_t _add_new_chunk(glm::ivec2 const &pos);
     static inline Chunk _generate_chunk(glm::ivec2 pos, PerlinNoise pn);
     static inline glm::ivec2 _get_chunk_coordinate(

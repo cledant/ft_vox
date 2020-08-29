@@ -34,6 +34,10 @@ class GLShader final
     void setMat4(std::string const &name, glm::mat4 const &data);
     void setInt(std::string const &name, int data);
     void setFloat(std::string const &name, float data);
+    void setUbo(std::string const &name,
+                uint32_t index,
+                uint32_t ubo,
+                size_t size);
 
   private:
     inline void _readFile(std::string const &path, std::string &content) const;
@@ -45,10 +49,12 @@ class GLShader final
                                                int32_t fs) const;
     [[nodiscard]] inline std::string _shaderError(uint32_t shader) const;
     inline int32_t _setGetUniform(std::string const &name);
+    inline uint32_t _setGetUboUniform(std::string const &name);
 
     uint8_t _is_init;
     uint32_t _program;
     std::unordered_map<std::string, int32_t> _uniform_id;
+    std::unordered_map<std::string, uint32_t> _ubo_uniform_id;
     std::string _prog_name;
 };
 

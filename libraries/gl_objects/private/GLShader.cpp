@@ -8,6 +8,8 @@
 GLShader::GLShader()
   : _is_init(0)
   , _program(0)
+  , _uniform_id()
+  , _ubo_uniform_id()
   , _prog_name()
 {}
 
@@ -133,7 +135,6 @@ GLShader::setVec2(std::string const &name, glm::vec2 const &data)
 void
 GLShader::setVec3(std::string const &name, glm::vec3 const &data)
 {
-    _setGetUniform(name);
     glUniform3fv(
       _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
 }
@@ -141,7 +142,6 @@ GLShader::setVec3(std::string const &name, glm::vec3 const &data)
 void
 GLShader::setVec4(std::string const &name, glm::vec4 const &data)
 {
-    _setGetUniform(name);
     glUniform4fv(
       _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
 }
@@ -151,30 +151,41 @@ GLShader::setVec4Array(std::string const &name,
                        glm::vec4 const &data,
                        uint64_t array_size)
 {
-    _setGetUniform(name);
-    glUniform4fv(_setGetUniform(name), array_size, reinterpret_cast<GLfloat const *>(&data));
+    glUniform4fv(_setGetUniform(name),
+                 array_size,
+                 reinterpret_cast<GLfloat const *>(&data));
 }
 
 void
 GLShader::setMat4(std::string const &name, glm::mat4 const &data)
 {
-    _setGetUniform(name);
-    glUniformMatrix4fv(_setGetUniform(name), 1, GL_FALSE, reinterpret_cast<const GLfloat *>(&data));
+    glUniformMatrix4fv(_setGetUniform(name),
+                       1,
+                       GL_FALSE,
+                       reinterpret_cast<const GLfloat *>(&data));
 }
 
 void
 GLShader::setInt(std::string const &name, int data)
 {
-    _setGetUniform(name);
     glUniform1i(_setGetUniform(name), data);
 }
 
 void
 GLShader::setFloat(std::string const &name, float data)
 {
-    _setGetUniform(name);
     glUniform1fv(
       _setGetUniform(name), 1, reinterpret_cast<GLfloat const *>(&data));
+}
+
+void
+GLShader::setUbo(const std::string &name,
+                 uint32_t index,
+                 uint32_t ubo,
+                 size_t size)
+{
+    glUniformBlockBinding(_program, _setGetUboUniform(name), index);
+    glBindBufferRange(GL_UNIFORM_BUFFER, index, ubo, 0, size);
 }
 
 void
@@ -284,6 +295,23 @@ GLShader::_setGetUniform(std::string const &name)
                                      " in shader: " + _prog_name);
         }
         _uniform_id.try_emplace(name, id);
+        return (id);
+    }
+    return (entry->second);
+}
+
+uint32_t
+GLShader::_setGetUboUniform(std::string const &name)
+{
+    auto entry = _ubo_uniform_id.find(name);
+    if (entry == _ubo_uniform_id.end()) {
+        uint32_t id = glGetUniformBlockIndex(_program, name.c_str());
+        if (id == GL_INVALID_INDEX) {
+            throw std::runtime_error(
+              "GLShader: Invalid uniforn buffer object name: " + name +
+              " in shader: " + _prog_name);
+        }
+        _ubo_uniform_id.try_emplace(name, id);
         return (id);
     }
     return (entry->second);

@@ -16,7 +16,16 @@ ChunkManager::ChunkManager()
   , _texture()
   , _nb_displayed_chunk(0)
   , _pn()
+  , _ubo_texture_type()
+  , _log_z_fighting()
 {}
+
+ChunkManager::~ChunkManager()
+{
+    if (!_ubo_texture_type) {
+        glDeleteBuffers(1, &_ubo_texture_type);
+    }
+}
 
 void
 ChunkManager::init(uint64_t seed)
@@ -29,6 +38,15 @@ ChunkManager::init(uint64_t seed)
     _texture.init("./ressources/textures/terrain.png", 1);
     _pn.setSeed(seed);
     _current_render_distance = MIN_RENDER_DISTANCE;
+    _log_z_fighting = 1 / glm::log(C * FAR + OFFSET);
+    _init_texture_type_ubo();
+    _shader.use();
+    _shader.setFloat("uniform_log_z_fighting", _log_z_fighting);
+    _shader.setUbo("uniform_block_type",
+                   0,
+                   _ubo_texture_type,
+                   sizeof(BlockTextureType) * NB_SHADER_TEXTURE);
+    std::cout << sizeof(BlockTextureType) << std::endl;
 }
 
 void
@@ -305,6 +323,21 @@ ChunkManager::_generate_chunk(glm::ivec2 pos, PerlinNoise pn)
 
     new_chunk.generateChunk(pn);
     return (new_chunk);
+}
+
+void
+ChunkManager::_init_texture_type_ubo()
+{
+    glGenBuffers(1, &_ubo_texture_type);
+    if (!_ubo_texture_type) {
+        throw std::runtime_error("ChunkManager: Failed to create texture ubo");
+    }
+    glBindBuffer(GL_UNIFORM_BUFFER, _ubo_texture_type);
+    glBufferData(GL_UNIFORM_BUFFER,
+                 sizeof(BlockTextureType) * NB_SHADER_TEXTURE,
+                 &SHADER_TEXTURE_TABLE[0],
+                 GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 glm::ivec2
