@@ -389,7 +389,7 @@ Chunk::_debug_generate_blocks()
         }
         _block_chunk[2 * i + offset] = i;
     }
-    _color_modifier = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    _color_modifier = glm::vec4(0.57f, 0.94f, 0.23f, 1.0f);
 }
 
 void

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <array>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
