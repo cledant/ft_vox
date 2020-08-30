@@ -27,7 +27,7 @@ class UiFont final
               uint64_t font_size);
     void clear();
 
-    void drawText(std::string const &str,
+    void drawText(const char *str,
                   glm::vec3 const &color,
                   glm::vec2 const &pos,
                   glm::mat4 const &ortho,
@@ -35,6 +35,7 @@ class UiFont final
                   float scale);
 
   private:
+    static constexpr uint32_t MAX_FONT_CHAR = 128;
     struct FontChar
     {
         uint32_t tex;
@@ -53,7 +54,7 @@ class UiFont final
     uint8_t _is_init;
     uint64_t _font_size;
     GLShader _shader;
-    std::map<char, FontChar> _char_list;
+    std::array<FontChar, MAX_FONT_CHAR> _char_list;
     uint32_t _vao;
     uint32_t _vbo;
 };

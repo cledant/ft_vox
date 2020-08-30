@@ -45,54 +45,62 @@ void
 Ui::draw(UiInfo const &info)
 {
     // Setup data to be displayed
-    std::array<std::stringstream, UI_DBG_TOTAL> sstream_array;
+    /*    std::array<std::stringstream, UI_DBG_TOTAL> sstream_array;
 
-    sstream_array[UI_DBG_AVG_FPS].precision(2);
-    sstream_array[UI_DBG_AVG_FPS] << "Avg FPS: " << info.avg_fps;
+        sstream_array[UI_DBG_AVG_FPS].precision(2);
+        sstream_array[UI_DBG_AVG_FPS] << "Avg FPS: " << info.avg_fps;
 
-    sstream_array[UI_DBG_GPU_INFO] << "GPU: " << info.gpu_info;
+        sstream_array[UI_DBG_GPU_INFO] << "GPU: " << info.gpu_info;
 
-    sstream_array[UI_DBG_CAM_POSITION].precision(2);
-    sstream_array[UI_DBG_CAM_POSITION]
-      << "Cam Pos: " << std::fixed << "X = " << info.camera_pos.x
-      << " | Y = " << info.camera_pos.y << " | Z = " << info.camera_pos.z;
+        sstream_array[UI_DBG_CAM_POSITION].precision(2);
+        sstream_array[UI_DBG_CAM_POSITION]
+          << "Cam Pos: " << std::fixed << "X = " << info.camera_pos.x
+          << " | Y = " << info.camera_pos.y << " | Z = " << info.camera_pos.z;
 
-    sstream_array[UI_DBG_CAM_DIRECTION].precision(2);
-    sstream_array[UI_DBG_CAM_DIRECTION] << "Cam Direction: " << std::fixed
-                                        << "X = " << info.camera_direction.x
-                                        << " | Y = " << info.camera_direction.y
-                                        << " | Z = " << info.camera_direction.z;
+        sstream_array[UI_DBG_CAM_DIRECTION].precision(2);
+        sstream_array[UI_DBG_CAM_DIRECTION] << "Cam Direction: " << std::fixed
+                                            << "X = " << info.camera_direction.x
+                                            << " | Y = " <<
+       info.camera_direction.y
+                                            << " | Z = " <<
+       info.camera_direction.z;
 
-    sstream_array[UI_DBG_RENDER_DISTANCE].precision(2);
-    sstream_array[UI_DBG_RENDER_DISTANCE] << "Render Distance: " << std::fixed
-                                          << info.render_dist;
+        sstream_array[UI_DBG_RENDER_DISTANCE].precision(2);
+        sstream_array[UI_DBG_RENDER_DISTANCE] << "Render Distance: " <<
+       std::fixed
+                                              << info.render_dist;
 
-    sstream_array[UI_DBG_PLAYER_POSITION].precision(2);
-    sstream_array[UI_DBG_PLAYER_POSITION] << "Player Chunk: X = " << std::fixed
-                                          << info.player_pos.x
-                                          << " | Y = " << info.player_pos.y;
-    sstream_array[UI_DBG_CHUNK_IN_RANGE].precision(2);
-    sstream_array[UI_DBG_CHUNK_IN_RANGE] << "In Range Chunk: " << std::fixed
-                                         << info.chunk_in_range;
+        sstream_array[UI_DBG_PLAYER_POSITION].precision(2);
+        sstream_array[UI_DBG_PLAYER_POSITION] << "Player Chunk: X = " <<
+       std::fixed
+                                              << info.player_pos.x
+                                              << " | Y = " << info.player_pos.y;
+        sstream_array[UI_DBG_CHUNK_IN_RANGE].precision(2);
+        sstream_array[UI_DBG_CHUNK_IN_RANGE] << "In Range Chunk: " << std::fixed
+                                             << info.chunk_in_range;
 
-    sstream_array[UI_DBG_CHUNK_DISPLAYED].precision(2);
-    sstream_array[UI_DBG_CHUNK_DISPLAYED] << "Displayed Chunk: " << std::fixed
-                                          << info.displayed_chunk;
+        sstream_array[UI_DBG_CHUNK_DISPLAYED].precision(2);
+        sstream_array[UI_DBG_CHUNK_DISPLAYED] << "Displayed Chunk: " <<
+       std::fixed
+                                              << info.displayed_chunk;
 
-    sstream_array[UI_DBG_PLAYER_CHUNK].precision(2);
-    sstream_array[UI_DBG_PLAYER_CHUNK] << "Player Active Chunk: " << std::fixed
-                                       << STR_BLOCK_TYPES[info.player_block];
+        sstream_array[UI_DBG_PLAYER_CHUNK].precision(2);
+        sstream_array[UI_DBG_PLAYER_CHUNK] << "Player Active Chunk: " <<
+       std::fixed
+                                           <<
+       STR_BLOCK_TYPES[info.player_block];
 
-    sstream_array[UI_DBG_SEED] << "Seed: " << info.seed;
+        sstream_array[UI_DBG_SEED] << "Seed: " << info.seed;*/
 
-    if (!_show_map) {
-        _cursor.draw(_ortho);
-    } else {
-        _map.draw(_ortho);
-    }
-    _print_ui_info(sstream_array);
+    //    if (!_show_map) {
+    _cursor.draw(_ortho);
+    //    } else {
+    //        _map.draw(_ortho);
+    //    }
+    //_print_ui_info(sstream_array);
     _print_ui_keys();
     _show_map = 0;
+    (void)info;
 }
 
 void
@@ -115,22 +123,22 @@ void
 Ui::_print_ui_info(
   std::array<std::stringstream, UI_DBG_TOTAL> const &sstream_array)
 {
-    auto constexpr const start_pos = glm::vec2(15.0f, 30.0f);
-
-    for (uint32_t i = 0; i < UI_DBG_TOTAL; ++i) {
-        _font.drawText(sstream_array[i].str(),
-                       glm::vec3(1.0f),
-                       glm::vec2(start_pos.x, start_pos.y + 30.0f * i),
-                       _ortho,
-                       _win_size,
-                       1.0f);
-    }
+    //auto constexpr const start_pos = glm::vec2(15.0f, 30.0f);
+    (void)sstream_array;
+    /*  for (uint32_t i = 0; i < UI_DBG_TOTAL; ++i) {
+          _font.drawText(sstream_array[i].str(),
+                         glm::vec3(1.0f),
+                         glm::vec2(start_pos.x, start_pos.y + 30.0f * i),
+                         _ortho,
+                         _win_size,
+                         1.0f);
+      }*/
 }
 
 void
 Ui::_print_ui_keys()
 {
-    static const std::array<std::string, NB_KEY_DESCRIPTION> key_description = {
+    static constexpr char const key_description[NB_KEY_DESCRIPTION][64] = {
         "ESC = Close",
         "WASD = Movements",
         "QE = Down / Up",
