@@ -88,6 +88,9 @@ UiFont::drawText(const char *str,
                  glm::vec2 const &win_size,
                  float scale)
 {
+    if (!str) {
+        return;
+    }
     float pos_x_offseted = pos.x;
     float pos_y = win_size.y - pos.y;
 
@@ -98,21 +101,21 @@ UiFont::drawText(const char *str,
     _shader.use();
     _shader.setMat4("uniform_mat_ortho", ortho);
     _shader.setVec3("uniform_color", color);
+    glActiveTexture(GL_TEXTURE0);
+    _shader.setInt("uniform_tex", 0);
     while (*str) {
         auto &fchar = _char_list[*str];
         float xpos = pos_x_offseted + fchar.bearing.x * scale;
         float ypos = pos_y - (fchar.size.y - fchar.bearing.y) * scale;
         float w = fchar.size.x * scale;
         float h = fchar.size.y * scale;
-        float vertices[6][4] = { { xpos, ypos + h, 0.0, 0.0 },
-                                 { xpos, ypos, 0.0, 1.0 },
-                                 { xpos + w, ypos, 1.0, 1.0 },
+        float const vertices[6][4] = { { xpos, ypos + h, 0.0, 0.0 },
+                                       { xpos, ypos, 0.0, 1.0 },
+                                       { xpos + w, ypos, 1.0, 1.0 },
 
-                                 { xpos, ypos + h, 0.0, 0.0 },
-                                 { xpos + w, ypos, 1.0, 1.0 },
-                                 { xpos + w, ypos + h, 1.0, 0.0 } };
-        glActiveTexture(GL_TEXTURE0);
-        _shader.setInt("uniform_tex", 0);
+                                       { xpos, ypos + h, 0.0, 0.0 },
+                                       { xpos + w, ypos, 1.0, 1.0 },
+                                       { xpos + w, ypos + h, 1.0, 0.0 } };
         glBindTexture(GL_TEXTURE_2D, fchar.tex);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 6 * 4, vertices);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
