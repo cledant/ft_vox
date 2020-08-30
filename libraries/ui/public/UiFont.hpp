@@ -14,7 +14,7 @@
 class UiFont final
 {
   public:
-    UiFont();
+    UiFont() = default;
     ~UiFont();
     UiFont(UiFont const &src) = delete;
     UiFont &operator=(UiFont const &rhs) = delete;
@@ -36,27 +36,33 @@ class UiFont final
 
   private:
     static constexpr uint32_t MAX_FONT_CHAR = 128;
-    struct FontChar
+    static constexpr uint32_t MAX_DISPLAYED_CHAR = 128;
+    typedef struct FontChar
     {
-        uint32_t tex;
-        glm::ivec2 size;
-        glm::ivec2 bearing;
-        size_t advance;
-    };
+        float tex_x;
+        glm::ivec2 size;    // bw bh
+        glm::ivec2 bearing; // bl bt
+        glm::ivec2 advance; // ax ay
+    } FontChar;
+    typedef struct StrBuffer
+    {
+        std::array<glm::vec4, 6> point;
+    } StrBuffer;
 
     inline void _loadFont(std::string const &path);
     inline void _allocate_vbo();
     inline void _allocate_vao();
-    static inline uint32_t _create_glyph_texture(const void *buffer,
-                                          uint32_t tex_w,
-                                          uint32_t tex_h);
+    static inline uint32_t _create_font_texture(uint32_t tex_w, uint32_t tex_h);
 
     uint8_t _is_init;
     uint64_t _font_size;
     GLShader _shader;
     std::array<FontChar, MAX_FONT_CHAR> _char_list;
+    uint32_t _char_list_tex_w;
+    uint32_t _char_list_tex_h;
     uint32_t _vao;
     uint32_t _vbo;
+    uint32_t _font_tex;
 };
 
 #endif // FT_VOX_UIFONT_HPP
