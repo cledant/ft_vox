@@ -38,9 +38,9 @@ out GS_OUT {
     vec2 base_texture_coord;
     vec2 level_1_texture_coord;
     float depth_z;
-    flat bool use_color_modifier;
-    flat bool use_level_1_color_modifier;
-    flat bool use_level_1_texture;
+    float use_color_modifier;
+    float use_level_1_color_modifier;
+    float use_level_1_texture;
 } gs_out;
 
 #define NO_COLOR_MOD vec4(1.0)
@@ -57,9 +57,9 @@ void generate_textured_block(const vec4 block_center, const uint block_faces, co
 const BlockTextureType tex_type, const float[6] backface_culling)
 {
     //FACE XY-
-    gs_out.use_color_modifier = (type == 11);
-    gs_out.use_level_1_color_modifier = (type == 1);
-    gs_out.use_level_1_texture = (type == 1);
+    gs_out.use_color_modifier = (type == 11) ? 1 : 0;
+    gs_out.use_level_1_color_modifier = (type == 1) ? 1 : 0;
+    gs_out.use_level_1_texture = (type == 1) ? 1 : 0;
     if ((block_faces & (1u << 5)) > 0 && backface_culling[0] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
@@ -85,9 +85,9 @@ const BlockTextureType tex_type, const float[6] backface_culling)
     }
 
     //FACE XY+
-    gs_out.use_color_modifier = (type == 11);
-    gs_out.use_level_1_color_modifier = (type == 1);
-    gs_out.use_level_1_texture = (type == 1);
+    gs_out.use_color_modifier = (type == 11) ? 1 : 0;
+    gs_out.use_level_1_color_modifier = (type == 1) ? 1 : 0;
+    gs_out.use_level_1_texture = (type == 1) ? 1 : 0;
     if ((block_faces & (1u << 4)) > 0 && backface_culling[1] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
@@ -113,9 +113,9 @@ const BlockTextureType tex_type, const float[6] backface_culling)
     }
 
     //FACE XZ-
-    gs_out.use_color_modifier = (type == 11);
-    gs_out.use_level_1_color_modifier = false;
-    gs_out.use_level_1_texture = false;
+    gs_out.use_color_modifier = (type == 11) ? 1 : 0;
+    gs_out.use_level_1_color_modifier = 0;
+    gs_out.use_level_1_texture = 0;
     if ((block_faces & (1u << 1)) > 0 && backface_culling[2] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
@@ -141,9 +141,9 @@ const BlockTextureType tex_type, const float[6] backface_culling)
     }
 
     //FACE XZ+
-    gs_out.use_color_modifier = (type == 1 || type == 11);
-    gs_out.use_level_1_color_modifier = false;
-    gs_out.use_level_1_texture = false;
+    gs_out.use_color_modifier = (type == 1 || type == 11) ? 1 : 0;
+    gs_out.use_level_1_color_modifier = 0;
+    gs_out.use_level_1_texture = 0;
     if ((block_faces & 1u) > 0 && backface_culling[3] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, 0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
@@ -169,9 +169,9 @@ const BlockTextureType tex_type, const float[6] backface_culling)
     }
 
     //FACE YZ-
-    gs_out.use_color_modifier = (type == 11);
-    gs_out.use_level_1_color_modifier = (type == 1);
-    gs_out.use_level_1_texture = (type == 1);
+    gs_out.use_color_modifier = (type == 11) ? 1 : 0;
+    gs_out.use_level_1_color_modifier = (type == 1) ? 1 : 0;
+    gs_out.use_level_1_texture = (type == 1) ? 1 : 0;
     if ((block_faces & (1u << 3)) > 0 && backface_culling[4] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(-0.5, -0.5, -0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;
@@ -197,9 +197,9 @@ const BlockTextureType tex_type, const float[6] backface_culling)
     }
 
     //FACE YZ+
-    gs_out.use_color_modifier = (type == 11);
-    gs_out.use_level_1_color_modifier = (type == 1);
-    gs_out.use_level_1_texture = (type == 1);
+    gs_out.use_color_modifier = (type == 11) ? 1 : 0;
+    gs_out.use_level_1_color_modifier = (type == 1) ? 1 : 0;
+    gs_out.use_level_1_texture = (type == 1) ? 1 : 0;
     if ((block_faces & (1u << 2)) > 0 && backface_culling[5] < 0.0f) {
         gl_Position = uniform_mat_perspec_view * (gl_in[0].gl_Position + vec4(0.5, -0.5, 0.5, 0.0) + block_center);
         gs_out.depth_z = gl_Position.z;

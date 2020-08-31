@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <array>
 
 #include "ft2build.h"
 #include "glm/glm.hpp"
