@@ -16,24 +16,24 @@ ChunkManager::ChunkManager()
   , _texture()
   , _nb_displayed_chunk(0)
   , _pn()
-  , _ubo_texture_type()
+  , _ubo_texture_coord()
   , _log_z_fighting()
 {}
 
 ChunkManager::~ChunkManager()
 {
-    if (!_ubo_texture_type) {
-        glDeleteBuffers(1, &_ubo_texture_type);
+    if (!_ubo_texture_coord) {
+        glDeleteBuffers(1, &_ubo_texture_coord);
     }
 }
 
 void
 ChunkManager::init(uint64_t seed)
 {
-    _shader.init("./ressources/shaders/textured_chunk/textured_chunk_vs.glsl",
-                 "./ressources/shaders/textured_chunk/textured_chunk_gs.glsl",
-                 "./ressources/shaders/textured_chunk/textured_chunk_fs.glsl",
-                 "Textured Chunk");
+    _shader.init(
+      "./ressources/shaders/textured_chunk_v2/textured_chunk_v2_vs.glsl",
+      "./ressources/shaders/textured_chunk_v2/textured_chunk_v2_fs.glsl",
+      "Textured Chunk");
     _chunk.reserve((2 * MIN_RENDER_DISTANCE) * (2 * MIN_RENDER_DISTANCE));
     _texture.init("./ressources/textures/terrain.png", 1);
     _pn.setSeed(seed);
@@ -42,9 +42,9 @@ ChunkManager::init(uint64_t seed)
     _init_texture_type_ubo();
     _shader.use();
     _shader.setFloat("uniform_log_z_fighting", _log_z_fighting);
-    _shader.setUbo("uniform_block_type",
+    _shader.setUbo("uniform_block_tex",
                    0,
-                   _ubo_texture_type,
+                   _ubo_texture_coord,
                    sizeof(BlockTextureType) * NB_SHADER_TEXTURE);
 }
 
@@ -77,7 +77,8 @@ ChunkManager::draw(glm::mat4 const &projection,
         _shader.setVec4("uniform_vec_color_modifier", it.getColorModifier());
         glBindVertexArray(it.getVao());
         glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
-        glDrawArraysInstanced(GL_POINTS, 0, 1, it.getNbVisibleBlocks());
+        glDrawArraysInstanced(
+          GL_TRIANGLE_STRIP, 0, 4, it.getNbVisibleBlocks() * 6);
         ++_nb_displayed_chunk;
     }
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -327,11 +328,12 @@ ChunkManager::_generate_chunk(glm::ivec2 pos, PerlinNoise pn)
 void
 ChunkManager::_init_texture_type_ubo()
 {
-    glGenBuffers(1, &_ubo_texture_type);
-    if (!_ubo_texture_type) {
+    // Base texture
+    glGenBuffers(1, &_ubo_texture_coord);
+    if (!_ubo_texture_coord) {
         throw std::runtime_error("ChunkManager: Failed to create texture ubo");
     }
-    glBindBuffer(GL_UNIFORM_BUFFER, _ubo_texture_type);
+    glBindBuffer(GL_UNIFORM_BUFFER, _ubo_texture_coord);
     glBufferData(GL_UNIFORM_BUFFER,
                  sizeof(BlockTextureType) * NB_SHADER_TEXTURE,
                  &SHADER_TEXTURE_TABLE[0],

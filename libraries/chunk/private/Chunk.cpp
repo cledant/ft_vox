@@ -490,7 +490,7 @@ Chunk::_allocate_vao()
       0, 1, GL_UNSIGNED_INT, sizeof(uint32_t), reinterpret_cast<void *>(0));
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glVertexAttribDivisor(0, 1);
+    glVertexAttribDivisor(0, 6);
     glBindVertexArray(0);
     return (0);
 }

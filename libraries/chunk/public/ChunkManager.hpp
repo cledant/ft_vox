@@ -72,7 +72,7 @@ class ChunkManager final
 
     PerlinNoise _pn;
 
-    uint32_t _ubo_texture_type;
+    uint32_t _ubo_texture_coord;
     float _log_z_fighting;
 
     inline uint8_t _is_chunk_out_of_range(glm::ivec2 const &pos) const;
