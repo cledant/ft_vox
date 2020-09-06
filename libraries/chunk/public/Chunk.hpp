@@ -32,7 +32,6 @@ class Chunk final
 
     [[nodiscard]] uint32_t getVao() const;
     [[nodiscard]] uint32_t getNbVisibleBlocks() const;
-    [[nodiscard]] glm::vec4 const &getColorModifier() const;
 
     void generateChunk(PerlinNoise const &pn);
     uint8_t allocateGPUResources();
@@ -82,8 +81,6 @@ class Chunk final
     glm::ivec2 _chunk_position;
     glm::vec3 _space_coord;
     glm::vec3 _center;
-
-    glm::vec4 _color_modifier;
 
     uint32_t _vao;
     uint32_t _vbo;
