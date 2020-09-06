@@ -74,7 +74,6 @@ ChunkManager::draw(glm::mat4 const &projection,
             continue;
         }
         _shader.setVec3("uniform_vec_chunk_position", it.getSpaceCoordinate());
-        _shader.setVec4("uniform_vec_color_modifier", it.getColorModifier());
         glBindVertexArray(it.getVao());
         glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
         glDrawArraysInstanced(

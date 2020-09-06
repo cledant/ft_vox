@@ -30,11 +30,7 @@ uniform vec3 uniform_vec_camera_pos;
 
 out VS_OUT {
     vec2 base_texture_coord;
-    vec2 level_1_texture_coord;
     float depth_z;
-    float use_color_modifier;
-    float use_level_1_color_modifier;
-    float use_level_1_texture;
     float to_discard;
 } vs_out;
 
@@ -154,24 +150,19 @@ void main()
     (chunk_position.xyz + block_position.xyz - uniform_vec_camera_pos + offsets[instance_face]));
     if ((block_faces & (1u << instance_face)) == 0 || backface_culling >= 0.0f) {
         vs_out.to_discard = 1.0;
+        gl_Position = vec4(0.0);
         return;
     }
     vs_out.to_discard = 0.0;
-
-    // Block type
-    // 31 = 0000 0000 0000 0000 0000 0000 0001 1111
-    uint block_type = block & 31u - 1;
 
     // Vertex
     uint vertex_idx = gl_VertexID + instance_face * 4;
     gl_Position = uniform_mat_perspec_view * (chunk_position + vertex[vertex_idx] + block_position);
     vs_out.depth_z = gl_Position.z;
+
     // Texture
-    vs_out.base_texture_coord = block_tex[9].tex_coord[instance_face].xy +
-    texture_coord_offset[vertex_idx];
-    // TODO
-    vs_out.level_1_texture_coord = vs_out.base_texture_coord;
-    vs_out.use_color_modifier = 0.0;
-    vs_out.use_level_1_color_modifier = 0.0;
-    vs_out.use_level_1_texture = 0.0;
+    // Block type
+    // 31 = 0000 0000 0000 0000 0000 0000 0001 1111
+    uint block_type = block & 31u;
+    vs_out.base_texture_coord = block_tex[block_type - 1].tex_coord[instance_face].xy + texture_coord_offset[vertex_idx];
 }
