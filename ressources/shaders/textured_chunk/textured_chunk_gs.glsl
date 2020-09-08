@@ -1,7 +1,7 @@
 #version 410 core
 
 layout (points) in;
-layout (triangle_strip, max_vertices = 24) out;
+layout (triangle_strip, max_vertices = 12) out;
 
 #define TOTAL_TEX 16
 
@@ -15,7 +15,6 @@ struct BlockTextureType {
 };
 
 uniform mat4 uniform_mat_perspec_view;
-
 layout (std140) uniform uniform_block_type
 {
     BlockTextureType block_type[TOTAL_TEX];
@@ -32,8 +31,6 @@ out GS_OUT {
     vec2 base_texture_coord;
     float depth_z;
 } gs_out;
-
-#define NO_COLOR_MOD vec4(1.0)
 
 // Texture should have 16x16 tiles
 #define TEX_STEP 0.0625

@@ -1,7 +1,6 @@
 #version 410 core
 
 uniform sampler2D uniform_tex_diffuse;
-uniform vec4 uniform_vec_color_modifier;
 uniform float uniform_log_z_fighting;
 
 in GS_OUT {
