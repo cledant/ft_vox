@@ -15,7 +15,8 @@ Chunk::Chunk()
   , _space_coord(0)
   , _center(0)
   , _vao(0)
-  , _vbo(0)
+  , _vbo_blocks(0)
+  , _vbo_space_coord(0)
 {}
 
 Chunk::~Chunk()
@@ -31,7 +32,8 @@ Chunk::Chunk(Chunk &&src) noexcept
   , _space_coord(0)
   , _center(0)
   , _vao(0)
-  , _vbo(0)
+  , _vbo_blocks(0)
+  , _vbo_space_coord(0)
 {
     *this = std::move(src);
 }
@@ -47,9 +49,11 @@ Chunk::operator=(Chunk &&rhs) noexcept
     _space_coord = rhs._space_coord;
     _center = rhs._center;
     _vao = rhs._vao;
-    _vbo = rhs._vbo;
+    _vbo_blocks = rhs._vbo_blocks;
+    _vbo_space_coord = rhs._vbo_space_coord;
     rhs._vao = 0;
-    rhs._vbo = 0;
+    rhs._vbo_blocks = 0;
+    rhs._vbo_space_coord = 0;
     return (*this);
 }
 
@@ -61,7 +65,8 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
   , _space_coord(0.0f)
   , _center(0)
   , _vao(0)
-  , _vbo(0)
+  , _vbo_blocks(0)
+  , _vbo_space_coord(0)
 {
     _space_coord =
       glm::vec3(static_cast<float>(chunk_position.x) * BLOCK_PER_LINE,
@@ -203,11 +208,16 @@ Chunk::allocateGPUResources()
 void
 Chunk::updateGPUResources()
 {
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_blocks);
     glBufferSubData(GL_ARRAY_BUFFER,
                     0,
                     sizeof(uint32_t) * _nb_visible_blocks,
                     &_visible_blocks[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    auto gpu_space_coord = glm::vec4(_space_coord, 1.0f);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_space_coord);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 4, &gpu_space_coord);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     _visible_blocks.reset();
 }
@@ -446,18 +456,36 @@ Chunk::_compute_block_visible_faces(int32_t index)
 uint8_t
 Chunk::_allocate_vbo()
 {
-    glGenBuffers(1, &_vbo);
-    if (!_vbo) {
+    // Vbo for blocks
+    glGenBuffers(1, &_vbo_blocks);
+    if (!_vbo_blocks) {
         return (1);
     }
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_blocks);
     glBufferData(GL_ARRAY_BUFFER,
                  sizeof(uint32_t) * _nb_visible_blocks,
                  nullptr,
                  GL_STATIC_DRAW);
     if (glGetError() == GL_OUT_OF_MEMORY) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(1, &_vbo);
+        glDeleteBuffers(1, &_vbo_blocks);
+        return (1);
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Vbo for space coord
+    glGenBuffers(1, &_vbo_space_coord);
+    if (!_vbo_space_coord) {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDeleteBuffers(1, &_vbo_blocks);
+        return (1);
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_space_coord);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4, nullptr, GL_STATIC_DRAW);
+    if (glGetError() == GL_OUT_OF_MEMORY) {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDeleteBuffers(1, &_vbo_blocks);
+        glDeleteBuffers(1, &_vbo_space_coord);
         return (1);
     }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -472,11 +500,16 @@ Chunk::_allocate_vao()
         return (1);
     }
     glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_blocks);
     glVertexAttribIPointer(
       0, 1, GL_UNSIGNED_INT, sizeof(uint32_t), reinterpret_cast<void *>(0));
     glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_space_coord);
+    glVertexAttribPointer(
+      1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, reinterpret_cast<void *>(0));
+    glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glVertexAttribDivisor(1, 1);
     glBindVertexArray(0);
     return (0);
 }
@@ -487,8 +520,11 @@ Chunk::_deallocate_gpu()
     if (_vao) {
         glDeleteVertexArrays(1, &_vao);
     }
-    if (_vbo) {
-        glDeleteBuffers(1, &_vbo);
+    if (_vbo_blocks) {
+        glDeleteBuffers(1, &_vbo_blocks);
+    }
+    if (_vbo_space_coord) {
+        glDeleteBuffers(1, &_vbo_space_coord);
     }
 }
 

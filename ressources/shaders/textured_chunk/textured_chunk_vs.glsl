@@ -6,8 +6,8 @@
 #define BLOCK_PER_CHUNK BLOCK_PER_LINE * LINE_PER_PLANE * PLANE_PER_CHUNK
 
 layout (location = 0) in uint block;
+layout (location = 1) in vec4 chunk_position;
 
-uniform vec3 uniform_vec_chunk_position;
 uniform vec3 uniform_vec_camera_pos;
 
 out VS_OUT {
@@ -54,7 +54,7 @@ void main()
     // Block faces
     // 16128 = 0000 0000 0000 0000 0011 1111 0000 0000
     vs_out.block_faces = (block & 16128u) >> 8;
-    gl_Position = vec4(uniform_vec_chunk_position, 1.0);
+    gl_Position = chunk_position;
 
     // Backface culling
     vs_out.backface_culling = compute_backface_culling(vs_out.block_position);

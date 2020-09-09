@@ -83,7 +83,8 @@ class Chunk final
     glm::vec3 _center;
 
     uint32_t _vao;
-    uint32_t _vbo;
+    uint32_t _vbo_blocks;
+    uint32_t _vbo_space_coord;
 };
 
 #endif // FT_VOX_CHUNK_HPP

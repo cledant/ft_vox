@@ -69,13 +69,12 @@ ChunkManager::draw(glm::mat4 const &projection,
     _shader.setVec3("uniform_vec_camera_pos", _player_space_pos);
     glActiveTexture(GL_TEXTURE0);
     _shader.setInt("uniform_tex_diffuse", 0);
+    glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
     for (auto &it : _chunk) {
         if (!it.isChunkInFrustum(frustum_planes, abs_frustum_planes)) {
             continue;
         }
-        _shader.setVec3("uniform_vec_chunk_position", it.getSpaceCoordinate());
         glBindVertexArray(it.getVao());
-        glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
         glDrawArrays(GL_POINTS, 0, it.getNbVisibleBlocks());
         ++_nb_displayed_chunk;
     }
