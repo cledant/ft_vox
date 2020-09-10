@@ -17,6 +17,7 @@ Chunk::Chunk()
   , _vao(0)
   , _vbo_blocks(0)
   , _vbo_space_coord(0)
+  , _vbo_indirect(0)
 {}
 
 Chunk::~Chunk()
@@ -34,6 +35,7 @@ Chunk::Chunk(Chunk &&src) noexcept
   , _vao(0)
   , _vbo_blocks(0)
   , _vbo_space_coord(0)
+  , _vbo_indirect(0)
 {
     *this = std::move(src);
 }
@@ -51,9 +53,11 @@ Chunk::operator=(Chunk &&rhs) noexcept
     _vao = rhs._vao;
     _vbo_blocks = rhs._vbo_blocks;
     _vbo_space_coord = rhs._vbo_space_coord;
+    _vbo_indirect = rhs._vbo_indirect;
     rhs._vao = 0;
     rhs._vbo_blocks = 0;
     rhs._vbo_space_coord = 0;
+    rhs._vbo_indirect = 0;
     return (*this);
 }
 
@@ -67,6 +71,7 @@ Chunk::Chunk(glm::ivec2 const &chunk_position)
   , _vao(0)
   , _vbo_blocks(0)
   , _vbo_space_coord(0)
+  , _vbo_indirect(0)
 {
     _space_coord =
       glm::vec3(static_cast<float>(chunk_position.x) * BLOCK_PER_LINE,
@@ -182,6 +187,12 @@ uint32_t
 Chunk::getNbVisibleBlocks() const
 {
     return (_nb_visible_blocks);
+}
+
+uint32_t
+Chunk::getIndirectCommandVbo() const
+{
+    return (_vbo_indirect);
 }
 
 void
@@ -468,27 +479,47 @@ Chunk::_allocate_vbo()
                  GL_STATIC_DRAW);
     if (glGetError() == GL_OUT_OF_MEMORY) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(1, &_vbo_blocks);
+        _deallocate_gpu();
         return (1);
     }
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Vbo for space coord
     glGenBuffers(1, &_vbo_space_coord);
     if (!_vbo_space_coord) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(1, &_vbo_blocks);
+        _deallocate_gpu();
         return (1);
     }
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_space_coord);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4, nullptr, GL_STATIC_DRAW);
     if (glGetError() == GL_OUT_OF_MEMORY) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(1, &_vbo_blocks);
-        glDeleteBuffers(1, &_vbo_space_coord);
+        _deallocate_gpu();
         return (1);
     }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Vbo for indirect draw command
+    DrawArrayIndirectCommand command = { _nb_visible_blocks, 1, 0, 0 };
+    glGenBuffers(1, &_vbo_indirect);
+    if (!_vbo_indirect) {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+        _deallocate_gpu();
+        return (1);
+    }
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _vbo_indirect);
+    glBufferData(GL_DRAW_INDIRECT_BUFFER,
+                 sizeof(DrawArrayIndirectCommand),
+                 &command,
+                 GL_STATIC_DRAW);
+    if (glGetError() == GL_OUT_OF_MEMORY) {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+        _deallocate_gpu();
+        return (1);
+    }
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
     return (0);
 }
 
@@ -519,12 +550,19 @@ Chunk::_deallocate_gpu()
 {
     if (_vao) {
         glDeleteVertexArrays(1, &_vao);
+        _vao = 0;
     }
     if (_vbo_blocks) {
         glDeleteBuffers(1, &_vbo_blocks);
+        _vbo_blocks = 0;
     }
     if (_vbo_space_coord) {
         glDeleteBuffers(1, &_vbo_space_coord);
+        _vbo_space_coord = 0;
+    }
+    if (_vbo_indirect) {
+        glDeleteBuffers(1, &_vbo_indirect);
+        _vbo_indirect = 0;
     }
 }
 

@@ -41,7 +41,6 @@ constexpr glm::vec2 TEX_TNT_BOT = glm::vec2(10 * TEX_STEP, 0);
 constexpr glm::vec2 TEX_BRICKS = glm::vec2(7 * TEX_STEP, 0);
 constexpr glm::vec2 TEX_GLASS = glm::vec2(1 * TEX_STEP, 3 * TEX_STEP);
 constexpr glm::vec2 TEX_ICE = glm::vec2(3 * TEX_STEP, 4 * TEX_STEP);
-constexpr glm::vec2 TEX_NO_TEXTURE = glm::vec2(0.0);
 
 // Constants for Z fighting
 constexpr float const C = 1.0f;

@@ -75,10 +75,12 @@ ChunkManager::draw(glm::mat4 const &projection,
             continue;
         }
         glBindVertexArray(it.getVao());
-        glDrawArrays(GL_POINTS, 0, it.getNbVisibleBlocks());
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, it.getIndirectCommandVbo());
+        glDrawArraysIndirect(GL_POINTS, nullptr);
         ++_nb_displayed_chunk;
     }
     glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
     glBindVertexArray(0);
 }
 

@@ -32,6 +32,7 @@ class Chunk final
 
     [[nodiscard]] uint32_t getVao() const;
     [[nodiscard]] uint32_t getNbVisibleBlocks() const;
+    [[nodiscard]] uint32_t getIndirectCommandVbo() const;
 
     void generateChunk(PerlinNoise const &pn);
     uint8_t allocateGPUResources();
@@ -85,6 +86,7 @@ class Chunk final
     uint32_t _vao;
     uint32_t _vbo_blocks;
     uint32_t _vbo_space_coord;
+    uint32_t _vbo_indirect;
 };
 
 #endif // FT_VOX_CHUNK_HPP

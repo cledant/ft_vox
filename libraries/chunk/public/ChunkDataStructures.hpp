@@ -81,4 +81,13 @@ static constexpr int32_t const SNOW_LEVEL = 150;
 static constexpr float const COLD_TEMP = 0.45f;
 static constexpr float const DESERT_TEMP = 0.60f;
 
+// Indirect draw
+typedef struct DrawArrayIndirectCommand
+{
+    uint32_t vertex_count;
+    uint32_t instance_count;
+    uint32_t start_index;
+    uint32_t start_instance;
+} DrawArrayIndirectCommand;
+
 #endif // FT_VOX_CHUNKDATASTRUCTURES_HPP
