@@ -66,7 +66,6 @@ IOManager::createWindow(std::string &&name)
         glfwSetWindowSize(_win, WIN_W, WIN_H);
         _w = WIN_W;
         _h = WIN_H;
-        _initCallbacks();
 #ifdef NDEBUG
         toggleMouseExclusive();
         toggleFullscreen();

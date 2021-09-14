@@ -22,14 +22,6 @@ getCaveLimits(glm::vec2 const &coord, PerlinNoise const &pn)
     return (glm::vec2(limits_2, limits_1));
 }
 
-void
-generateMap(const glm::ivec2 &size, uint32_t seed, void *buffer)
-{
-    (void)size;
-    (void)seed;
-    (void)buffer;
-}
-
 float
 noise3dRemapped(glm::vec3 const &vec, PerlinNoise const &pn)
 {

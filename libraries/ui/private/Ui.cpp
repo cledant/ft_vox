@@ -14,7 +14,7 @@ Ui::Ui()
 {}
 
 void
-Ui::init(glm::vec2 const &window_size, uint32_t seed)
+Ui::init(glm::vec2 const &window_size)
 {
     std::array<uint8_t, 3 *MAP_SIZE.x *MAP_SIZE.y> map_buffer = {};
 
@@ -28,7 +28,6 @@ Ui::init(glm::vec2 const &window_size, uint32_t seed)
                  "./ressources/shaders/cursor/cursor_vs.glsl",
                  "./ressources/shaders/cursor/cursor_fs.glsl",
                  "Cursor");
-    generateMap(MAP_SIZE, seed, map_buffer.data());
     _map.init(map_buffer.data(),
               MAP_SIZE,
               3,

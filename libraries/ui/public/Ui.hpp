@@ -31,7 +31,7 @@ class Ui final
     Ui(Ui &&src) = delete;
     Ui &operator=(Ui &&rhs) = delete;
 
-    void init(glm::vec2 const &window_size, uint32_t seed);
+    void init(glm::vec2 const &window_size);
     void draw(UiInfo const &info);
 
     void setOrthographicProjection(glm::vec2 const &window_size);

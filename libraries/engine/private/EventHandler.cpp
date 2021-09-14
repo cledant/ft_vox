@@ -225,37 +225,37 @@ EventHandler::_toggle_fullscreen()
 void
 EventHandler::_jump()
 {
-    _movements.z += 1;
+    _movements.z += PLAYER_BASE_SPEED;
 }
 
 void
 EventHandler::_crouch()
 {
-    _movements.z -= 1;
+    _movements.z -= PLAYER_BASE_SPEED;
 }
 
 void
 EventHandler::_front()
 {
-    _movements.x += 1;
+    _movements.x += PLAYER_BASE_SPEED;
 }
 
 void
 EventHandler::_back()
 {
-    _movements.x -= 1;
+    _movements.x -= PLAYER_BASE_SPEED;
 }
 
 void
 EventHandler::_right()
 {
-    _movements.y += 1;
+    _movements.y += PLAYER_BASE_SPEED;
 }
 
 void
 EventHandler::_left()
 {
-    _movements.y -= 1;
+    _movements.y -= PLAYER_BASE_SPEED;
 }
 
 void
@@ -311,7 +311,7 @@ EventHandler::_toggle_ui()
 void
 EventHandler::_speed_up()
 {
-    _movements *= 20.0f;
+    _movements *= PLAYER_SPEED_MULTIPLIER;
 }
 
 void

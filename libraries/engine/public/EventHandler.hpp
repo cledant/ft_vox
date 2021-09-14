@@ -35,6 +35,8 @@ class EventHandler
 
   private:
     static constexpr double const TARGET_PLAYER_TICK = 20.0f;
+    static constexpr int32_t const PLAYER_BASE_SPEED = 5;
+    static constexpr int32_t const PLAYER_SPEED_MULTIPLIER = 20;
 
     // Timer related
     static constexpr double const SYSTEM_TIMER_SECONDS = 1.0;
